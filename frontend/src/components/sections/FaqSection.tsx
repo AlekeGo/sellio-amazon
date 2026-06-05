@@ -43,7 +43,7 @@ function FaqItem({ q, a, index }: { q: string; a: string; index: number }) {
           className="w-full flex items-center justify-between gap-4 p-5 text-left"
           style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#f1f5f9' }}
         >
-          <span className="text-sm font-semibold leading-snug">{q}</span>
+          <span className="text-base font-semibold leading-snug">{q}</span>
           <div
             className="w-7 h-7 rounded-full flex items-center justify-center shrink-0 transition-all duration-200"
             style={{
@@ -68,7 +68,7 @@ function FaqItem({ q, a, index }: { q: string; a: string; index: number }) {
               style={{ overflow: 'hidden' }}
             >
               <p
-                className="px-5 pb-5 text-sm leading-relaxed"
+                className="px-5 pb-6 text-sm leading-relaxed"
                 style={{ color: '#94a3b8' }}
               >
                 {a}

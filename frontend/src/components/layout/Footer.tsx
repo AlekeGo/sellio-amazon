@@ -45,10 +45,8 @@ export default function Footer() {
                 <a
                   key={link.label}
                   href={link.href}
-                  className="text-sm transition-colors"
-                  style={{ color: '#64748b', textDecoration: 'none' }}
-                  onMouseEnter={e => (e.currentTarget.style.color = '#94a3b8')}
-                  onMouseLeave={e => (e.currentTarget.style.color = '#64748b')}
+                  className="footer-link text-sm"
+                  style={{ textDecoration: 'none' }}
                 >
                   {link.label}
                 </a>
@@ -56,10 +54,8 @@ export default function Footer() {
                 <Link
                   key={link.label}
                   to={link.href}
-                  className="text-sm transition-colors"
-                  style={{ color: '#64748b', textDecoration: 'none' }}
-                  onMouseEnter={e => (e.currentTarget.style.color = '#94a3b8')}
-                  onMouseLeave={e => (e.currentTarget.style.color = '#64748b')}
+                  className="footer-link text-sm"
+                  style={{ textDecoration: 'none' }}
                 >
                   {link.label}
                 </Link>

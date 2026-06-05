@@ -220,7 +220,7 @@ export default function HeroSection() {
               className="mb-8"
             >
               <div className="section-badge w-fit">
-                <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#22d3ee', display: 'inline-block', animation: 'pulse 2s cubic-bezier(0.4,0,0.6,1) infinite' }} />
+                <span className="animate-pulse" style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#22d3ee', display: 'inline-block' }} />
                 AI Amazon Conversion Studio
               </div>
             </motion.div>
@@ -232,11 +232,14 @@ export default function HeroSection() {
               className="font-black leading-tight tracking-tight mb-7"
               style={{ fontSize: 'clamp(2.75rem, 6vw, 4.5rem)', letterSpacing: '-0.03em', lineHeight: '1.05' }}
             >
-              Average listings<br />
-              don't look average.
-              <br /><br />
-              They look{' '}
-              <span className="gradient-text">invisible.</span>
+              <span style={{ display: 'block' }}>
+                Average listings<br />
+                don't look average.
+              </span>
+              <span style={{ display: 'block', paddingTop: '0.45em' }}>
+                They look{' '}
+                <span className="gradient-text">invisible.</span>
+              </span>
             </motion.h1>
 
             <motion.p
@@ -288,7 +291,7 @@ export default function HeroSection() {
 
           <motion.div
             className="hero-visual-panel"
-            style={{ height: '520px', position: 'relative' }}
+            style={{ height: '540px', position: 'relative' }}
             initial={{ opacity: 0, scale: 0.92 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: 0.3, ease: EASE }}
@@ -302,15 +305,15 @@ export default function HeroSection() {
             </HeroVisualCard>
 
             <HeroVisualCard
-              style={{ top: '10px', right: '0' }}
+              style={{ top: '160px', right: '-8px' }}
               delay={0.75}
-              floatDuration={6}
+              floatDuration={6.5}
             >
               <TitleUpgradeCard />
             </HeroVisualCard>
 
             <HeroVisualCard
-              style={{ bottom: '30px', right: '20px' }}
+              style={{ bottom: '20px', left: '40px' }}
               delay={1.0}
               floatDuration={5.5}
             >
@@ -320,10 +323,20 @@ export default function HeroSection() {
             <div
               className="absolute pointer-events-none"
               style={{
-                bottom: '64px', left: '40px',
+                top: '80px', right: '60px',
+                width: '200px', height: '200px',
+                borderRadius: '50%',
+                background: 'radial-gradient(circle, rgba(124,58,237,0.1) 0%, transparent 70%)',
+                filter: 'blur(24px)',
+              }}
+            />
+            <div
+              className="absolute pointer-events-none"
+              style={{
+                bottom: '60px', left: '20px',
                 width: '160px', height: '160px',
                 borderRadius: '50%',
-                background: 'radial-gradient(circle, rgba(14,165,233,0.12) 0%, transparent 70%)',
+                background: 'radial-gradient(circle, rgba(14,165,233,0.1) 0%, transparent 70%)',
                 filter: 'blur(20px)',
               }}
             />

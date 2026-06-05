@@ -22,25 +22,6 @@ const plans = [
     href: '/dashboard/new-audit',
   },
   {
-    name: 'One-Time',
-    price: '$29',
-    period: 'one time',
-    description: 'One complete listing upgrade, no subscription.',
-    highlight: false,
-    badge: null,
-    features: [
-      '1 full listing upgrade',
-      'Title + bullets + description',
-      'Full keyword report',
-      '2 image pack concepts',
-      'Review insight summary',
-    ],
-    excluded: [],
-    cta: 'Buy Once',
-    ctaVariant: 'secondary' as const,
-    href: '/dashboard/new-audit',
-  },
-  {
     name: 'Launch',
     price: '$19',
     period: '/month',
@@ -123,6 +104,25 @@ const plans = [
     ctaVariant: 'secondary' as const,
     href: '/dashboard/new-audit',
   },
+  {
+    name: 'One-Time',
+    price: '$29',
+    period: 'one time',
+    description: 'One complete listing upgrade, no subscription needed.',
+    highlight: false,
+    badge: null,
+    features: [
+      '1 full listing upgrade',
+      'Title + bullets + description',
+      'Full keyword report',
+      '2 image pack concepts',
+      'Review insight summary',
+    ],
+    excluded: [],
+    cta: 'Buy Once',
+    ctaVariant: 'secondary' as const,
+    href: '/dashboard/new-audit',
+  },
 ]
 
 const addons = [
@@ -162,9 +162,11 @@ export default function PricingSection() {
                 key={plan.name}
                 className="rounded-2xl p-6 flex flex-col relative"
                 style={plan.highlight ? {
-                  background: 'rgba(14,165,233,0.06)',
-                  border: '1.5px solid rgba(56,189,248,0.35)',
-                  boxShadow: '0 0 60px rgba(14,165,233,0.12), 0 0 0 1px rgba(56,189,248,0.1)',
+                  background: 'rgba(14,165,233,0.07)',
+                  border: '1.5px solid rgba(56,189,248,0.42)',
+                  boxShadow: '0 0 80px rgba(14,165,233,0.18), 0 0 0 1px rgba(56,189,248,0.1), inset 0 1px 0 rgba(255,255,255,0.07)',
+                  transform: 'scale(1.025)',
+                  zIndex: 1,
                 } : {
                   background: 'var(--glass-bg)',
                   border: '1px solid var(--glass-border)',
@@ -199,7 +201,7 @@ export default function PricingSection() {
                     </span>
                     <span className="text-sm pb-1" style={{ color: '#64748b' }}>{plan.period}</span>
                   </div>
-                  <p className="text-xs leading-relaxed" style={{ color: '#64748b' }}>{plan.description}</p>
+                  <p className="text-sm leading-relaxed" style={{ color: '#64748b' }}>{plan.description}</p>
                 </div>
 
                 <div

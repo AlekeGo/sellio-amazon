@@ -84,10 +84,8 @@ export default function Navbar() {
                   <button
                     key={link.label}
                     onClick={() => handleAnchorClick(link.href)}
-                    className="px-4 py-2 text-sm font-medium rounded-md transition-colors cursor-pointer"
-                    style={{ color: '#94a3b8', background: 'none', border: 'none' }}
-                    onMouseEnter={e => (e.currentTarget.style.color = '#f1f5f9')}
-                    onMouseLeave={e => (e.currentTarget.style.color = '#94a3b8')}
+                    className="nav-link-item px-4 py-2 text-sm font-medium rounded-md cursor-pointer"
+                    style={{ background: 'none', border: 'none' }}
                   >
                     {link.label}
                   </button>
@@ -95,10 +93,8 @@ export default function Navbar() {
                   <Link
                     key={link.label}
                     to={link.href}
-                    className="px-4 py-2 text-sm font-medium rounded-md transition-colors"
-                    style={{ color: '#94a3b8', textDecoration: 'none' }}
-                    onMouseEnter={e => (e.currentTarget.style.color = '#f1f5f9')}
-                    onMouseLeave={e => (e.currentTarget.style.color = '#94a3b8')}
+                    className="nav-link-item px-4 py-2 text-sm font-medium rounded-md"
+                    style={{ textDecoration: 'none' }}
                   >
                     {link.label}
                   </Link>
@@ -165,8 +161,8 @@ export default function Navbar() {
                     <button
                       key={link.label}
                       onClick={() => { handleAnchorClick(link.href); setMobileOpen(false) }}
-                      className="flex items-center px-4 py-3 rounded-lg text-sm font-medium w-full text-left transition-colors"
-                      style={{ color: '#94a3b8', background: 'none', border: 'none', cursor: 'pointer' }}
+                      className="mobile-nav-item px-4 py-3 rounded-lg text-sm font-medium text-left cursor-pointer"
+                      style={{ border: 'none', background: 'none' }}
                     >
                       {link.label}
                     </button>
@@ -174,8 +170,8 @@ export default function Navbar() {
                     <Link
                       key={link.label}
                       to={link.href}
-                      className="flex items-center px-4 py-3 rounded-lg text-sm font-medium transition-colors"
-                      style={{ color: '#94a3b8', textDecoration: 'none' }}
+                      className="mobile-nav-item px-4 py-3 rounded-lg text-sm font-medium"
+                      style={{ textDecoration: 'none' }}
                     >
                       {link.label}
                     </Link>
