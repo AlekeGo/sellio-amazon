@@ -5,12 +5,12 @@ export default function LoginPage() {
   return (
     <div
       className="min-h-screen flex items-center justify-center px-4 relative"
-      style={{ background: '#030812' }}
+      style={{ background: '#070e0a' }}
     >
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          backgroundImage: 'radial-gradient(ellipse 80% 60% at 50% 0%, rgba(14,165,233,0.08) 0%, transparent 60%)',
+          backgroundImage: 'radial-gradient(ellipse 80% 60% at 50% 0%, rgba(52,211,153,0.07) 0%, transparent 60%)',
         }}
       />
 
@@ -29,14 +29,14 @@ export default function LoginPage() {
         <div
           className="rounded-2xl p-8"
           style={{
-            background: 'rgba(6,14,30,0.9)',
+            background: 'rgba(10,21,14,0.92)',
             border: '1px solid rgba(255,255,255,0.08)',
             boxShadow: '0 32px 80px rgba(0,0,0,0.4)',
           }}
         >
           <div className="text-center mb-8">
             <div className="flex items-center justify-center gap-2.5 mb-5">
-              <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #0ea5e9, #7c3aed)' }}>
+              <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #166534, #4ade80)' }}>
                 <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
                   <path d="M9 2L14.5 5.5V12.5L9 16L3.5 12.5V5.5L9 2Z" stroke="white" strokeWidth="1.5" strokeLinejoin="round" fill="none"/>
                   <path d="M6.5 9.5L8 11L11.5 7" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -67,7 +67,7 @@ export default function LoginPage() {
                   color: '#f1f5f9',
                   outline: 'none',
                 }}
-                onFocus={e => (e.currentTarget.style.border = '1px solid rgba(56,189,248,0.4)')}
+                onFocus={e => (e.currentTarget.style.border = '1px solid rgba(163,230,53,0.4)')}
                 onBlur={e => (e.currentTarget.style.border = '1px solid rgba(255,255,255,0.1)')}
               />
             </div>
@@ -85,7 +85,7 @@ export default function LoginPage() {
                   color: '#f1f5f9',
                   outline: 'none',
                 }}
-                onFocus={e => (e.currentTarget.style.border = '1px solid rgba(56,189,248,0.4)')}
+                onFocus={e => (e.currentTarget.style.border = '1px solid rgba(163,230,53,0.4)')}
                 onBlur={e => (e.currentTarget.style.border = '1px solid rgba(255,255,255,0.1)')}
               />
             </div>
@@ -106,7 +106,7 @@ export default function LoginPage() {
               Don't have an account?{' '}
               <Link
                 to="/dashboard/new-audit"
-                style={{ color: '#38bdf8', textDecoration: 'none' }}
+                style={{ color: '#a3e635', textDecoration: 'none' }}
               >
                 Start for free
               </Link>

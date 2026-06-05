@@ -1,171 +1,214 @@
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { ArrowRight, TrendingUp, Star, Zap } from 'lucide-react'
+import { ArrowRight, TrendingUp } from 'lucide-react'
 
-function HeroVisualCard({
-  children,
-  style = {},
-  delay = 0,
-  floatDuration = 5,
-}: {
-  children: React.ReactNode
-  style?: React.CSSProperties
-  delay?: number
-  floatDuration?: number
-}) {
+const EASE = [0.21, 0.47, 0.32, 0.98] as const
+
+const scoreItems = [
+  { label: 'Title', score: 44, color: '#f87171' },
+  { label: 'Keywords', score: 61, color: '#fb923c' },
+  { label: 'Images', score: 55, color: '#fb923c' },
+  { label: 'Bullets', score: 58, color: '#fbbf24' },
+]
+
+const imgPreviews = [
+  { label: 'Main', bg: 'linear-gradient(135deg, #14532d, #4ade80)' },
+  { label: 'Info', bg: 'linear-gradient(135deg, #065f46, #34d399)' },
+  { label: 'Comp', bg: 'linear-gradient(135deg, #064e3b, #6ee7b7)' },
+  { label: 'Life', bg: 'linear-gradient(135deg, #166534, #86efac)' },
+  { label: 'HiW', bg: 'linear-gradient(135deg, #15803d, #a3e635)' },
+  { label: 'A+', bg: 'linear-gradient(135deg, #3f6212, #d9f99d)' },
+]
+
+function HeroProductPanel() {
+  const r = 26
+  const circ = 2 * Math.PI * r
+  const offset = circ * (1 - 67 / 100)
+
   return (
     <motion.div
-      className="glass-card rounded-2xl absolute"
+      initial={{ opacity: 0, y: 32, scale: 0.96 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ duration: 0.85, delay: 0.3, ease: EASE }}
+      className="rounded-3xl overflow-hidden"
       style={{
-        boxShadow: '0 8px 32px rgba(0,0,0,0.4), 0 1px 0 rgba(255,255,255,0.06) inset',
-        ...style,
-      }}
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1, y: [0, -12, 0] }}
-      transition={{
-        opacity: { duration: 0.5, delay },
-        y: {
-          duration: floatDuration,
-          repeat: Infinity,
-          ease: 'easeInOut',
-          delay: delay + 0.5,
-        },
+        background: 'rgba(10, 21, 14, 0.96)',
+        border: '1px solid rgba(163,230,53,0.16)',
+        boxShadow: '0 32px 80px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.03) inset',
+        backdropFilter: 'blur(20px)',
       }}
     >
-      {children}
+      <div
+        className="flex items-center justify-between px-5 py-3.5"
+        style={{
+          background: 'rgba(255,255,255,0.025)',
+          borderBottom: '1px solid rgba(255,255,255,0.07)',
+        }}
+      >
+        <div className="flex items-center gap-2">
+          <div
+            className="w-5 h-5 rounded-md flex items-center justify-center"
+            style={{ background: 'linear-gradient(135deg, #166534, #4ade80)' }}
+          >
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+              <rect x="1" y="6.5" width="1.8" height="3" rx="0.45" fill="white" opacity="0.65"/>
+              <rect x="4.1" y="4" width="1.8" height="5.5" rx="0.45" fill="white" opacity="0.82"/>
+              <rect x="7.2" y="1.5" width="1.8" height="8" rx="0.45" fill="white"/>
+            </svg>
+          </div>
+          <span className="text-xs font-semibold tracking-widest uppercase" style={{ color: '#64748b' }}>
+            Sellio Audit
+          </span>
+        </div>
+        <span
+          className="text-xs px-2.5 py-1 rounded-full font-medium"
+          style={{
+            background: 'rgba(163,230,53,0.1)',
+            color: '#a3e635',
+            border: '1px solid rgba(163,230,53,0.22)',
+          }}
+        >
+          ● Score Ready
+        </span>
+      </div>
+
+      <div
+        className="flex items-center gap-4 px-5 py-4"
+        style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}
+      >
+        <div style={{ flexShrink: 0 }}>
+          <svg width="68" height="68" viewBox="0 0 68 68">
+            <circle cx="34" cy="34" r={r} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="5" />
+            <circle
+              cx="34" cy="34" r={r}
+              fill="none"
+              stroke="url(#heroScoreGrad)"
+              strokeWidth="5"
+              strokeLinecap="round"
+              strokeDasharray={circ}
+              strokeDashoffset={offset}
+              transform="rotate(-90 34 34)"
+            />
+            <defs>
+              <linearGradient id="heroScoreGrad" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stopColor="#a3e635" />
+                <stop offset="100%" stopColor="#34d399" />
+              </linearGradient>
+            </defs>
+            <text x="34" y="39" textAnchor="middle" fill="#f1f5f9" fontSize="15" fontWeight="700">67</text>
+          </svg>
+          <div className="flex items-center gap-1 mt-1.5">
+            <TrendingUp size={10} style={{ color: '#a3e635' }} />
+            <span style={{ fontSize: '10px', color: '#a3e635', fontWeight: 600 }}>→ 94</span>
+          </div>
+        </div>
+
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <p className="text-sm font-semibold mb-0.5" style={{ color: '#f1f5f9' }}>
+            ProGlow Vitamin C Serum
+          </p>
+          <p className="text-xs mb-3" style={{ color: '#475569' }}>
+            Listing Score <strong style={{ color: '#94a3b8' }}>67/100</strong>
+          </p>
+          <div className="space-y-1.5">
+            {scoreItems.map(item => (
+              <div key={item.label} className="flex items-center gap-2">
+                <span style={{ width: '3.75rem', fontSize: '11px', color: '#6b7280', flexShrink: 0 }}>
+                  {item.label}
+                </span>
+                <div style={{ flex: 1, height: '4px', borderRadius: '3px', background: 'rgba(255,255,255,0.07)' }}>
+                  <div style={{ width: `${item.score}%`, height: '100%', borderRadius: '3px', background: item.color }} />
+                </div>
+                <span style={{ width: '1.5rem', fontSize: '11px', fontWeight: 600, color: item.color, textAlign: 'right', flexShrink: 0 }}>
+                  {item.score}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+        <div className="px-4 py-4" style={{ borderRight: '1px solid rgba(255,255,255,0.06)' }}>
+          <div className="flex items-center gap-1.5 mb-2.5">
+            <div
+              className="w-4 h-4 rounded-full flex items-center justify-center"
+              style={{ background: 'rgba(163,230,53,0.15)', flexShrink: 0 }}
+            >
+              <svg width="8" height="8" viewBox="0 0 8 8" fill="none">
+                <path d="M1.5 4L3 5.5L6.5 2" stroke="#a3e635" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </div>
+            <span className="text-xs font-semibold" style={{ color: '#a3e635' }}>Title Upgraded</span>
+          </div>
+          <div
+            className="p-2 rounded-lg mb-1.5"
+            style={{ background: 'rgba(248,113,113,0.08)', border: '1px solid rgba(248,113,113,0.15)' }}
+          >
+            <p style={{ fontSize: '10px', color: '#94a3b8', lineHeight: '1.45' }}>
+              "Vitamin C Serum for Face…"
+            </p>
+          </div>
+          <div
+            className="p-2 rounded-lg"
+            style={{ background: 'rgba(163,230,53,0.07)', border: '1px solid rgba(163,230,53,0.18)' }}
+          >
+            <p style={{ fontSize: '10px', color: '#f1f5f9', lineHeight: '1.45' }}>
+              "ProGlow 20% Vit C + Hyaluronic…"
+            </p>
+          </div>
+          <p style={{ fontSize: '10px', color: '#a3e635', marginTop: '7px', fontWeight: 600 }}>
+            ↑ +34% CTR projected
+          </p>
+        </div>
+
+        <div className="px-4 py-4">
+          <span
+            className="text-xs font-semibold block mb-2.5"
+            style={{ color: '#94a3b8' }}
+          >
+            Image Pack Ready
+          </span>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '5px', marginBottom: '8px' }}>
+            {imgPreviews.map(img => (
+              <div
+                key={img.label}
+                className="rounded-md flex items-center justify-center"
+                style={{ background: img.bg, aspectRatio: '1/1' }}
+              >
+                <span style={{ fontSize: '8px', fontWeight: 600, color: 'rgba(255,255,255,0.9)', textAlign: 'center' }}>
+                  {img.label}
+                </span>
+              </div>
+            ))}
+          </div>
+          <p style={{ fontSize: '10px', color: '#6b7280' }}>6 Amazon-ready visuals</p>
+        </div>
+      </div>
+
+      <div
+        className="px-5 py-3 flex items-center gap-3"
+        style={{ background: 'rgba(255,255,255,0.015)' }}
+      >
+        <div
+          className="w-5 h-5 rounded-full flex items-center justify-center"
+          style={{ background: 'rgba(251,191,36,0.15)', flexShrink: 0 }}
+        >
+          <svg width="9" height="9" viewBox="0 0 24 24" fill="#fbbf24">
+            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+          </svg>
+        </div>
+        <p style={{ fontSize: '11px', color: '#94a3b8', flex: 1 }}>
+          "Ships fast" · <strong style={{ color: '#fbbf24' }}>84%</strong> of 5★ reviews
+        </p>
+        <div style={{ width: '56px', height: '4px', borderRadius: '3px', background: 'rgba(255,255,255,0.07)', flexShrink: 0 }}>
+          <div style={{ width: '84%', height: '100%', borderRadius: '3px', background: 'linear-gradient(90deg, #fbbf24, #f97316)' }} />
+        </div>
+        <span style={{ fontSize: '11px', fontWeight: 600, color: '#fbbf24', flexShrink: 0 }}>84%</span>
+      </div>
     </motion.div>
   )
 }
-
-function ScoreRing({ score }: { score: number }) {
-  const r = 28
-  const circ = 2 * Math.PI * r
-  const offset = circ * (1 - score / 100)
-  return (
-    <svg width="72" height="72" viewBox="0 0 72 72">
-      <circle cx="36" cy="36" r={r} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="6" />
-      <circle
-        cx="36" cy="36" r={r}
-        fill="none"
-        stroke="url(#scoreGrad)"
-        strokeWidth="6"
-        strokeLinecap="round"
-        strokeDasharray={circ}
-        strokeDashoffset={offset}
-        transform="rotate(-90 36 36)"
-      />
-      <defs>
-        <linearGradient id="scoreGrad" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%" stopColor="#38bdf8" />
-          <stop offset="100%" stopColor="#a78bfa" />
-        </linearGradient>
-      </defs>
-      <text x="36" y="40" textAnchor="middle" fill="#f1f5f9" fontSize="14" fontWeight="700">{score}</text>
-    </svg>
-  )
-}
-
-function AuditScoreCard() {
-  return (
-    <div className="p-5 w-72">
-      <div className="flex items-center gap-2 mb-4">
-        <div className="w-6 h-6 rounded-md flex items-center justify-center" style={{ background: 'linear-gradient(135deg,#0ea5e9,#7c3aed)' }}>
-          <Zap size={13} color="white" />
-        </div>
-        <span className="text-xs font-semibold tracking-widest uppercase" style={{ color: '#64748b' }}>Sellio Audit</span>
-        <span className="ml-auto text-xs px-2 py-0.5 rounded-full" style={{ background: 'rgba(74,222,128,0.12)', color: '#4ade80', marginLeft: 'auto' }}>Live</span>
-      </div>
-
-      <p className="text-sm font-semibold mb-1" style={{ color: '#f1f5f9' }}>ProGlow Vitamin C Serum</p>
-      <p className="text-xs mb-4" style={{ color: '#475569' }}>30ml · ASIN: B09XG4MHTY</p>
-
-      <div className="flex items-center gap-4 mb-4">
-        <ScoreRing score={78} />
-        <div>
-          <p className="text-xs mb-1" style={{ color: '#64748b' }}>Current Score</p>
-          <p className="text-2xl font-black" style={{ color: '#f1f5f9' }}>78<span className="text-sm font-normal" style={{ color: '#475569' }}>/100</span></p>
-          <div className="flex items-center gap-1 mt-0.5">
-            <TrendingUp size={11} style={{ color: '#4ade80' }} />
-            <span className="text-xs font-medium" style={{ color: '#4ade80' }}>Potential: 94/100</span>
-          </div>
-        </div>
-      </div>
-
-      <div className="space-y-2.5">
-        {[
-          { label: 'Title', score: 41, color: '#f87171' },
-          { label: 'Keywords', score: 52, color: '#fb923c' },
-          { label: 'Images', score: 60, color: '#facc15' },
-          { label: 'Bullets', score: 55, color: '#fb923c' },
-        ].map(item => (
-          <div key={item.label} className="flex items-center gap-2.5">
-            <span className="text-xs shrink-0" style={{ color: '#64748b', width: '4rem' }}>{item.label}</span>
-            <div style={{ flex: 1, height: '6px', borderRadius: '3px', background: 'rgba(255,255,255,0.06)' }}>
-              <div style={{ width: `${item.score}%`, height: '100%', borderRadius: '3px', background: item.color }} />
-            </div>
-            <span className="text-xs font-medium" style={{ color: item.color, width: '2rem', textAlign: 'right' }}>{item.score}</span>
-          </div>
-        ))}
-      </div>
-    </div>
-  )
-}
-
-function TitleUpgradeCard() {
-  return (
-    <div className="p-4" style={{ width: '224px' }}>
-      <div className="flex items-center gap-1.5 mb-3">
-        <div className="w-4 h-4 rounded-full flex items-center justify-center" style={{ background: 'rgba(74,222,128,0.2)' }}>
-          <svg width="8" height="8" viewBox="0 0 8 8" fill="none">
-            <path d="M1.5 4L3 5.5L6.5 2" stroke="#4ade80" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-        </div>
-        <span className="text-xs font-semibold" style={{ color: '#4ade80' }}>Title Upgraded</span>
-      </div>
-      <div className="space-y-2">
-        <div className="p-2 rounded-lg" style={{ background: 'rgba(248,113,113,0.08)', border: '1px solid rgba(248,113,113,0.15)' }}>
-          <p className="text-xs leading-tight" style={{ color: '#94a3b8' }}>Before: "Vitamin C Serum for Face..."</p>
-        </div>
-        <div className="p-2 rounded-lg" style={{ background: 'rgba(74,222,128,0.08)', border: '1px solid rgba(74,222,128,0.15)' }}>
-          <p className="text-xs leading-tight" style={{ color: '#f1f5f9' }}>After: "ProGlow 20% Vitamin C + Hyaluronic..."</p>
-        </div>
-      </div>
-      <div className="mt-3 flex items-center gap-1">
-        <TrendingUp size={11} style={{ color: '#38bdf8' }} />
-        <span className="text-xs" style={{ color: '#38bdf8' }}>+34% CTR projected</span>
-      </div>
-    </div>
-  )
-}
-
-function ImagePackCard() {
-  const images = [
-    { label: 'Main', color: 'linear-gradient(135deg,#0ea5e9,#38bdf8)' },
-    { label: 'Info', color: 'linear-gradient(135deg,#7c3aed,#a78bfa)' },
-    { label: 'B/A', color: 'linear-gradient(135deg,#059669,#34d399)' },
-    { label: 'Life', color: 'linear-gradient(135deg,#d97706,#fbbf24)' },
-  ]
-  return (
-    <div className="p-4" style={{ width: '240px' }}>
-      <div className="flex items-center gap-1.5 mb-3">
-        <div className="w-5 h-5 rounded-md flex items-center justify-center" style={{ background: 'rgba(167,139,250,0.2)' }}>
-          <Star size={10} fill="#a78bfa" color="#a78bfa" />
-        </div>
-        <span className="text-xs font-semibold" style={{ color: '#a78bfa' }}>Image Pack Ready</span>
-      </div>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '8px', marginBottom: '12px' }}>
-        {images.map(img => (
-          <div key={img.label} className="rounded-lg flex items-end p-1" style={{ background: img.color, aspectRatio: '1/1' }}>
-            <span style={{ fontSize: '9px', fontWeight: 500, color: 'rgba(255,255,255,0.8)' }}>{img.label}</span>
-          </div>
-        ))}
-      </div>
-      <p className="text-xs" style={{ color: '#64748b' }}>6 premium Amazon visuals · AI-generated</p>
-    </div>
-  )
-}
-
-const EASE = [0.21, 0.47, 0.32, 0.98] as const
 
 export default function HeroSection() {
   const scrollToDemo = () => {
@@ -173,70 +216,81 @@ export default function HeroSection() {
   }
 
   return (
-    <section className="relative min-h-screen flex items-center pt-16 overflow-hidden">
+    <section className="relative min-h-screen flex items-center overflow-hidden" style={{ paddingTop: '5.5rem' }}>
       <div className="absolute inset-0 pointer-events-none">
         <div
           className="absolute rounded-full"
           style={{
-            width: '600px', height: '600px',
-            top: '-200px', left: '-100px',
-            background: 'radial-gradient(circle, rgba(14,165,233,0.12) 0%, transparent 70%)',
-            filter: 'blur(40px)',
+            width: '900px', height: '900px',
+            top: '-300px', left: '-200px',
+            background: 'radial-gradient(circle, rgba(52,211,153,0.09) 0%, rgba(34,197,94,0.04) 40%, transparent 65%)',
+            filter: 'blur(70px)',
           }}
         />
         <div
           className="absolute rounded-full"
           style={{
-            width: '500px', height: '500px',
-            top: '0', right: '0',
-            background: 'radial-gradient(circle, rgba(124,58,237,0.1) 0%, transparent 70%)',
-            filter: 'blur(40px)',
+            width: '520px', height: '520px',
+            top: '60px', right: '-80px',
+            background: 'radial-gradient(circle, rgba(163,230,53,0.07) 0%, transparent 65%)',
+            filter: 'blur(55px)',
           }}
         />
         <div
           className="absolute rounded-full"
           style={{
             width: '300px', height: '300px',
-            bottom: '100px', left: '40%',
-            background: 'radial-gradient(circle, rgba(34,211,238,0.07) 0%, transparent 70%)',
-            filter: 'blur(30px)',
+            bottom: '80px', right: '10%',
+            background: 'radial-gradient(circle, rgba(52,211,153,0.06) 0%, transparent 70%)',
+            filter: 'blur(40px)',
           }}
         />
         <div
           className="absolute inset-0"
           style={{
-            backgroundImage: 'radial-gradient(ellipse 90% 60% at 50% 0%, rgba(14,165,233,0.07) 0%, transparent 60%)',
+            backgroundImage: 'radial-gradient(ellipse 85% 48% at 50% 0%, rgba(52,211,153,0.07) 0%, transparent 58%)',
           }}
         />
       </div>
 
-      <div className="container-xl relative z-10 py-20 lg:py-28">
+      <div className="container-xl relative z-10 py-8">
         <div className="hero-grid">
           <div>
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.05, ease: EASE }}
-              className="mb-8"
+              transition={{ duration: 0.5, delay: 0.05, ease: EASE }}
+              className="mb-6"
             >
-              <div className="section-badge w-fit">
-                <span className="animate-pulse" style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#22d3ee', display: 'inline-block' }} />
-                AI Amazon Conversion Studio
-              </div>
+              <span
+                className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold tracking-widest uppercase"
+                style={{
+                  background: 'rgba(163,230,53,0.08)',
+                  border: '1px solid rgba(163,230,53,0.22)',
+                  color: '#a3e635',
+                }}
+              >
+                <span className="w-1.5 h-1.5 rounded-full bg-lime-400 animate-pulse" />
+                Amazon Listing Intelligence
+              </span>
             </motion.div>
 
             <motion.h1
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.65, delay: 0.15, ease: EASE }}
-              className="font-black leading-tight tracking-tight mb-7"
-              style={{ fontSize: 'clamp(2.75rem, 6vw, 4.5rem)', letterSpacing: '-0.03em', lineHeight: '1.05' }}
+              transition={{ duration: 0.7, delay: 0.12, ease: EASE }}
+              className="font-black tracking-tight mb-5"
+              style={{
+                fontSize: 'clamp(3rem, 5.5vw, 5.25rem)',
+                letterSpacing: '-0.038em',
+                lineHeight: '1.03',
+              }}
             >
-              <span style={{ display: 'block' }}>
+              <span style={{ display: 'block', color: '#f1f5f9' }}>
                 Average listings<br />
                 don't look average.
               </span>
-              <span style={{ display: 'block', paddingTop: '0.45em' }}>
+              <span style={{ display: 'block', paddingTop: '0.16em', color: '#f1f5f9' }}>
                 They look{' '}
                 <span className="gradient-text">invisible.</span>
               </span>
@@ -245,18 +299,18 @@ export default function HeroSection() {
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.65, delay: 0.25, ease: EASE }}
-              className="text-lg leading-relaxed mb-10"
-              style={{ color: '#94a3b8', maxWidth: '520px' }}
+              transition={{ duration: 0.65, delay: 0.24, ease: EASE }}
+              className="leading-relaxed mb-7"
+              style={{ color: '#7a8c9e', maxWidth: '380px', fontSize: '0.9375rem', lineHeight: '1.65' }}
             >
-              Sellio audits your Amazon listing, sharpens the copy, reveals missed buyer signals, and helps generate premium visuals that make your product impossible to ignore.
+              Sellio finds what your listing is missing — then improves your copy, buyer signals, and Amazon-ready visuals.
             </motion.p>
 
             <motion.div
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.35, ease: EASE }}
-              className="hero-cta-row mb-14"
+              transition={{ duration: 0.6, delay: 0.34, ease: EASE }}
+              className="hero-cta-row mb-8"
             >
               <Link to="/dashboard/new-audit" className="btn-primary glow-button">
                 Start Free Audit <ArrowRight size={16} />
@@ -269,9 +323,9 @@ export default function HeroSection() {
             <motion.div
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.45, ease: EASE }}
+              transition={{ duration: 0.6, delay: 0.44, ease: EASE }}
               className="hero-stats"
-              style={{ borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '1.75rem' }}
+              style={{ borderTop: '1px solid rgba(255,255,255,0.07)', paddingTop: '1rem' }}
             >
               {[
                 { value: '2,400+', label: 'Listings Audited' },
@@ -279,9 +333,21 @@ export default function HeroSection() {
                 { value: '< 60s', label: 'To First Insight' },
               ].map((stat, i) => (
                 <div key={stat.label} className="flex items-center gap-4">
-                  {i > 0 && <div style={{ width: '1px', height: '2rem', background: 'rgba(255,255,255,0.08)' }} />}
+                  {i > 0 && (
+                    <div style={{ width: '1px', height: '2rem', background: 'rgba(255,255,255,0.07)' }} />
+                  )}
                   <div>
-                    <div className="text-2xl font-black gradient-text-cyan leading-none mb-0.5">{stat.value}</div>
+                    <div
+                      className="text-2xl font-black leading-none mb-0.5"
+                      style={{
+                        background: 'linear-gradient(135deg, #a3e635, #34d399)',
+                        WebkitBackgroundClip: 'text',
+                        WebkitTextFillColor: 'transparent',
+                        backgroundClip: 'text',
+                      }}
+                    >
+                      {stat.value}
+                    </div>
                     <div className="text-xs" style={{ color: '#64748b' }}>{stat.label}</div>
                   </div>
                 </div>
@@ -289,58 +355,9 @@ export default function HeroSection() {
             </motion.div>
           </div>
 
-          <motion.div
-            className="hero-visual-panel"
-            style={{ height: '540px', position: 'relative' }}
-            initial={{ opacity: 0, scale: 0.92 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, delay: 0.3, ease: EASE }}
-          >
-            <HeroVisualCard
-              style={{ top: '20px', left: '0' }}
-              delay={0.5}
-              floatDuration={5}
-            >
-              <AuditScoreCard />
-            </HeroVisualCard>
-
-            <HeroVisualCard
-              style={{ top: '160px', right: '-8px' }}
-              delay={0.75}
-              floatDuration={6.5}
-            >
-              <TitleUpgradeCard />
-            </HeroVisualCard>
-
-            <HeroVisualCard
-              style={{ bottom: '20px', left: '40px' }}
-              delay={1.0}
-              floatDuration={5.5}
-            >
-              <ImagePackCard />
-            </HeroVisualCard>
-
-            <div
-              className="absolute pointer-events-none"
-              style={{
-                top: '80px', right: '60px',
-                width: '200px', height: '200px',
-                borderRadius: '50%',
-                background: 'radial-gradient(circle, rgba(124,58,237,0.1) 0%, transparent 70%)',
-                filter: 'blur(24px)',
-              }}
-            />
-            <div
-              className="absolute pointer-events-none"
-              style={{
-                bottom: '60px', left: '20px',
-                width: '160px', height: '160px',
-                borderRadius: '50%',
-                background: 'radial-gradient(circle, rgba(14,165,233,0.1) 0%, transparent 70%)',
-                filter: 'blur(20px)',
-              }}
-            />
-          </motion.div>
+          <div className="hero-visual-panel">
+            <HeroProductPanel />
+          </div>
         </div>
       </div>
     </section>

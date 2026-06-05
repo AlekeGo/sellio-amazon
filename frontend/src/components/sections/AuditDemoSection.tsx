@@ -8,21 +8,21 @@ const TABS = ['Overview', 'Title', 'Bullets', 'Keywords', 'Reviews'] as const
 type Tab = typeof TABS[number]
 
 const issues = [
-  { label: 'Title too generic — missing category triggers', score: 41, severity: 'high' },
-  { label: '7 high-volume keywords not indexed', score: 52, severity: 'high' },
-  { label: 'Bullet points feature-heavy, not benefit-focused', score: 55, severity: 'medium' },
-  { label: 'Main image similarity too close to top competitor', score: 60, severity: 'medium' },
-  { label: 'No brand story or social proof in description', score: 63, severity: 'low' },
-  { label: 'Description structure solid but under-optimized', score: 72, severity: 'ok' },
+  { label: 'Title too generic — missing category triggers', score: 44, severity: 'high' },
+  { label: '12 high-volume buyer signals not indexed', score: 55, severity: 'high' },
+  { label: 'Bullet points feature-heavy, not benefit-focused', score: 58, severity: 'medium' },
+  { label: 'Main image too similar to top competitor', score: 62, severity: 'medium' },
+  { label: 'No brand story or social proof in description', score: 65, severity: 'low' },
+  { label: 'Description structure solid but under-optimized', score: 74, severity: 'ok' },
 ]
 
 const subScores = [
-  { label: 'Title', value: 41, max: 100, color: '#f87171' },
-  { label: 'Keywords', value: 52, max: 100, color: '#fb923c' },
-  { label: 'Bullets', value: 55, max: 100, color: '#fb923c' },
-  { label: 'Images', value: 60, max: 100, color: '#facc15' },
-  { label: 'Description', value: 72, max: 100, color: '#4ade80' },
-  { label: 'Reviews', value: 68, max: 100, color: '#facc15' },
+  { label: 'Title', value: 44, max: 100, color: '#f87171' },
+  { label: 'Keywords', value: 55, max: 100, color: '#fb923c' },
+  { label: 'Bullets', value: 58, max: 100, color: '#fb923c' },
+  { label: 'Images', value: 62, max: 100, color: '#fbbf24' },
+  { label: 'Description', value: 74, max: 100, color: '#4ade80' },
+  { label: 'Reviews', value: 68, max: 100, color: '#fbbf24' },
 ]
 
 const severityColors: Record<string, { color: string; bg: string; border: string }> = {
@@ -43,7 +43,7 @@ function ScoreGauge({ score, potential }: { score: number; potential: number }) 
       <div className="relative">
         <svg width="144" height="144" viewBox="0 0 144 144">
           <circle cx="72" cy="72" r={r} fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="10" />
-          <circle cx="72" cy="72" r={r} fill="none" stroke="rgba(56,189,248,0.1)" strokeWidth="10"
+          <circle cx="72" cy="72" r={r} fill="none" stroke="rgba(163,230,53,0.1)" strokeWidth="10"
             strokeLinecap="round" strokeDasharray={circ} strokeDashoffset={potOffset}
             transform="rotate(-90 72 72)" />
           <circle cx="72" cy="72" r={r} fill="none" stroke="url(#gaugeGrad)" strokeWidth="10"
@@ -51,8 +51,8 @@ function ScoreGauge({ score, potential }: { score: number; potential: number }) 
             transform="rotate(-90 72 72)" />
           <defs>
             <linearGradient id="gaugeGrad" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0%" stopColor="#38bdf8" />
-              <stop offset="100%" stopColor="#a78bfa" />
+              <stop offset="0%" stopColor="#a3e635" />
+              <stop offset="100%" stopColor="#34d399" />
             </linearGradient>
           </defs>
           <text x="72" y="65" textAnchor="middle" fill="#f1f5f9" fontSize="28" fontWeight="800">{score}</text>
@@ -61,8 +61,8 @@ function ScoreGauge({ score, potential }: { score: number; potential: number }) 
       </div>
       <p className="text-xs mt-1" style={{ color: '#64748b' }}>Listing Score</p>
       <div className="flex items-center gap-1 mt-1">
-        <TrendingUp size={12} style={{ color: '#4ade80' }} />
-        <span className="text-xs font-semibold" style={{ color: '#4ade80' }}>Potential: {potential}/100</span>
+        <TrendingUp size={12} style={{ color: '#a3e635' }} />
+        <span className="text-xs font-semibold" style={{ color: '#a3e635' }}>Potential: {potential}/100</span>
       </div>
     </div>
   )
@@ -124,7 +124,7 @@ function TabTitle() {
       <div className="p-4 rounded-xl" style={{ background: 'rgba(248,113,113,0.06)', border: '1px solid rgba(248,113,113,0.15)' }}>
         <div className="flex items-center gap-2 mb-2">
           <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: '#f87171' }}>Current Title</span>
-          <span className="text-xs px-2 py-0.5 rounded-full font-bold" style={{ background: 'rgba(248,113,113,0.12)', color: '#f87171' }}>41/100</span>
+          <span className="text-xs px-2 py-0.5 rounded-full font-bold" style={{ background: 'rgba(248,113,113,0.12)', color: '#f87171' }}>44/100</span>
         </div>
         <p className="text-sm leading-relaxed" style={{ color: '#94a3b8' }}>
           "Vitamin C Serum for Face - Anti-Aging Serum with Vitamin E"
@@ -136,17 +136,17 @@ function TabTitle() {
         </div>
       </div>
 
-      <div className="p-4 rounded-xl" style={{ background: 'rgba(74,222,128,0.06)', border: '1px solid rgba(74,222,128,0.15)' }}>
+      <div className="p-4 rounded-xl" style={{ background: 'rgba(163,230,53,0.05)', border: '1px solid rgba(163,230,53,0.18)' }}>
         <div className="flex items-center gap-2 mb-2">
-          <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: '#4ade80' }}>AI-Upgraded Title</span>
-          <span className="text-xs px-2 py-0.5 rounded-full font-bold" style={{ background: 'rgba(74,222,128,0.12)', color: '#4ade80' }}>94/100</span>
+          <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: '#a3e635' }}>AI-Upgraded Title</span>
+          <span className="text-xs px-2 py-0.5 rounded-full font-bold" style={{ background: 'rgba(163,230,53,0.1)', color: '#a3e635' }}>94/100</span>
         </div>
         <p className="text-sm leading-relaxed font-medium" style={{ color: '#f1f5f9' }}>
           "ProGlow Vitamin C Serum 30ml | 20% L-Ascorbic Acid + Hyaluronic Acid | Brightening Anti-Aging Face Serum for Glowing Skin | Dermatologist-Tested, Fragrance-Free"
         </p>
         <div className="mt-3 flex flex-wrap gap-2">
           {['Category anchor added', 'Size included', '5 high-volume keywords', 'Trust signals'].map(tag => (
-            <span key={tag} className="text-xs px-2 py-1 rounded-md" style={{ background: 'rgba(74,222,128,0.1)', color: '#4ade80' }}>✓ {tag}</span>
+            <span key={tag} className="text-xs px-2 py-1 rounded-md" style={{ background: 'rgba(163,230,53,0.08)', color: '#a3e635' }}>✓ {tag}</span>
           ))}
         </div>
       </div>
@@ -175,8 +175,8 @@ function TabBullets() {
             <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: '#f87171' }}>Before</span>
             <p className="text-sm mt-2 leading-relaxed" style={{ color: '#94a3b8' }}>• {b.before}</p>
           </div>
-          <div className="p-4" style={{ background: 'rgba(74,222,128,0.06)' }}>
-            <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: '#4ade80' }}>After</span>
+          <div className="p-4" style={{ background: 'rgba(163,230,53,0.05)' }}>
+            <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: '#a3e635' }}>After</span>
             <p className="text-sm mt-2 leading-relaxed font-medium" style={{ color: '#f1f5f9' }}>• {b.after}</p>
             <p className="text-xs mt-2" style={{ color: '#64748b' }}>↑ {b.impact}</p>
           </div>
@@ -198,7 +198,7 @@ function TabKeywords() {
   return (
     <div>
       <p className="text-xs mb-4" style={{ color: '#64748b' }}>
-        7 high-volume keywords currently missing from your listing. Adding these could capture an estimated +7,360 additional searches/month.
+        12 high-volume buyer search terms currently missing from your listing. Adding these could capture an estimated +9,800 additional searches/month.
       </p>
       <div className="space-y-2">
         {keywords.map(k => (
@@ -206,7 +206,7 @@ function TabKeywords() {
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium truncate" style={{ color: '#f1f5f9' }}>{k.kw}</p>
             </div>
-            <span className="text-xs shrink-0 font-semibold tabular-nums" style={{ color: '#38bdf8' }}>{k.volume}</span>
+            <span className="text-xs shrink-0 font-semibold tabular-nums" style={{ color: '#a3e635' }}>{k.volume}</span>
             <span className="text-xs shrink-0 px-2 py-0.5 rounded-full"
               style={{
                 color: k.opportunity === 'Very High' ? '#4ade80' : '#fbbf24',
@@ -231,8 +231,8 @@ function TabReviews() {
         <p className="text-xs leading-relaxed" style={{ color: '#64748b' }}>Found in 23% of 1-3 star reviews. Buyers expected results within a few days — the listing sets no clear timeline.</p>
       </div>
 
-      <div className="p-4 rounded-xl" style={{ background: 'rgba(74,222,128,0.06)', border: '1px solid rgba(74,222,128,0.15)' }}>
-        <h4 className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: '#4ade80' }}>Recommended Fix</h4>
+      <div className="p-4 rounded-xl" style={{ background: 'rgba(163,230,53,0.05)', border: '1px solid rgba(163,230,53,0.18)' }}>
+        <h4 className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: '#a3e635' }}>Recommended Fix</h4>
         <p className="text-sm leading-relaxed" style={{ color: '#f1f5f9' }}>Add "visible results in 14 days" to bullet 2 and "noticeable improvement within 2–4 weeks of daily use" to the description. Set expectations before the objection forms.</p>
       </div>
 
@@ -268,7 +268,7 @@ export default function AuditDemoSection() {
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          backgroundImage: 'radial-gradient(ellipse 80% 60% at 50% 50%, rgba(14,165,233,0.05) 0%, transparent 70%)',
+          backgroundImage: 'radial-gradient(ellipse 80% 60% at 50% 50%, rgba(52,211,153,0.05) 0%, transparent 70%)',
         }}
       />
 
@@ -291,14 +291,14 @@ export default function AuditDemoSection() {
           <div
             className="rounded-3xl overflow-hidden"
             style={{
-              background: 'rgba(6,14,30,0.9)',
-              border: '1px solid rgba(255,255,255,0.08)',
+              background: 'rgba(10,21,14,0.94)',
+              border: '1px solid rgba(255,255,255,0.09)',
               boxShadow: '0 32px 80px rgba(0,0,0,0.5)',
             }}
           >
             <div
               className="px-6 py-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
-              style={{ borderBottom: '1px solid rgba(255,255,255,0.06)', background: 'rgba(255,255,255,0.02)' }}
+              style={{ borderBottom: '1px solid rgba(255,255,255,0.07)', background: 'rgba(255,255,255,0.025)' }}
             >
               <div className="flex items-center gap-3">
                 <div className="flex gap-1.5">
@@ -310,7 +310,7 @@ export default function AuditDemoSection() {
               </div>
               <div className="flex items-center gap-2">
                 <span className="text-xs px-2.5 py-1 rounded-full font-medium"
-                  style={{ background: 'rgba(74,222,128,0.1)', color: '#4ade80', border: '1px solid rgba(74,222,128,0.2)' }}>
+                  style={{ background: 'rgba(163,230,53,0.09)', color: '#a3e635', border: '1px solid rgba(163,230,53,0.22)' }}>
                   ● Audit Complete
                 </span>
               </div>
@@ -321,7 +321,7 @@ export default function AuditDemoSection() {
                 className="p-6 flex flex-col items-center justify-start gap-6"
                 style={{ borderRight: '1px solid rgba(255,255,255,0.05)' }}
               >
-                <ScoreGauge score={78} potential={94} />
+                <ScoreGauge score={67} potential={94} />
 
                 <div className="w-full">
                   <p className="text-xs font-semibold uppercase tracking-widest mb-3 text-center" style={{ color: '#475569' }}>Jump to</p>
@@ -332,9 +332,9 @@ export default function AuditDemoSection() {
                         onClick={() => setActiveTab(tab)}
                         className="w-full text-left px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all flex items-center justify-between"
                         style={{
-                          background: activeTab === tab ? 'rgba(56,189,248,0.1)' : 'transparent',
-                          color: activeTab === tab ? '#38bdf8' : '#64748b',
-                          border: activeTab === tab ? '1px solid rgba(56,189,248,0.2)' : '1px solid transparent',
+                          background: activeTab === tab ? 'rgba(163,230,53,0.09)' : 'transparent',
+                          color: activeTab === tab ? '#a3e635' : '#64748b',
+                          border: activeTab === tab ? '1px solid rgba(163,230,53,0.22)' : '1px solid transparent',
                           cursor: 'pointer',
                         }}
                       >

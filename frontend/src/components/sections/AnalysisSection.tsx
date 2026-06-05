@@ -6,55 +6,55 @@ const analyses = [
     icon: Type,
     title: 'Title',
     body: 'Keyword density, character count, hook effectiveness, and mobile preview scoring.',
-    color: '#38bdf8',
+    color: '#a3e635',
   },
   {
     icon: List,
     title: 'Bullet Points',
     body: 'Benefit clarity, pain point alignment, and feature-vs-benefit ratio analysis.',
-    color: '#a78bfa',
+    color: '#34d399',
   },
   {
     icon: AlignLeft,
     title: 'Description',
     body: 'Storytelling structure, SEO integration, and brand voice consistency.',
-    color: '#22d3ee',
+    color: '#4ade80',
   },
   {
     icon: Key,
     title: 'Keywords',
     body: 'Search volume scoring, relevance analysis, and gap discovery vs. competitors.',
-    color: '#4ade80',
+    color: '#86efac',
   },
   {
     icon: Star,
     title: 'Reviews & Objections',
     body: 'Buyer sentiment analysis, recurring objections, and unmet need identification.',
-    color: '#fbbf24',
+    color: '#6ee7b7',
   },
   {
     icon: Layout,
     title: 'A+ Content Strategy',
     body: 'Module recommendations, visual hierarchy mapping, and copy framework guidance.',
-    color: '#f472b6',
+    color: '#a7f3d0',
   },
   {
     icon: ImageIcon,
     title: 'Main Image',
     body: 'Visual impact score, white space usage, and first-impression click-through analysis.',
-    color: '#fb923c',
+    color: '#22c55e',
   },
   {
     icon: BarChart2,
     title: 'Infographic Slides',
     body: 'Information density, readability scoring, and benefit communication clarity.',
-    color: '#34d399',
+    color: '#a3e635',
   },
   {
     icon: Camera,
     title: 'Lifestyle Visuals',
     body: 'Emotional resonance, audience alignment, and brand consistency assessment.',
-    color: '#818cf8',
+    color: '#34d399',
   },
 ]
 
@@ -64,7 +64,7 @@ export default function AnalysisSection() {
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          backgroundImage: 'radial-gradient(ellipse 60% 50% at 80% 50%, rgba(167,139,250,0.06) 0%, transparent 60%)',
+          backgroundImage: 'radial-gradient(ellipse 60% 50% at 80% 50%, rgba(52,211,153,0.06) 0%, transparent 60%)',
         }}
       />
 

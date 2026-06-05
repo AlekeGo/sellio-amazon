@@ -7,32 +7,32 @@ const steps = [
     icon: ClipboardPaste,
     title: 'Paste Your Listing',
     body: 'Drop in your ASIN, listing URL, or paste your listing content directly. No Amazon account connection required.',
-    gradient: 'linear-gradient(135deg, #0ea5e9, #38bdf8)',
-    glow: 'rgba(14,165,233,0.25)',
+    gradient: 'linear-gradient(135deg, #166534, #4ade80)',
+    glow: 'rgba(74,222,128,0.25)',
   },
   {
     number: '02',
     icon: Cpu,
     title: 'Get Your AI Audit',
     body: 'Sellio runs a full AI analysis across your title, bullets, keywords, images, and buyer reviews. You get a score for every element.',
-    gradient: 'linear-gradient(135deg, #7c3aed, #a78bfa)',
-    glow: 'rgba(124,58,237,0.25)',
+    gradient: 'linear-gradient(135deg, #3f6212, #a3e635)',
+    glow: 'rgba(163,230,53,0.25)',
   },
   {
     number: '03',
     icon: Pencil,
     title: 'Upgrade Copy & Strategy',
-    body: 'Review AI-suggested improvements. Accept what you love, customize the rest, and export the upgraded version instantly.',
-    gradient: 'linear-gradient(135deg, #059669, #34d399)',
-    glow: 'rgba(5,150,105,0.25)',
+    body: 'Review suggested improvements. Accept what you love, customize the rest, and export the upgraded version instantly.',
+    gradient: 'linear-gradient(135deg, #065f46, #34d399)',
+    glow: 'rgba(52,211,153,0.25)',
   },
   {
     number: '04',
     icon: ImageIcon,
     title: 'Generate Premium Visuals',
     body: 'Request your image pack. Sellio generates Amazon-ready visuals based on your product and listing strategy — ready to upload.',
-    gradient: 'linear-gradient(135deg, #d97706, #fbbf24)',
-    glow: 'rgba(217,119,6,0.25)',
+    gradient: 'linear-gradient(135deg, #14532d, #86efac)',
+    glow: 'rgba(134,239,172,0.2)',
   },
 ]
 
@@ -42,7 +42,7 @@ export default function HowItWorksSection() {
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          backgroundImage: 'radial-gradient(ellipse 70% 50% at 50% 100%, rgba(14,165,233,0.06) 0%, transparent 60%)',
+          backgroundImage: 'radial-gradient(ellipse 70% 50% at 50% 100%, rgba(52,211,153,0.06) 0%, transparent 60%)',
         }}
       />
 
@@ -71,7 +71,7 @@ export default function HowItWorksSection() {
                   <div
                     className="absolute top-4 right-4 text-5xl font-black pointer-events-none select-none"
                     style={{
-                      color: 'rgba(255,255,255,0.04)',
+                      color: 'rgba(255,255,255,0.03)',
                       fontVariantNumeric: 'tabular-nums',
                       letterSpacing: '-0.04em',
                     }}
@@ -91,7 +91,7 @@ export default function HowItWorksSection() {
 
                   <div
                     className="text-xs font-black uppercase tracking-[0.2em] mb-2"
-                    style={{ color: 'rgba(255,255,255,0.2)' }}
+                    style={{ color: 'rgba(255,255,255,0.18)' }}
                   >
                     Step {step.number}
                   </div>

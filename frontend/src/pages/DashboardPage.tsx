@@ -4,20 +4,20 @@ import { Plus, ArrowRight } from 'lucide-react'
 export default function DashboardPage() {
   return (
     <div
-      className="min-h-screen flex flex-col items-center justify-center px-4"
-      style={{ background: '#030812' }}
+      className="min-h-screen flex flex-col items-center justify-center px-4 relative"
+      style={{ background: '#070e0a' }}
     >
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          backgroundImage: 'radial-gradient(ellipse 70% 50% at 50% 50%, rgba(14,165,233,0.06) 0%, transparent 60%)',
+          backgroundImage: 'radial-gradient(ellipse 70% 50% at 50% 50%, rgba(52,211,153,0.06) 0%, transparent 60%)',
         }}
       />
 
       <div className="relative z-10 text-center max-w-md">
         <div
           className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6"
-          style={{ background: 'linear-gradient(135deg, #0ea5e9, #7c3aed)', boxShadow: '0 0 40px rgba(14,165,233,0.3)' }}
+          style={{ background: 'linear-gradient(135deg, #166534, #4ade80)', boxShadow: '0 0 40px rgba(74,222,128,0.25)' }}
         >
           <svg width="28" height="28" viewBox="0 0 18 18" fill="none">
             <path d="M9 2L14.5 5.5V12.5L9 16L3.5 12.5V5.5L9 2Z" stroke="white" strokeWidth="1.5" strokeLinejoin="round" fill="none"/>

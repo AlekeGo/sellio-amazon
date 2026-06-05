@@ -13,16 +13,23 @@ const navLinks = [
 function SelliöLogo() {
   return (
     <Link to="/" className="flex items-center gap-2.5 no-underline select-none">
-      <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{
-        background: 'linear-gradient(135deg, #0ea5e9 0%, #7c3aed 100%)',
-        boxShadow: '0 0 20px rgba(14, 165, 233, 0.4)',
-      }}>
-        <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-          <path d="M9 2L14.5 5.5V12.5L9 16L3.5 12.5V5.5L9 2Z" stroke="white" strokeWidth="1.5" strokeLinejoin="round" fill="none"/>
-          <path d="M6.5 9.5L8 11L11.5 7" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+      <div
+        className="w-8 h-8 rounded-lg flex items-center justify-center"
+        style={{
+          background: 'linear-gradient(135deg, #166534 0%, #4ade80 100%)',
+          boxShadow: '0 0 16px rgba(74,222,128,0.3)',
+        }}
+      >
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <rect x="2" y="10" width="2.5" height="4" rx="0.75" fill="white" opacity="0.65"/>
+          <rect x="6.75" y="6.5" width="2.5" height="7.5" rx="0.75" fill="white" opacity="0.82"/>
+          <rect x="11.5" y="2.5" width="2.5" height="11.5" rx="0.75" fill="white"/>
         </svg>
       </div>
-      <span className="text-[1.125rem] font-bold tracking-tight" style={{ color: '#f1f5f9', letterSpacing: '-0.03em' }}>
+      <span
+        className="font-bold tracking-tight"
+        style={{ color: '#e8f4e8', letterSpacing: '-0.04em', fontSize: '1.1rem' }}
+      >
         sell<span className="gradient-text">io</span>
       </span>
     </Link>
@@ -53,29 +60,34 @@ export default function Navbar() {
     if (href.startsWith('/#')) {
       const id = href.slice(2)
       const el = document.getElementById(id)
-      if (el) {
-        el.scrollIntoView({ behavior: 'smooth' })
-      }
+      if (el) el.scrollIntoView({ behavior: 'smooth' })
     }
   }
 
   return (
     <>
       <header
-        className="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
-        style={{
-          background: scrolled
-            ? 'rgba(3, 8, 18, 0.92)'
-            : 'rgba(3, 8, 18, 0.5)',
-          borderBottom: scrolled
-            ? '1px solid rgba(255, 255, 255, 0.07)'
-            : '1px solid transparent',
-          backdropFilter: 'blur(20px)',
-          WebkitBackdropFilter: 'blur(20px)',
-        }}
+        className="fixed top-0 left-0 right-0 z-50 flex justify-center"
+        style={{ padding: '1rem 1rem 0' }}
       >
-        <div className="container-xl">
-          <div className="flex items-center justify-between h-16">
+        <div
+          style={{
+            maxWidth: '960px',
+            width: '100%',
+            background: scrolled
+              ? 'rgba(7, 14, 10, 0.95)'
+              : 'rgba(7, 14, 10, 0.72)',
+            border: '1px solid rgba(255,255,255,0.09)',
+            borderRadius: '9999px',
+            backdropFilter: 'blur(24px)',
+            WebkitBackdropFilter: 'blur(24px)',
+            transition: 'background 0.3s ease, box-shadow 0.3s ease',
+            boxShadow: scrolled
+              ? '0 8px 32px rgba(0,0,0,0.35), 0 1px 0 rgba(163,230,53,0.06) inset'
+              : '0 2px 16px rgba(0,0,0,0.2)',
+          }}
+        >
+          <div className="flex items-center justify-between" style={{ padding: '0.5rem 0.75rem 0.5rem 1.25rem' }}>
             <SelliöLogo />
 
             <nav className="hidden md:flex items-center gap-1">
@@ -84,7 +96,7 @@ export default function Navbar() {
                   <button
                     key={link.label}
                     onClick={() => handleAnchorClick(link.href)}
-                    className="nav-link-item px-4 py-2 text-sm font-medium rounded-md cursor-pointer"
+                    className="nav-link-item px-4 py-2 text-sm font-medium rounded-full cursor-pointer"
                     style={{ background: 'none', border: 'none' }}
                   >
                     {link.label}
@@ -93,7 +105,7 @@ export default function Navbar() {
                   <Link
                     key={link.label}
                     to={link.href}
-                    className="nav-link-item px-4 py-2 text-sm font-medium rounded-md"
+                    className="nav-link-item px-4 py-2 text-sm font-medium rounded-full"
                     style={{ textDecoration: 'none' }}
                   >
                     {link.label}
@@ -103,18 +115,22 @@ export default function Navbar() {
             </nav>
 
             <div className="hidden md:flex items-center gap-3">
-              <Link to="/dashboard/new-audit" className="btn-primary text-sm px-5 py-2.5">
+              <Link
+                to="/dashboard/new-audit"
+                className="btn-primary text-sm"
+                style={{ padding: '0.5rem 1.25rem', borderRadius: '9999px', fontSize: '0.875rem' }}
+              >
                 Start Free Audit
               </Link>
             </div>
 
             <button
-              className="md:hidden p-2 rounded-md transition-colors"
+              className="md:hidden p-2 rounded-full"
               style={{ color: '#94a3b8', background: 'none', border: 'none', cursor: 'pointer' }}
               onClick={() => setMobileOpen(!mobileOpen)}
               aria-label="Toggle menu"
             >
-              {mobileOpen ? <X size={22} /> : <Menu size={22} />}
+              {mobileOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
           </div>
         </div>
@@ -129,7 +145,7 @@ export default function Navbar() {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
               className="fixed inset-0 z-40"
-              style={{ background: 'rgba(3, 8, 18, 0.7)', backdropFilter: 'blur(4px)' }}
+              style={{ background: 'rgba(3, 8, 5, 0.75)', backdropFilter: 'blur(4px)' }}
               onClick={() => setMobileOpen(false)}
             />
             <motion.div
@@ -139,7 +155,7 @@ export default function Navbar() {
               transition={{ type: 'tween', duration: 0.28, ease: [0.32, 0.72, 0, 1] }}
               className="fixed top-0 right-0 bottom-0 z-50 w-72 flex flex-col"
               style={{
-                background: 'rgba(6, 14, 30, 0.98)',
+                background: 'rgba(8, 16, 11, 0.98)',
                 borderLeft: '1px solid rgba(255,255,255,0.08)',
                 backdropFilter: 'blur(24px)',
               }}
@@ -148,7 +164,7 @@ export default function Navbar() {
                 <SelliöLogo />
                 <button
                   onClick={() => setMobileOpen(false)}
-                  className="p-2 rounded-md"
+                  className="p-2 rounded-full"
                   style={{ color: '#94a3b8', background: 'none', border: 'none', cursor: 'pointer' }}
                 >
                   <X size={20} />
@@ -161,7 +177,7 @@ export default function Navbar() {
                     <button
                       key={link.label}
                       onClick={() => { handleAnchorClick(link.href); setMobileOpen(false) }}
-                      className="mobile-nav-item px-4 py-3 rounded-lg text-sm font-medium text-left cursor-pointer"
+                      className="mobile-nav-item px-4 py-3 rounded-xl text-sm font-medium text-left cursor-pointer"
                       style={{ border: 'none', background: 'none' }}
                     >
                       {link.label}
@@ -170,7 +186,7 @@ export default function Navbar() {
                     <Link
                       key={link.label}
                       to={link.href}
-                      className="mobile-nav-item px-4 py-3 rounded-lg text-sm font-medium"
+                      className="mobile-nav-item px-4 py-3 rounded-xl text-sm font-medium"
                       style={{ textDecoration: 'none' }}
                     >
                       {link.label}
@@ -183,6 +199,7 @@ export default function Navbar() {
                 <Link
                   to="/dashboard/new-audit"
                   className="btn-primary w-full justify-center"
+                  style={{ borderRadius: '9999px' }}
                   onClick={() => setMobileOpen(false)}
                 >
                   Start Free Audit

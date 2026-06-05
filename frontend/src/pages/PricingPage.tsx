@@ -5,7 +5,7 @@ import FinalCtaSection from '../components/sections/FinalCtaSection'
 
 export default function PricingPage() {
   return (
-    <div className="min-h-screen" style={{ background: '#030812' }}>
+    <div className="min-h-screen" style={{ background: '#070e0a' }}>
       <Navbar />
       <div className="pt-20">
         <PricingSection />

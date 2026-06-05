@@ -34,8 +34,8 @@ function FaqItem({ q, a, index }: { q: string; a: string; index: number }) {
       <div
         className="rounded-2xl overflow-hidden transition-all duration-200"
         style={{
-          background: open ? 'rgba(56,189,248,0.04)' : 'var(--glass-bg)',
-          border: open ? '1px solid rgba(56,189,248,0.2)' : '1px solid var(--glass-border)',
+          background: open ? 'rgba(163,230,53,0.04)' : 'var(--glass-bg)',
+          border: open ? '1px solid rgba(163,230,53,0.2)' : '1px solid var(--glass-border)',
         }}
       >
         <button
@@ -47,12 +47,12 @@ function FaqItem({ q, a, index }: { q: string; a: string; index: number }) {
           <div
             className="w-7 h-7 rounded-full flex items-center justify-center shrink-0 transition-all duration-200"
             style={{
-              background: open ? 'rgba(56,189,248,0.15)' : 'rgba(255,255,255,0.06)',
-              border: open ? '1px solid rgba(56,189,248,0.3)' : '1px solid rgba(255,255,255,0.1)',
+              background: open ? 'rgba(163,230,53,0.12)' : 'rgba(255,255,255,0.06)',
+              border: open ? '1px solid rgba(163,230,53,0.28)' : '1px solid rgba(255,255,255,0.1)',
             }}
           >
             {open
-              ? <Minus size={13} style={{ color: '#38bdf8' }} />
+              ? <Minus size={13} style={{ color: '#a3e635' }} />
               : <Plus size={13} style={{ color: '#94a3b8' }} />
             }
           </div>
@@ -87,7 +87,7 @@ export default function FaqSection() {
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          backgroundImage: 'radial-gradient(ellipse 60% 40% at 80% 50%, rgba(14,165,233,0.05) 0%, transparent 60%)',
+          backgroundImage: 'radial-gradient(ellipse 60% 40% at 80% 50%, rgba(52,211,153,0.05) 0%, transparent 60%)',
         }}
       />
 

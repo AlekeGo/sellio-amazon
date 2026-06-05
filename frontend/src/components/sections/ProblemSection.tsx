@@ -30,16 +30,16 @@ const problems = [
     icon: Search,
     title: 'Missed keywords = zero discovery',
     body: "If Amazon's algorithm can't clearly understand what you sell, it won't show your listing to the right buyers.",
-    color: '#a78bfa',
-    bg: 'rgba(167,139,250,0.08)',
-    border: 'rgba(167,139,250,0.15)',
+    color: '#34d399',
+    bg: 'rgba(52,211,153,0.08)',
+    border: 'rgba(52,211,153,0.15)',
   },
 ]
 
 const stats = [
-  { value: '70%', label: 'of buyers never look past the first page of results', color: '#38bdf8' },
-  { value: '47%', label: 'of clicks go to the top 3 results — position and presentation are everything', color: '#a78bfa' },
-  { value: '3 sec', label: 'is all it takes for a buyer to decide your listing is not worth their time', color: '#22d3ee' },
+  { value: '70%', label: 'of buyers never look past the first page of results', color: '#a3e635' },
+  { value: '47%', label: 'of clicks go to the top 3 results — position and presentation are everything', color: '#34d399' },
+  { value: '3 sec', label: 'is all it takes for a buyer to decide your listing is not worth their time', color: '#4ade80' },
 ]
 
 export default function ProblemSection() {
@@ -48,7 +48,7 @@ export default function ProblemSection() {
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          backgroundImage: 'radial-gradient(ellipse 80% 50% at 50% 100%, rgba(124,58,237,0.07) 0%, transparent 60%)',
+          backgroundImage: 'radial-gradient(ellipse 80% 50% at 50% 100%, rgba(52,211,153,0.06) 0%, transparent 60%)',
         }}
       />
 

@@ -4,13 +4,13 @@ import { ClipboardPaste, ArrowRight, ArrowLeft } from 'lucide-react'
 export default function NewAuditPage() {
   return (
     <div
-      className="min-h-screen flex flex-col items-center justify-center px-4 py-20"
-      style={{ background: '#030812' }}
+      className="min-h-screen flex flex-col items-center justify-center px-4 py-20 relative"
+      style={{ background: '#070e0a' }}
     >
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          backgroundImage: 'radial-gradient(ellipse 80% 60% at 50% 0%, rgba(14,165,233,0.08) 0%, transparent 60%)',
+          backgroundImage: 'radial-gradient(ellipse 80% 60% at 50% 0%, rgba(52,211,153,0.07) 0%, transparent 60%)',
         }}
       />
 
@@ -29,7 +29,7 @@ export default function NewAuditPage() {
         <div
           className="rounded-2xl p-8"
           style={{
-            background: 'rgba(6,14,30,0.9)',
+            background: 'rgba(10,21,14,0.92)',
             border: '1px solid rgba(255,255,255,0.08)',
             boxShadow: '0 32px 80px rgba(0,0,0,0.4)',
           }}
@@ -37,7 +37,7 @@ export default function NewAuditPage() {
           <div className="flex items-center gap-3 mb-7">
             <div
               className="w-10 h-10 rounded-xl flex items-center justify-center"
-              style={{ background: 'linear-gradient(135deg, #0ea5e9, #7c3aed)' }}
+              style={{ background: 'linear-gradient(135deg, #166534, #4ade80)' }}
             >
               <ClipboardPaste size={18} color="white" />
             </div>
@@ -62,7 +62,7 @@ export default function NewAuditPage() {
                   color: '#f1f5f9',
                   outline: 'none',
                 }}
-                onFocus={e => (e.currentTarget.style.border = '1px solid rgba(56,189,248,0.4)')}
+                onFocus={e => (e.currentTarget.style.border = '1px solid rgba(163,230,53,0.4)')}
                 onBlur={e => (e.currentTarget.style.border = '1px solid rgba(255,255,255,0.1)')}
               />
             </div>
@@ -82,7 +82,7 @@ export default function NewAuditPage() {
                   outline: 'none',
                   fontFamily: 'inherit',
                 }}
-                onFocus={e => (e.currentTarget.style.border = '1px solid rgba(56,189,248,0.4)')}
+                onFocus={e => (e.currentTarget.style.border = '1px solid rgba(163,230,53,0.4)')}
                 onBlur={e => (e.currentTarget.style.border = '1px solid rgba(255,255,255,0.1)')}
               />
             </div>
