@@ -143,7 +143,7 @@ export default function ImageStudioSection() {
         </div>
 
         <AnimatedSection delay={0.3} className="text-center">
-          <Link to="/dashboard/new-audit" className="btn-primary glow-button">
+          <Link to="/image-studio" className="btn-primary glow-button">
             <Sparkles size={15} />
             Explore Image Studio
             <ArrowRight size={16} />

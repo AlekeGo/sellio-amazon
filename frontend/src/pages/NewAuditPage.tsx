@@ -1,104 +1,180 @@
+import { type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
-import { ClipboardPaste, ArrowRight, ArrowLeft } from 'lucide-react'
+import { Link2, Upload, ArrowLeft } from 'lucide-react'
+
+function OptionCard({
+  icon,
+  title,
+  description,
+  detail,
+}: {
+  icon: ReactNode
+  title: string
+  description: string
+  detail: string
+}) {
+  return (
+    <div
+      style={{
+        borderRadius: '0.875rem',
+        padding: '1.5rem',
+        background: 'rgba(255,255,255,0.025)',
+        border: '1px solid rgba(255,255,255,0.08)',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '1rem',
+        transition: 'border-color 0.2s ease, background 0.2s ease',
+      }}
+      onMouseEnter={e => {
+        const el = e.currentTarget as HTMLDivElement
+        el.style.borderColor = 'rgba(163,230,53,0.2)'
+        el.style.background = 'rgba(163,230,53,0.03)'
+      }}
+      onMouseLeave={e => {
+        const el = e.currentTarget as HTMLDivElement
+        el.style.borderColor = 'rgba(255,255,255,0.08)'
+        el.style.background = 'rgba(255,255,255,0.025)'
+      }}
+    >
+      <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem' }}>
+        <div
+          style={{
+            width: 44,
+            height: 44,
+            borderRadius: '0.625rem',
+            background: 'linear-gradient(135deg, #166534, #4ade80)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexShrink: 0,
+          }}
+        >
+          {icon}
+        </div>
+        <div style={{ flex: 1 }}>
+          <h3
+            style={{
+              fontSize: '1rem',
+              fontWeight: 700,
+              color: '#f1f5f9',
+              margin: '0 0 0.25rem',
+              letterSpacing: '-0.02em',
+            }}
+          >
+            {title}
+          </h3>
+          <p style={{ fontSize: '0.875rem', color: '#64748b', margin: 0 }}>{description}</p>
+        </div>
+      </div>
+
+      <p
+        style={{
+          fontSize: '0.8125rem',
+          color: '#475569',
+          margin: 0,
+          lineHeight: 1.6,
+          paddingLeft: '3.5rem',
+        }}
+      >
+        {detail}
+      </p>
+
+      <div style={{ paddingLeft: '3.5rem' }}>
+        <button
+          disabled
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '0.5rem',
+            padding: '0.5625rem 1rem',
+            borderRadius: '0.5rem',
+            background: 'rgba(255,255,255,0.04)',
+            border: '1px solid rgba(255,255,255,0.1)',
+            color: '#475569',
+            fontSize: '0.8125rem',
+            fontWeight: 500,
+            cursor: 'not-allowed',
+          }}
+        >
+          Coming Day 4
+        </button>
+      </div>
+    </div>
+  )
+}
 
 export default function NewAuditPage() {
   return (
-    <div
-      className="min-h-screen flex flex-col items-center justify-center px-4 py-20 relative"
-      style={{ background: '#070e0a' }}
-    >
-      <div
-        className="absolute inset-0 pointer-events-none"
+    <div style={{ maxWidth: 720 }}>
+      <Link
+        to="/dashboard"
         style={{
-          backgroundImage: 'radial-gradient(ellipse 80% 60% at 50% 0%, rgba(52,211,153,0.07) 0%, transparent 60%)',
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: '0.375rem',
+          fontSize: '0.875rem',
+          color: '#64748b',
+          textDecoration: 'none',
+          marginBottom: '1.5rem',
+          transition: 'color 0.15s',
         }}
-      />
+        onMouseEnter={e => (e.currentTarget.style.color = '#94a3b8')}
+        onMouseLeave={e => (e.currentTarget.style.color = '#64748b')}
+      >
+        <ArrowLeft size={14} />
+        Back to dashboard
+      </Link>
 
-      <div className="relative z-10 w-full max-w-xl">
-        <Link
-          to="/"
-          className="inline-flex items-center gap-2 text-sm mb-8 transition-colors"
-          style={{ color: '#64748b', textDecoration: 'none' }}
-          onMouseEnter={e => (e.currentTarget.style.color = '#94a3b8')}
-          onMouseLeave={e => (e.currentTarget.style.color = '#64748b')}
-        >
-          <ArrowLeft size={14} />
-          Back to home
-        </Link>
-
-        <div
-          className="rounded-2xl p-8"
+      <div style={{ marginBottom: '2rem' }}>
+        <div className="section-badge" style={{ marginBottom: '0.875rem', display: 'inline-flex' }}>
+          New Audit
+        </div>
+        <h1
           style={{
-            background: 'rgba(10,21,14,0.92)',
-            border: '1px solid rgba(255,255,255,0.08)',
-            boxShadow: '0 32px 80px rgba(0,0,0,0.4)',
+            fontSize: 'clamp(1.375rem, 3vw, 1.75rem)',
+            fontWeight: 900,
+            color: '#f1f5f9',
+            letterSpacing: '-0.03em',
+            margin: '0 0 0.625rem',
           }}
         >
-          <div className="flex items-center gap-3 mb-7">
-            <div
-              className="w-10 h-10 rounded-xl flex items-center justify-center"
-              style={{ background: 'linear-gradient(135deg, #166534, #4ade80)' }}
-            >
-              <ClipboardPaste size={18} color="white" />
-            </div>
-            <div>
-              <h1 className="text-xl font-black" style={{ color: '#f1f5f9', letterSpacing: '-0.02em' }}>New Audit</h1>
-              <p className="text-xs" style={{ color: '#64748b' }}>Free · No account required</p>
-            </div>
-          </div>
+          Start with your Amazon listing
+          <br />
+          <span className="gradient-text">or product photos.</span>
+        </h1>
+        <p style={{ fontSize: '0.9375rem', color: '#64748b', margin: 0, maxWidth: 480 }}>
+          Sellio will do the rest — audit your listing, score it, and generate premium visuals.
+        </p>
+      </div>
 
-          <div className="space-y-5">
-            <div>
-              <label className="block text-xs font-semibold uppercase tracking-widest mb-2" style={{ color: '#64748b' }}>
-                ASIN or Listing URL (optional)
-              </label>
-              <input
-                type="text"
-                placeholder="B09XG4MHTY or amazon.com/dp/..."
-                className="w-full rounded-xl px-4 py-3 text-sm transition-all"
-                style={{
-                  background: 'rgba(255,255,255,0.04)',
-                  border: '1px solid rgba(255,255,255,0.1)',
-                  color: '#f1f5f9',
-                  outline: 'none',
-                }}
-                onFocus={e => (e.currentTarget.style.border = '1px solid rgba(163,230,53,0.4)')}
-                onBlur={e => (e.currentTarget.style.border = '1px solid rgba(255,255,255,0.1)')}
-              />
-            </div>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+        <OptionCard
+          icon={<Link2 size={20} color="white" />}
+          title="Paste Amazon URL"
+          description="For sellers with an existing listing."
+          detail="Sellio will auto-fill your title, images, category, price, and ratings directly from your Amazon product URL. No manual copy-pasting needed."
+        />
 
-            <div>
-              <label className="block text-xs font-semibold uppercase tracking-widest mb-2" style={{ color: '#64748b' }}>
-                Paste Your Listing Content
-              </label>
-              <textarea
-                placeholder="Paste your product title, bullet points, and description here..."
-                rows={7}
-                className="w-full rounded-xl px-4 py-3 text-sm transition-all resize-none"
-                style={{
-                  background: 'rgba(255,255,255,0.04)',
-                  border: '1px solid rgba(255,255,255,0.1)',
-                  color: '#f1f5f9',
-                  outline: 'none',
-                  fontFamily: 'inherit',
-                }}
-                onFocus={e => (e.currentTarget.style.border = '1px solid rgba(163,230,53,0.4)')}
-                onBlur={e => (e.currentTarget.style.border = '1px solid rgba(255,255,255,0.1)')}
-              />
-            </div>
+        <OptionCard
+          icon={<Upload size={20} color="white" />}
+          title="Upload Product Photos"
+          description="For sellers creating or improving a listing from scratch."
+          detail="Upload your product photos and enter your product name, category, and main customer benefit. Sellio will analyze and build a complete audit from your assets."
+        />
+      </div>
 
-            <button
-              className="btn-primary w-full justify-center glow-button"
-              onClick={() => alert('AI audit engine coming in a future build.')}
-            >
-              Run Free Audit <ArrowRight size={16} />
-            </button>
-          </div>
-
-          <p className="text-xs text-center mt-5" style={{ color: '#334155' }}>
-            Free audit · 1 per account · Results in under 60 seconds
-          </p>
-        </div>
+      <div
+        style={{
+          marginTop: '1.5rem',
+          padding: '0.875rem 1.125rem',
+          borderRadius: '0.625rem',
+          background: 'rgba(163,230,53,0.04)',
+          border: '1px solid rgba(163,230,53,0.12)',
+          fontSize: '0.8125rem',
+          color: '#64748b',
+        }}
+      >
+        Full listing analysis and AI audit engine launches in Day 4. Check back soon.
       </div>
     </div>
   )
