@@ -76,7 +76,7 @@ class GoogleAuthView(APIView):
         google_id = id_info.get('sub')
         full_name = id_info.get('name', '')
         avatar_url = id_info.get('picture')
-        user, _ = User.objects.get_or_create(
+        user, created = User.objects.get_or_create(
             email=email,
             defaults={
                 'full_name': full_name,
@@ -85,8 +85,18 @@ class GoogleAuthView(APIView):
                 'google_id': google_id,
             },
         )
-        if user.google_id != google_id:
-            user.google_id = google_id
-            user.save(update_fields=['google_id'])
+        if not created:
+            update_fields = []
+            if user.google_id != google_id:
+                user.google_id = google_id
+                update_fields.append('google_id')
+            if avatar_url and user.avatar_url != avatar_url:
+                user.avatar_url = avatar_url
+                update_fields.append('avatar_url')
+            if not user.provider:
+                user.provider = 'google'
+                update_fields.append('provider')
+            if update_fields:
+                user.save(update_fields=update_fields)
         access, refresh = _tokens_for_user(user)
         return Response({'user': UserSerializer(user).data, 'access': access, 'refresh': refresh})

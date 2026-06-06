@@ -55,6 +55,30 @@ GOOGLE_CLIENT_ID=your-google-client-id-here
 
 ---
 
+## Google Sign-In Setup
+
+### Prerequisites
+1. Go to [Google Cloud Console](https://console.cloud.google.com/) → APIs & Services → Credentials
+2. Create an OAuth 2.0 Client ID (Web application)
+3. Add `http://localhost:5173` to **Authorised JavaScript origins**
+4. Copy the Client ID
+
+### Backend
+Set `GOOGLE_CLIENT_ID` in `backend/.env`:
+```
+GOOGLE_CLIENT_ID=<your-client-id>.apps.googleusercontent.com
+```
+
+### Frontend
+Set `VITE_GOOGLE_CLIENT_ID` in `frontend/.env`:
+```
+VITE_GOOGLE_CLIENT_ID=<your-client-id>.apps.googleusercontent.com
+```
+
+Both values must be the same Client ID. If either is absent the Google button is disabled (backend returns 400, frontend shows a disabled placeholder) — the rest of the auth flow continues to work normally.
+
+---
+
 ## Commands to Run
 
 ```bash
@@ -219,6 +243,16 @@ VITE_GOOGLE_CLIENT_ID=your-google-client-id   # optional
 - [ ] `/dashboard/billing` — Free Trial plan + credit placeholders
 - [ ] `/dashboard/settings` — email read-only, full name editable, save works
 - [ ] `/image-studio` (from landing) → redirects to login if not authenticated
+
+### Google Sign-In
+- [ ] Open `/login` or `/signup` with `VITE_GOOGLE_CLIENT_ID` set — real Google button renders
+- [ ] Click the Google button — Google account picker opens
+- [ ] Select an account — request goes to `POST /api/auth/google/` and returns `user`, `access`, `refresh`
+- [ ] After success — redirected to `/dashboard`
+- [ ] Repeat login with same Google account — same user returned (no duplicate created)
+- [ ] Open `/login` with `VITE_GOOGLE_CLIENT_ID` unset — disabled placeholder button shown, no error thrown
+- [ ] Backend: `curl -X POST .../api/auth/google/ -d '{"credential":"bad"}'` → `400 Invalid Google token.`
+- [ ] Backend with `GOOGLE_CLIENT_ID` unset: same curl → `400 Google Sign-In is not configured. Set GOOGLE_CLIENT_ID.`
 
 ### Build
 - [ ] `npm run build` — passes with no TypeScript errors
