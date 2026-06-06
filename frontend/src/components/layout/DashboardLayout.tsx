@@ -4,7 +4,7 @@ import { useAuth } from '../../contexts/AuthContext'
 import {
   LayoutDashboard,
   Zap,
-  BarChart2,
+  ClipboardList,
   ImageIcon,
   CreditCard,
   Settings,
@@ -16,7 +16,7 @@ import {
 const NAV_ITEMS = [
   { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard', end: true },
   { icon: Zap, label: 'New Audit', path: '/dashboard/new-audit', end: false },
-  { icon: BarChart2, label: 'Results', path: '/dashboard/results', end: false },
+  { icon: ClipboardList, label: 'Audits', path: '/dashboard/audits', end: false },
   { icon: ImageIcon, label: 'Image Studio', path: '/dashboard/image-studio', end: false },
   { icon: CreditCard, label: 'Billing', path: '/dashboard/billing', end: false },
   { icon: Settings, label: 'Settings', path: '/dashboard/settings', end: false },

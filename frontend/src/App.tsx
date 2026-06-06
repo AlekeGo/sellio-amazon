@@ -9,6 +9,8 @@ import SignupPage from './pages/SignupPage'
 import PricingPage from './pages/PricingPage'
 import DashboardPage from './pages/DashboardPage'
 import NewAuditPage from './pages/NewAuditPage'
+import AuditsListPage from './pages/AuditsListPage'
+import AuditDetailPage from './pages/AuditDetailPage'
 import ResultsPage from './pages/ResultsPage'
 import ImageStudioPage from './pages/ImageStudioPage'
 import BillingPage from './pages/BillingPage'
@@ -29,6 +31,8 @@ function AppRoutes() {
             <Route element={<DashboardLayout />}>
               <Route path="/dashboard" element={<DashboardPage />} />
               <Route path="/dashboard/new-audit" element={<NewAuditPage />} />
+              <Route path="/dashboard/audits" element={<AuditsListPage />} />
+              <Route path="/dashboard/audits/:id" element={<AuditDetailPage />} />
               <Route path="/dashboard/results" element={<ResultsPage />} />
               <Route path="/dashboard/image-studio" element={<ImageStudioPage />} />
               <Route path="/dashboard/billing" element={<BillingPage />} />

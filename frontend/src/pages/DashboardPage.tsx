@@ -1,6 +1,10 @@
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { Zap, ArrowRight, Crown, FileText } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
+import { listAudits } from '../lib/auditsApi'
+import StatusBadge from '../components/ui/StatusBadge'
+import type { AuditListItem } from '../types/audit'
 
 function ChecklistStep({ num, text }: { num: number; text: string }) {
   return (
@@ -37,10 +41,95 @@ function ChecklistStep({ num, text }: { num: number; text: string }) {
   )
 }
 
+function formatDate(iso: string) {
+  return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+}
+
+function RecentAuditItem({ audit }: { audit: AuditListItem }) {
+  return (
+    <Link
+      to={`/dashboard/audits/${audit.id}`}
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '0.75rem',
+        padding: '0.625rem 0',
+        borderBottom: '1px solid rgba(255,255,255,0.05)',
+        textDecoration: 'none',
+        transition: 'opacity 0.15s',
+      }}
+      onMouseEnter={e => (e.currentTarget.style.opacity = '0.8')}
+      onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
+    >
+      {audit.thumbnail ? (
+        <img
+          src={audit.thumbnail}
+          alt={audit.product_name}
+          style={{
+            width: 32,
+            height: 32,
+            borderRadius: '0.375rem',
+            objectFit: 'cover',
+            flexShrink: 0,
+            background: '#0a1510',
+          }}
+        />
+      ) : (
+        <div
+          style={{
+            width: 32,
+            height: 32,
+            borderRadius: '0.375rem',
+            background: 'rgba(255,255,255,0.04)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexShrink: 0,
+          }}
+        >
+          <FileText size={14} color="#334155" />
+        </div>
+      )}
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div
+          style={{
+            fontSize: '0.8125rem',
+            fontWeight: 600,
+            color: '#cbd5e1',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+            marginBottom: 2,
+          }}
+        >
+          {audit.product_name || 'Untitled Audit'}
+        </div>
+        <div style={{ fontSize: '0.6875rem', color: '#475569' }}>
+          {audit.category || (audit.entry_type === 'amazon_url' ? 'Amazon URL' : 'Product Photos')}
+          {' · '}
+          {formatDate(audit.created_at)}
+        </div>
+      </div>
+      <StatusBadge status={audit.status} />
+    </Link>
+  )
+}
+
 export default function DashboardPage() {
   const { user } = useAuth()
+  const [audits, setAudits] = useState<AuditListItem[]>([])
+  const [auditsLoading, setAuditsLoading] = useState(true)
+  const [auditsError, setAuditsError] = useState(false)
+
   const firstName =
     user?.full_name?.trim().split(' ')[0] || user?.email?.split('@')[0] || 'there'
+
+  useEffect(() => {
+    listAudits()
+      .then(res => setAudits(res.data.slice(0, 5)))
+      .catch(() => setAuditsError(true))
+      .finally(() => setAuditsLoading(false))
+  }, [])
 
   return (
     <div style={{ maxWidth: 900 }}>
@@ -186,64 +275,103 @@ export default function DashboardPage() {
             border: '1px solid rgba(255,255,255,0.07)',
           }}
         >
-          <h3
-            style={{
-              fontSize: '0.75rem',
-              fontWeight: 700,
-              color: '#64748b',
-              margin: '0 0 0.25rem',
-              textTransform: 'uppercase',
-              letterSpacing: '0.06em',
-            }}
-          >
-            Recent audits
-          </h3>
-          <p style={{ fontSize: '0.8125rem', color: '#475569', margin: '0 0 1.25rem' }}>
-            Your audit history will appear here
-          </p>
-
           <div
             style={{
-              textAlign: 'center',
-              padding: '2rem 1rem',
-              borderRadius: '0.625rem',
-              background: 'rgba(255,255,255,0.02)',
-              border: '1px dashed rgba(255,255,255,0.08)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              marginBottom: '0.875rem',
             }}
           >
+            <h3
+              style={{
+                fontSize: '0.75rem',
+                fontWeight: 700,
+                color: '#64748b',
+                margin: 0,
+                textTransform: 'uppercase',
+                letterSpacing: '0.06em',
+              }}
+            >
+              Recent audits
+            </h3>
+            {audits.length > 0 && (
+              <Link
+                to="/dashboard/audits"
+                style={{
+                  fontSize: '0.75rem',
+                  color: '#a3e635',
+                  textDecoration: 'none',
+                  fontWeight: 500,
+                }}
+              >
+                View all
+              </Link>
+            )}
+          </div>
+
+          {auditsLoading && (
+            <p style={{ fontSize: '0.8125rem', color: '#334155', margin: 0 }}>Loading...</p>
+          )}
+
+          {!auditsLoading && auditsError && (
+            <p style={{ fontSize: '0.8125rem', color: '#475569', margin: 0 }}>
+              Could not load recent audits.
+            </p>
+          )}
+
+          {!auditsLoading && !auditsError && audits.length > 0 && (
+            <div>
+              {audits.map(audit => (
+                <RecentAuditItem key={audit.id} audit={audit} />
+              ))}
+            </div>
+          )}
+
+          {!auditsLoading && !auditsError && audits.length === 0 && (
             <div
               style={{
-                width: 40,
-                height: 40,
-                borderRadius: '50%',
-                background: 'rgba(255,255,255,0.04)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                margin: '0 auto 0.75rem',
+                textAlign: 'center',
+                padding: '2rem 1rem',
+                borderRadius: '0.625rem',
+                background: 'rgba(255,255,255,0.02)',
+                border: '1px dashed rgba(255,255,255,0.08)',
               }}
             >
-              <FileText size={18} color="#334155" />
+              <div
+                style={{
+                  width: 40,
+                  height: 40,
+                  borderRadius: '50%',
+                  background: 'rgba(255,255,255,0.04)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  margin: '0 auto 0.75rem',
+                }}
+              >
+                <FileText size={18} color="#334155" />
+              </div>
+              <p style={{ fontSize: '0.875rem', color: '#334155', margin: '0 0 1rem' }}>
+                No audits yet. Start your first one.
+              </p>
+              <Link
+                to="/dashboard/new-audit"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.375rem',
+                  fontSize: '0.8125rem',
+                  color: '#a3e635',
+                  textDecoration: 'none',
+                  fontWeight: 600,
+                }}
+              >
+                <Zap size={13} />
+                Start your first audit
+              </Link>
             </div>
-            <p style={{ fontSize: '0.875rem', color: '#334155', margin: '0 0 1rem' }}>
-              No audits yet. Run your first one.
-            </p>
-            <Link
-              to="/dashboard/new-audit"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '0.375rem',
-                fontSize: '0.8125rem',
-                color: '#a3e635',
-                textDecoration: 'none',
-                fontWeight: 600,
-              }}
-            >
-              <Zap size={13} />
-              Start your first audit
-            </Link>
-          </div>
+          )}
         </div>
       </div>
     </div>
