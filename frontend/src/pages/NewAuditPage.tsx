@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, Fragment } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Link2, Upload, ArrowLeft, ChevronRight, X, AlertCircle } from 'lucide-react'
+import { Link2, Upload, ArrowLeft, ChevronRight, X, AlertCircle, Zap } from 'lucide-react'
 import { createAudit, submitAudit, uploadAuditImages } from '../lib/auditsApi'
 import type { CreateAuditPayload } from '../types/audit'
 
@@ -726,8 +726,43 @@ export default function NewAuditPage() {
         </div>
       )}
 
+      {/* ── STEP 3: AI generating ── */}
+      {step === 3 && loading && (
+        <div style={{
+          borderRadius: '0.875rem',
+          padding: '2.75rem 1.5rem',
+          background: 'rgba(255,255,255,0.025)',
+          border: '1px solid rgba(163,230,53,0.12)',
+          textAlign: 'center',
+        }}>
+          <div style={{
+            width: 52,
+            height: 52,
+            borderRadius: '50%',
+            border: '3px solid rgba(163,230,53,0.15)',
+            borderTop: '3px solid #a3e635',
+            animation: 'spin 1s linear infinite',
+            margin: '0 auto 1.5rem',
+          }} />
+          <h3 style={{
+            fontSize: '1.0625rem',
+            fontWeight: 700,
+            color: '#f1f5f9',
+            margin: '0 0 0.625rem',
+            letterSpacing: '-0.02em',
+          }}>
+            Generating AI audit...
+          </h3>
+          <p style={{ fontSize: '0.875rem', color: '#64748b', margin: 0, lineHeight: 1.7 }}>
+            Analyzing your Amazon listing...
+            <br />
+            Reviewing copy, buyer signals, SEO gaps, and visual opportunities.
+          </p>
+        </div>
+      )}
+
       {/* ── STEP 3: Confirm & Submit ── */}
-      {step === 3 && (
+      {step === 3 && !loading && (
         <div style={formCard}>
           <h2
             style={{
@@ -863,17 +898,16 @@ export default function NewAuditPage() {
             <button
               type="button"
               onClick={handleSubmit}
-              disabled={loading}
               className="btn-primary glow-button"
               style={{
                 flex: 1,
                 justifyContent: 'center',
                 padding: '0.6875rem 1rem',
                 fontSize: '0.875rem',
-                opacity: loading ? 0.75 : 1,
               }}
             >
-              {loading ? 'Submitting...' : 'Analyze Listing'}
+              <Zap size={14} />
+              Analyze Listing
             </button>
           </div>
         </div>

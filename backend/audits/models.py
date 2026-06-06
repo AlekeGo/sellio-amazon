@@ -2,6 +2,32 @@ from django.conf import settings
 from django.db import models
 
 
+class AuditResult(models.Model):
+    audit = models.OneToOneField('Audit', on_delete=models.CASCADE, related_name='result')
+    score = models.IntegerField()
+    score_label = models.CharField(max_length=255, blank=True)
+    executive_summary = models.TextField()
+    conversion_diagnosis = models.JSONField(default=dict)
+    weak_points = models.JSONField(default=list)
+    title_analysis = models.JSONField(default=dict)
+    improved_title = models.TextField()
+    bullet_improvements = models.JSONField(default=list)
+    improved_bullets = models.JSONField(default=list)
+    description_analysis = models.JSONField(default=dict)
+    improved_description = models.TextField()
+    keyword_opportunities = models.JSONField(default=list)
+    review_insights = models.JSONField(default=list)
+    buyer_objections = models.JSONField(default=list)
+    a_plus_content_ideas = models.JSONField(default=list)
+    image_pack_plan = models.JSONField(default=list)
+    priority_checklist = models.JSONField(default=list)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"Result for Audit #{self.audit_id} — score {self.score}"
+
+
 class Audit(models.Model):
     ENTRY_TYPE_CHOICES = [
         ('amazon_url', 'Amazon URL'),

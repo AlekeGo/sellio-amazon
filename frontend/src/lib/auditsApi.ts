@@ -30,3 +30,7 @@ export function uploadAuditImages(id: number, files: File[]) {
 export function deleteAuditImage(id: number, imageId: number) {
   return api.delete(`/audits/${id}/images/${imageId}/`)
 }
+
+export function regenerateAudit(id: number) {
+  return api.post<AuditDetail>(`/audits/${id}/regenerate/`)
+}

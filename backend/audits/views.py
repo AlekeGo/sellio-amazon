@@ -1,10 +1,13 @@
+import json
+import os
+
 from django.utils import timezone
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import Audit, AuditImage
+from .models import Audit, AuditImage, AuditResult
 from .serializers import (
     AuditCreateSerializer,
     AuditDetailSerializer,
@@ -12,13 +15,14 @@ from .serializers import (
     AuditListSerializer,
     AuditUpdateSerializer,
 )
+from .services.gemini_audit_service import GeminiTemporaryError, run_gemini_audit
 
 
 class AuditListCreateView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        audits = Audit.objects.filter(user=request.user).prefetch_related('images').order_by('-created_at')
+        audits = Audit.objects.filter(user=request.user).prefetch_related('images', 'result').order_by('-created_at')
         serializer = AuditListSerializer(audits, many=True, context={'request': request})
         return Response(serializer.data)
 
@@ -36,7 +40,7 @@ class AuditDetailView(APIView):
 
     def _get_audit(self, request, pk):
         try:
-            return Audit.objects.prefetch_related('images').get(pk=pk, user=request.user)
+            return Audit.objects.prefetch_related('images', 'result').get(pk=pk, user=request.user)
         except Audit.DoesNotExist:
             return None
 
@@ -57,6 +61,40 @@ class AuditDetailView(APIView):
         return Response(AuditDetailSerializer(audit, context={'request': request}).data)
 
 
+def _run_gemini_and_save(audit):
+    audit.status = 'pending_analysis'
+    audit.save(update_fields=['status', 'updated_at'])
+
+    result_data = run_gemini_audit(audit)
+
+    AuditResult.objects.update_or_create(
+        audit=audit,
+        defaults={
+            'score': result_data['score'],
+            'score_label': result_data['score_label'],
+            'executive_summary': result_data['executive_summary'],
+            'conversion_diagnosis': result_data['conversion_diagnosis'],
+            'weak_points': result_data['weak_points'],
+            'title_analysis': result_data['title_analysis'],
+            'improved_title': result_data['improved_title'],
+            'bullet_improvements': result_data['bullet_improvements'],
+            'improved_bullets': result_data['improved_bullets'],
+            'description_analysis': result_data['description_analysis'],
+            'improved_description': result_data['improved_description'],
+            'keyword_opportunities': result_data['keyword_opportunities'],
+            'review_insights': result_data['review_insights'],
+            'buyer_objections': result_data['buyer_objections'],
+            'a_plus_content_ideas': result_data['a_plus_content_ideas'],
+            'image_pack_plan': result_data['image_pack_plan'],
+            'priority_checklist': result_data['priority_checklist'],
+        },
+    )
+
+    audit.status = 'completed'
+    audit.submitted_at = audit.submitted_at or timezone.now()
+    audit.save(update_fields=['status', 'submitted_at', 'updated_at'])
+
+
 class AuditSubmitView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -65,14 +103,72 @@ class AuditSubmitView(APIView):
             audit = Audit.objects.prefetch_related('images').get(pk=pk, user=request.user)
         except Audit.DoesNotExist:
             return Response({'detail': 'Not found.'}, status=status.HTTP_404_NOT_FOUND)
-        if audit.status not in ('draft', 'ready_for_analysis'):
+
+        if audit.status not in ('draft', 'ready_for_analysis', 'failed'):
             return Response(
                 {'detail': 'Audit cannot be submitted in its current status.'},
                 status=status.HTTP_400_BAD_REQUEST,
             )
-        audit.status = 'pending_analysis'
+
+        if not os.getenv('GEMINI_API_KEY'):
+            return Response(
+                {'detail': 'Gemini API key is not configured.'},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
+
         audit.submitted_at = timezone.now()
-        audit.save(update_fields=['status', 'submitted_at', 'updated_at'])
+        audit.save(update_fields=['submitted_at', 'updated_at'])
+
+        try:
+            _run_gemini_and_save(audit)
+        except ValueError as exc:
+            audit.status = 'failed'
+            audit.save(update_fields=['status', 'updated_at'])
+            return Response({'detail': str(exc)}, status=status.HTTP_400_BAD_REQUEST)
+        except GeminiTemporaryError as exc:
+            audit.status = 'failed'
+            audit.save(update_fields=['status', 'updated_at'])
+            return Response({'detail': str(exc)}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+        except Exception as exc:
+            audit.status = 'failed'
+            audit.save(update_fields=['status', 'updated_at'])
+            return Response({'detail': 'Gemini analysis failed. Please try again.'}, status=status.HTTP_502_BAD_GATEWAY)
+
+        audit = Audit.objects.prefetch_related('images', 'result').get(pk=pk)
+        return Response(AuditDetailSerializer(audit, context={'request': request}).data)
+
+
+class AuditRegenerateView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, pk):
+        try:
+            audit = Audit.objects.prefetch_related('images').get(pk=pk, user=request.user)
+        except Audit.DoesNotExist:
+            return Response({'detail': 'Not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+        if not os.getenv('GEMINI_API_KEY'):
+            return Response(
+                {'detail': 'Gemini API key is not configured.'},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
+
+        try:
+            _run_gemini_and_save(audit)
+        except ValueError as exc:
+            audit.status = 'failed'
+            audit.save(update_fields=['status', 'updated_at'])
+            return Response({'detail': str(exc)}, status=status.HTTP_400_BAD_REQUEST)
+        except GeminiTemporaryError as exc:
+            audit.status = 'failed'
+            audit.save(update_fields=['status', 'updated_at'])
+            return Response({'detail': str(exc)}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+        except Exception as exc:
+            audit.status = 'failed'
+            audit.save(update_fields=['status', 'updated_at'])
+            return Response({'detail': 'Gemini analysis failed. Please try again.'}, status=status.HTTP_502_BAD_GATEWAY)
+
+        audit = Audit.objects.prefetch_related('images', 'result').get(pk=pk)
         return Response(AuditDetailSerializer(audit, context={'request': request}).data)
 
 

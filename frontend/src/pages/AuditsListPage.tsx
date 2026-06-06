@@ -109,7 +109,33 @@ function AuditRow({ audit }: { audit: AuditListItem }) {
         </div>
       </div>
 
-      <ArrowRight size={15} color="#334155" style={{ flexShrink: 0 }} />
+      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexShrink: 0 }}>
+        {typeof audit.result_score === 'number' && (
+          <span style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            padding: '0.1875rem 0.5625rem',
+            borderRadius: '99px',
+            fontSize: '0.75rem',
+            fontWeight: 800,
+            letterSpacing: '-0.01em',
+            color: audit.result_score >= 80 ? '#a3e635' : audit.result_score >= 60 ? '#fbbf24' : '#f97316',
+            background: audit.result_score >= 80
+              ? 'rgba(163,230,53,0.1)'
+              : audit.result_score >= 60
+              ? 'rgba(251,191,36,0.1)'
+              : 'rgba(249,115,22,0.1)',
+            border: `1px solid ${audit.result_score >= 80
+              ? 'rgba(163,230,53,0.2)'
+              : audit.result_score >= 60
+              ? 'rgba(251,191,36,0.2)'
+              : 'rgba(249,115,22,0.2)'}`,
+          }}>
+            {audit.result_score}
+          </span>
+        )}
+        <ArrowRight size={15} color="#334155" />
+      </div>
     </Link>
   )
 }

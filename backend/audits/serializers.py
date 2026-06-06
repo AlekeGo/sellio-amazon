@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Audit, AuditImage
+from .models import Audit, AuditImage, AuditResult
 
 
 class AuditImageSerializer(serializers.ModelSerializer):
@@ -10,14 +10,30 @@ class AuditImageSerializer(serializers.ModelSerializer):
         read_only_fields = ('id', 'uploaded_at')
 
 
+class AuditResultSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AuditResult
+        fields = (
+            'id', 'score', 'score_label', 'executive_summary',
+            'conversion_diagnosis', 'weak_points', 'title_analysis',
+            'improved_title', 'bullet_improvements', 'improved_bullets',
+            'description_analysis', 'improved_description',
+            'keyword_opportunities', 'review_insights', 'buyer_objections',
+            'a_plus_content_ideas', 'image_pack_plan', 'priority_checklist',
+            'created_at', 'updated_at',
+        )
+        read_only_fields = fields
+
+
 class AuditListSerializer(serializers.ModelSerializer):
     thumbnail = serializers.SerializerMethodField()
+    result_score = serializers.SerializerMethodField()
 
     class Meta:
         model = Audit
         fields = (
             'id', 'product_name', 'category', 'entry_type', 'status',
-            'created_at', 'updated_at', 'thumbnail',
+            'created_at', 'updated_at', 'thumbnail', 'result_score',
         )
 
     def get_thumbnail(self, obj):
@@ -29,9 +45,15 @@ class AuditListSerializer(serializers.ModelSerializer):
             return request.build_absolute_uri(first_image.image.url)
         return first_image.image.url
 
+    def get_result_score(self, obj):
+        if obj.status == 'completed' and hasattr(obj, 'result'):
+            return obj.result.score
+        return None
+
 
 class AuditDetailSerializer(serializers.ModelSerializer):
     images = AuditImageSerializer(many=True, read_only=True)
+    result = serializers.SerializerMethodField()
 
     class Meta:
         model = Audit
@@ -42,9 +64,15 @@ class AuditDetailSerializer(serializers.ModelSerializer):
             'price', 'rating', 'review_count',
             'target_audience', 'seller_goal', 'notes',
             'created_at', 'updated_at', 'submitted_at',
-            'images',
+            'images', 'result',
         )
         read_only_fields = ('id', 'status', 'created_at', 'updated_at', 'submitted_at')
+
+    def get_result(self, obj):
+        try:
+            return AuditResultSerializer(obj.result).data
+        except AuditResult.DoesNotExist:
+            return None
 
 
 class AuditCreateSerializer(serializers.ModelSerializer):

@@ -8,6 +8,40 @@ export interface AuditImage {
   uploaded_at: string
 }
 
+export interface AuditResult {
+  id: number
+  score: number
+  score_label: string
+  executive_summary: string
+  conversion_diagnosis: {
+    attention: string
+    trust: string
+    clarity: string
+    conversion: string
+  }
+  weak_points: Array<{ area: string; issue: string; impact: string; fix: string }>
+  title_analysis: { current_problem: string; strategy: string }
+  improved_title: string
+  bullet_improvements: Array<{ current_issue: string; improved_version: string }>
+  improved_bullets: string[]
+  description_analysis: { current_problem: string; improvement_strategy: string }
+  improved_description: string
+  keyword_opportunities: Array<{ keyword: string; reason: string }>
+  review_insights: Array<{ signal: string; what_it_means: string; listing_fix: string }>
+  buyer_objections: Array<{ objection: string; how_to_address: string }>
+  a_plus_content_ideas: Array<{ section: string; purpose: string; content_idea: string }>
+  image_pack_plan: Array<{
+    image_type: string
+    goal: string
+    headline: string
+    visual_direction: string
+    text_elements: string[]
+  }>
+  priority_checklist: Array<{ priority: string; task: string; reason: string }>
+  created_at: string
+  updated_at: string
+}
+
 export interface AuditListItem {
   id: number
   product_name: string
@@ -17,6 +51,7 @@ export interface AuditListItem {
   created_at: string
   updated_at: string
   thumbnail: string | null
+  result_score: number | null
 }
 
 export interface AuditDetail {
@@ -41,6 +76,7 @@ export interface AuditDetail {
   updated_at: string
   submitted_at: string | null
   images: AuditImage[]
+  result: AuditResult | null
 }
 
 export interface CreateAuditPayload {

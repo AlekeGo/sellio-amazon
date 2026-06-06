@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Audit, AuditImage
+from .models import Audit, AuditImage, AuditResult
 
 
 class AuditImageInline(admin.TabularInline):
@@ -22,3 +22,10 @@ class AuditAdmin(admin.ModelAdmin):
 class AuditImageAdmin(admin.ModelAdmin):
     list_display = ('id', 'audit', 'original_filename', 'uploaded_at')
     readonly_fields = ('uploaded_at',)
+
+
+@admin.register(AuditResult)
+class AuditResultAdmin(admin.ModelAdmin):
+    list_display = ('id', 'audit', 'score', 'score_label', 'created_at')
+    readonly_fields = ('created_at', 'updated_at')
+    search_fields = ('audit__product_name', 'audit__user__email')
