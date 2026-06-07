@@ -1,4 +1,14 @@
 export type EntryType = 'amazon_url' | 'product_photos'
+
+export interface ImagePackPlanItem {
+  image_type: string
+  goal: string
+  headline: string
+  visual_direction: string
+  text_elements: string[]
+  buyer_objection?: string
+  suggested_layout?: string
+}
 export type AuditStatus = 'draft' | 'ready_for_analysis' | 'pending_analysis' | 'completed' | 'failed'
 
 export interface AuditImage {
@@ -30,13 +40,7 @@ export interface AuditResult {
   review_insights: Array<{ signal: string; what_it_means: string; listing_fix: string }>
   buyer_objections: Array<{ objection: string; how_to_address: string }>
   a_plus_content_ideas: Array<{ section: string; purpose: string; content_idea: string }>
-  image_pack_plan: Array<{
-    image_type: string
-    goal: string
-    headline: string
-    visual_direction: string
-    text_elements: string[]
-  }>
+  image_pack_plan: ImagePackPlanItem[]
   priority_checklist: Array<{ priority: string; task: string; reason: string }>
   created_at: string
   updated_at: string

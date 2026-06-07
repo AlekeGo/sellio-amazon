@@ -229,7 +229,7 @@ function ReportHeader({ audit, result }: { audit: AuditDetail; result: AuditResu
               All Audits
             </Link>
             <Link
-              to="/dashboard/image-studio"
+              to={`/dashboard/audits/${audit.id}/image-studio`}
               className="btn-primary glow-button"
               style={{ padding: '0.5rem 1rem', fontSize: '0.8125rem' }}
             >
@@ -577,12 +577,12 @@ function AuditReport({
               </p>
             </div>
             <Link
-              to="/dashboard/image-studio"
+              to={`/dashboard/audits/${audit.id}/image-studio`}
               className="btn-primary glow-button"
               style={{ padding: '0.5rem 0.875rem', fontSize: '0.8125rem', flexShrink: 0 }}
             >
               <Layers size={13} />
-              Generate in Image Studio
+              Open in Image Studio
             </Link>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.875rem' }}>
@@ -741,7 +741,7 @@ function AuditReport({
             Turn your audit insights into premium Amazon-ready visuals with Sellio Image Studio.
           </p>
         </div>
-        <Link to="/dashboard/image-studio" className="btn-primary glow-button" style={{ padding: '0.6875rem 1.25rem', fontSize: '0.875rem' }}>
+        <Link to={`/dashboard/audits/${audit.id}/image-studio`} className="btn-primary glow-button" style={{ padding: '0.6875rem 1.25rem', fontSize: '0.875rem' }}>
           <Zap size={14} />
           Open Image Studio
         </Link>

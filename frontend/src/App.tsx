@@ -11,6 +11,7 @@ import DashboardPage from './pages/DashboardPage'
 import NewAuditPage from './pages/NewAuditPage'
 import AuditsListPage from './pages/AuditsListPage'
 import AuditDetailPage from './pages/AuditDetailPage'
+import AuditImageStudioPage from './pages/AuditImageStudioPage'
 import ResultsPage from './pages/ResultsPage'
 import ImageStudioPage from './pages/ImageStudioPage'
 import BillingPage from './pages/BillingPage'
@@ -33,6 +34,7 @@ function AppRoutes() {
               <Route path="/dashboard/new-audit" element={<NewAuditPage />} />
               <Route path="/dashboard/audits" element={<AuditsListPage />} />
               <Route path="/dashboard/audits/:id" element={<AuditDetailPage />} />
+              <Route path="/dashboard/audits/:id/image-studio" element={<AuditImageStudioPage />} />
               <Route path="/dashboard/results" element={<ResultsPage />} />
               <Route path="/dashboard/image-studio" element={<ImageStudioPage />} />
               <Route path="/dashboard/billing" element={<BillingPage />} />

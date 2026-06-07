@@ -770,3 +770,28 @@ body {
 /* Prevent long words/URLs from breaking layouts */
 .word-break-all { word-break: break-all; }
 .overflow-wrap-anywhere { overflow-wrap: anywhere; }
+
+/* audit image studio two-column layout */
+.audit-studio-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+@media (min-width: 1024px) {
+  .audit-studio-layout {
+    grid-template-columns: 1fr 360px;
+  }
+}
+
+/* generated image slots: 2-col mobile, 4-col sm+ */
+.gen-slots-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.875rem;
+}
+@media (min-width: 640px) {
+  .gen-slots-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
