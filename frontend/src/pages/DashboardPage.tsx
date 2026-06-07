@@ -47,97 +47,66 @@ function formatDate(iso: string) {
 
 function RecentAuditItem({ audit }: { audit: AuditListItem }) {
   return (
-    <Link
-      to={`/dashboard/audits/${audit.id}`}
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: '0.75rem',
-        padding: '0.625rem 0',
-        borderBottom: '1px solid rgba(255,255,255,0.05)',
-        textDecoration: 'none',
-        transition: 'opacity 0.15s',
-      }}
-      onMouseEnter={e => (e.currentTarget.style.opacity = '0.8')}
-      onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
-    >
+    <div style={{
+      display: 'flex', alignItems: 'center', gap: '0.75rem',
+      padding: '0.625rem 0', borderBottom: '1px solid rgba(255,255,255,0.05)',
+    }}>
       {audit.thumbnail ? (
         <img
           src={audit.thumbnail}
           alt={audit.product_name}
-          style={{
-            width: 32,
-            height: 32,
-            borderRadius: '0.375rem',
-            objectFit: 'cover',
-            flexShrink: 0,
-            background: '#0a1510',
-          }}
+          style={{ width: 32, height: 32, borderRadius: '0.375rem', objectFit: 'cover', flexShrink: 0, background: '#0a1510' }}
         />
       ) : (
-        <div
-          style={{
-            width: 32,
-            height: 32,
-            borderRadius: '0.375rem',
-            background: 'rgba(255,255,255,0.04)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            flexShrink: 0,
-          }}
-        >
+        <div style={{
+          width: 32, height: 32, borderRadius: '0.375rem',
+          background: 'rgba(255,255,255,0.04)', display: 'flex',
+          alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+        }}>
           <FileText size={14} color="#334155" />
         </div>
       )}
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div
-          style={{
-            fontSize: '0.8125rem',
-            fontWeight: 600,
-            color: '#cbd5e1',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap',
-            marginBottom: 2,
-          }}
-        >
+        <div style={{ fontSize: '0.8125rem', fontWeight: 600, color: '#cbd5e1', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginBottom: 2 }}>
           {audit.product_name || 'Untitled Audit'}
         </div>
-        <div style={{ fontSize: '0.6875rem', color: '#475569' }}>
-          {audit.category || (audit.entry_type === 'amazon_url' ? 'Amazon URL' : 'Product Photos')}
-          {' · '}
-          {formatDate(audit.created_at)}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.375rem', flexWrap: 'wrap' }}>
+          <span style={{ fontSize: '0.6875rem', color: '#475569' }}>
+            {audit.category || (audit.entry_type === 'amazon_url' ? 'Amazon URL' : 'Product Photos')}
+            {' · '}
+            {formatDate(audit.created_at)}
+          </span>
+          <StatusBadge status={audit.status} />
         </div>
       </div>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '0.375rem', flexShrink: 0 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexShrink: 0 }}>
         {typeof audit.result_score === 'number' && (
           <span style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            padding: '0.125rem 0.4375rem',
-            borderRadius: '99px',
-            fontSize: '0.6875rem',
-            fontWeight: 800,
-            letterSpacing: '-0.01em',
+            display: 'inline-flex', alignItems: 'center',
+            padding: '0.125rem 0.4375rem', borderRadius: '99px',
+            fontSize: '0.6875rem', fontWeight: 800, letterSpacing: '-0.01em',
             color: audit.result_score >= 80 ? '#a3e635' : audit.result_score >= 60 ? '#fbbf24' : '#f97316',
-            background: audit.result_score >= 80
-              ? 'rgba(163,230,53,0.1)'
-              : audit.result_score >= 60
-              ? 'rgba(251,191,36,0.1)'
-              : 'rgba(249,115,22,0.1)',
-            border: `1px solid ${audit.result_score >= 80
-              ? 'rgba(163,230,53,0.2)'
-              : audit.result_score >= 60
-              ? 'rgba(251,191,36,0.2)'
-              : 'rgba(249,115,22,0.2)'}`,
+            background: audit.result_score >= 80 ? 'rgba(163,230,53,0.1)' : audit.result_score >= 60 ? 'rgba(251,191,36,0.1)' : 'rgba(249,115,22,0.1)',
+            border: `1px solid ${audit.result_score >= 80 ? 'rgba(163,230,53,0.2)' : audit.result_score >= 60 ? 'rgba(251,191,36,0.2)' : 'rgba(249,115,22,0.2)'}`,
           }}>
             {audit.result_score}
           </span>
         )}
-        <StatusBadge status={audit.status} />
+        <Link
+          to={`/dashboard/audits/${audit.id}`}
+          style={{
+            display: 'inline-flex', alignItems: 'center', gap: '0.25rem',
+            fontSize: '0.75rem', fontWeight: 600, color: '#a3e635',
+            textDecoration: 'none', transition: 'opacity 0.15s', whiteSpace: 'nowrap',
+          }}
+          onMouseEnter={e => (e.currentTarget.style.opacity = '0.75')}
+          onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
+        >
+          Open Report
+          <ArrowRight size={11} />
+        </Link>
       </div>
-    </Link>
+    </div>
   )
 }
 
@@ -355,46 +324,33 @@ export default function DashboardPage() {
           )}
 
           {!auditsLoading && !auditsError && audits.length === 0 && (
-            <div
-              style={{
-                textAlign: 'center',
-                padding: '2rem 1rem',
-                borderRadius: '0.625rem',
-                background: 'rgba(255,255,255,0.02)',
-                border: '1px dashed rgba(255,255,255,0.08)',
-              }}
-            >
-              <div
-                style={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: '50%',
-                  background: 'rgba(255,255,255,0.04)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  margin: '0 auto 0.75rem',
-                }}
-              >
-                <FileText size={18} color="#334155" />
+            <div style={{
+              textAlign: 'center', padding: '2rem 1rem', borderRadius: '0.75rem',
+              background: 'rgba(255,255,255,0.02)', border: '1px dashed rgba(255,255,255,0.07)',
+            }}>
+              <div style={{
+                width: 40, height: 40, borderRadius: '0.625rem',
+                background: 'rgba(163,230,53,0.06)', border: '1px solid rgba(163,230,53,0.12)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                margin: '0 auto 0.875rem',
+              }}>
+                <Zap size={18} color="#a3e635" />
               </div>
-              <p style={{ fontSize: '0.875rem', color: '#334155', margin: '0 0 1rem' }}>
-                No audits yet. Start your first one.
+              <p style={{ fontSize: '0.875rem', color: '#64748b', margin: '0 0 0.25rem', fontWeight: 600 }}>
+                No audits yet
+              </p>
+              <p style={{ fontSize: '0.8125rem', color: '#475569', margin: '0 0 1.25rem' }}>
+                Run your first AI audit to get started.
               </p>
               <Link
                 to="/dashboard/new-audit"
                 style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '0.375rem',
-                  fontSize: '0.8125rem',
-                  color: '#a3e635',
-                  textDecoration: 'none',
-                  fontWeight: 600,
+                  display: 'inline-flex', alignItems: 'center', gap: '0.375rem',
+                  fontSize: '0.8125rem', color: '#a3e635', textDecoration: 'none', fontWeight: 600,
                 }}
               >
                 <Zap size={13} />
-                Start your first audit
+                Create first audit
               </Link>
             </div>
           )}

@@ -759,3 +759,14 @@ body {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
+
+/* Report page mobile safety */
+@media (max-width: 480px) {
+  .dashboard-content-inner {
+    padding: 1.25rem 1rem;
+  }
+}
+
+/* Prevent long words/URLs from breaking layouts */
+.word-break-all { word-break: break-all; }
+.overflow-wrap-anywhere { overflow-wrap: anywhere; }

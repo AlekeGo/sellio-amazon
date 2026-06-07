@@ -1,142 +1,113 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { Zap, ArrowRight, FileText } from 'lucide-react'
+import { Zap, FileText, ArrowRight } from 'lucide-react'
 import { listAudits } from '../lib/auditsApi'
 import StatusBadge from '../components/ui/StatusBadge'
 import type { AuditListItem } from '../types/audit'
 
 function formatDate(iso: string) {
-  return new Date(iso).toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  })
+  return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
 }
 
-function AuditRow({ audit }: { audit: AuditListItem }) {
+function ScorePill({ score }: { score: number }) {
+  const color = score >= 80 ? '#a3e635' : score >= 60 ? '#fbbf24' : '#f97316'
+  const bg = score >= 80 ? 'rgba(163,230,53,0.1)' : score >= 60 ? 'rgba(251,191,36,0.1)' : 'rgba(249,115,22,0.1)'
+  const border = score >= 80 ? 'rgba(163,230,53,0.22)' : score >= 60 ? 'rgba(251,191,36,0.22)' : 'rgba(249,115,22,0.22)'
   return (
-    <Link
-      to={`/dashboard/audits/${audit.id}`}
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: '1rem',
-        padding: '0.875rem 1.125rem',
-        borderRadius: '0.75rem',
-        background: 'rgba(255,255,255,0.025)',
-        border: '1px solid rgba(255,255,255,0.07)',
-        textDecoration: 'none',
-        transition: 'all 0.15s ease',
-      }}
-      onMouseEnter={e => {
-        e.currentTarget.style.borderColor = 'rgba(163,230,53,0.18)'
-        e.currentTarget.style.background = 'rgba(163,230,53,0.03)'
-      }}
-      onMouseLeave={e => {
-        e.currentTarget.style.borderColor = 'rgba(255,255,255,0.07)'
-        e.currentTarget.style.background = 'rgba(255,255,255,0.025)'
-      }}
-    >
-      {audit.thumbnail ? (
-        <img
-          src={audit.thumbnail}
-          alt={audit.product_name}
-          style={{
-            width: 44,
-            height: 44,
-            borderRadius: '0.5rem',
-            objectFit: 'cover',
-            flexShrink: 0,
-            background: '#0a1510',
-            border: '1px solid rgba(255,255,255,0.07)',
-          }}
-        />
-      ) : (
-        <div
-          style={{
-            width: 44,
-            height: 44,
-            borderRadius: '0.5rem',
-            background: 'rgba(255,255,255,0.04)',
-            border: '1px solid rgba(255,255,255,0.07)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            flexShrink: 0,
-          }}
-        >
-          <FileText size={18} color="#334155" />
-        </div>
-      )}
+    <span style={{
+      display: 'inline-flex', alignItems: 'center', gap: '0.1875rem',
+      padding: '0.25rem 0.625rem', borderRadius: '99px',
+      fontSize: '0.8125rem', fontWeight: 800, letterSpacing: '-0.01em',
+      color, background: bg, border: `1px solid ${border}`, flexShrink: 0,
+    }}>
+      {score}<span style={{ fontSize: '0.625rem', fontWeight: 600, opacity: 0.6 }}>/100</span>
+    </span>
+  )
+}
 
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.625rem',
-            marginBottom: '0.25rem',
-            flexWrap: 'wrap',
-          }}
-        >
-          <span
+function AuditCard({ audit }: { audit: AuditListItem }) {
+  const [hovered, setHovered] = useState(false)
+  return (
+    <div
+      style={{
+        borderRadius: '0.875rem',
+        background: hovered ? 'rgba(163,230,53,0.025)' : 'rgba(255,255,255,0.025)',
+        border: `1px solid ${hovered ? 'rgba(163,230,53,0.16)' : 'rgba(255,255,255,0.07)'}`,
+        transition: 'all 0.15s ease',
+        overflow: 'hidden',
+      }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      <div style={{ display: 'flex', alignItems: 'center', gap: '0.875rem', padding: '1rem 1.25rem', flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.875rem', flex: 1, minWidth: 0 }}>
+          {audit.thumbnail ? (
+            <img
+              src={audit.thumbnail}
+              alt={audit.product_name}
+              style={{
+                width: 44, height: 44, borderRadius: '0.5rem',
+                objectFit: 'cover', flexShrink: 0,
+                background: '#0a1510', border: '1px solid rgba(255,255,255,0.07)',
+              }}
+            />
+          ) : (
+            <div style={{
+              width: 44, height: 44, borderRadius: '0.5rem',
+              background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+            }}>
+              <FileText size={18} color="#334155" />
+            </div>
+          )}
+
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.3125rem', flexWrap: 'wrap' }}>
+              <span style={{
+                fontSize: '0.9375rem', fontWeight: 700, color: '#f1f5f9',
+                overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                minWidth: 0,
+              }}>
+                {audit.product_name || 'Untitled Audit'}
+              </span>
+              <StatusBadge status={audit.status} />
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.375rem', flexWrap: 'wrap' }}>
+              {audit.category && (
+                <span style={{ fontSize: '0.8125rem', color: '#4b5563' }}>{audit.category}</span>
+              )}
+              {audit.category && <span style={{ fontSize: '0.75rem', color: '#334155' }}>·</span>}
+              <span style={{ fontSize: '0.8125rem', color: '#4b5563' }}>
+                {audit.entry_type === 'amazon_url' ? 'Amazon URL' : 'Product Photos'}
+              </span>
+              <span style={{ fontSize: '0.75rem', color: '#334155' }}>·</span>
+              <span style={{ fontSize: '0.8125rem', color: '#4b5563' }}>{formatDate(audit.created_at)}</span>
+            </div>
+          </div>
+        </div>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem', flexShrink: 0 }}>
+          {typeof audit.result_score === 'number' && (
+            <ScorePill score={audit.result_score} />
+          )}
+          <Link
+            to={`/dashboard/audits/${audit.id}`}
             style={{
-              fontSize: '0.875rem',
-              fontWeight: 600,
-              color: '#f1f5f9',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap',
-              maxWidth: 280,
+              display: 'inline-flex', alignItems: 'center', gap: '0.3125rem',
+              padding: '0.4375rem 0.875rem', borderRadius: '0.5rem',
+              background: hovered ? 'rgba(163,230,53,0.08)' : 'rgba(255,255,255,0.04)',
+              border: `1px solid ${hovered ? 'rgba(163,230,53,0.2)' : 'rgba(255,255,255,0.08)'}`,
+              color: hovered ? '#a3e635' : '#64748b',
+              fontSize: '0.8125rem', fontWeight: 600, textDecoration: 'none',
+              transition: 'all 0.15s', whiteSpace: 'nowrap',
             }}
           >
-            {audit.product_name || 'Untitled Audit'}
-          </span>
-          <StatusBadge status={audit.status} />
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
-          {audit.category && (
-            <span style={{ fontSize: '0.75rem', color: '#475569' }}>{audit.category}</span>
-          )}
-          {audit.category && (
-            <span style={{ fontSize: '0.75rem', color: '#334155' }}>·</span>
-          )}
-          <span style={{ fontSize: '0.75rem', color: '#334155' }}>
-            {audit.entry_type === 'amazon_url' ? 'Amazon URL' : 'Product Photos'}
-          </span>
-          <span style={{ fontSize: '0.75rem', color: '#334155' }}>·</span>
-          <span style={{ fontSize: '0.75rem', color: '#334155' }}>{formatDate(audit.created_at)}</span>
+            Open Report
+            <ArrowRight size={13} />
+          </Link>
         </div>
       </div>
-
-      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexShrink: 0 }}>
-        {typeof audit.result_score === 'number' && (
-          <span style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            padding: '0.1875rem 0.5625rem',
-            borderRadius: '99px',
-            fontSize: '0.75rem',
-            fontWeight: 800,
-            letterSpacing: '-0.01em',
-            color: audit.result_score >= 80 ? '#a3e635' : audit.result_score >= 60 ? '#fbbf24' : '#f97316',
-            background: audit.result_score >= 80
-              ? 'rgba(163,230,53,0.1)'
-              : audit.result_score >= 60
-              ? 'rgba(251,191,36,0.1)'
-              : 'rgba(249,115,22,0.1)',
-            border: `1px solid ${audit.result_score >= 80
-              ? 'rgba(163,230,53,0.2)'
-              : audit.result_score >= 60
-              ? 'rgba(251,191,36,0.2)'
-              : 'rgba(249,115,22,0.2)'}`,
-          }}>
-            {audit.result_score}
-          </span>
-        )}
-        <ArrowRight size={15} color="#334155" />
-      </div>
-    </Link>
+    </div>
   )
 }
 
@@ -153,114 +124,64 @@ export default function AuditsListPage() {
   }, [])
 
   return (
-    <div style={{ maxWidth: 700 }}>
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'flex-start',
-          justifyContent: 'space-between',
-          marginBottom: '1.75rem',
-          flexWrap: 'wrap',
-          gap: '1rem',
-        }}
-      >
+    <div style={{ maxWidth: 820 }}>
+      <div style={{
+        display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between',
+        marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem',
+      }}>
         <div>
-          <h1
-            style={{
-              fontSize: 'clamp(1.25rem, 3vw, 1.5rem)',
-              fontWeight: 900,
-              color: '#f1f5f9',
-              letterSpacing: '-0.03em',
-              margin: '0 0 0.375rem',
-            }}
-          >
+          <h1 style={{
+            fontSize: 'clamp(1.25rem, 3vw, 1.5rem)',
+            fontWeight: 900, color: '#f1f5f9', letterSpacing: '-0.03em', margin: '0 0 0.375rem',
+          }}>
             Your Audits
           </h1>
           <p style={{ fontSize: '0.875rem', color: '#64748b', margin: 0 }}>
-            All audit sessions and analysis history.
+            All audit sessions and AI analysis history.
           </p>
         </div>
-        <Link
-          to="/dashboard/new-audit"
-          className="btn-primary glow-button"
-          style={{ padding: '0.625rem 1.125rem', fontSize: '0.875rem' }}
-        >
+        <Link to="/dashboard/new-audit" className="btn-primary glow-button" style={{ padding: '0.625rem 1.125rem', fontSize: '0.875rem' }}>
           <Zap size={14} />
           New Audit
         </Link>
       </div>
 
       {loading && (
-        <div
-          style={{
-            textAlign: 'center',
-            padding: '3rem 0',
-            fontSize: '0.875rem',
-            color: '#475569',
-          }}
-        >
+        <div style={{ textAlign: 'center', padding: '3rem 0', fontSize: '0.875rem', color: '#475569' }}>
           Loading audits...
         </div>
       )}
 
       {error && (
-        <div
-          style={{
-            padding: '0.875rem 1rem',
-            borderRadius: '0.625rem',
-            background: 'rgba(239,68,68,0.07)',
-            border: '1px solid rgba(239,68,68,0.16)',
-            fontSize: '0.875rem',
-            color: '#fca5a5',
-          }}
-        >
+        <div style={{
+          padding: '0.875rem 1rem', borderRadius: '0.625rem',
+          background: 'rgba(239,68,68,0.07)', border: '1px solid rgba(239,68,68,0.16)',
+          fontSize: '0.875rem', color: '#fca5a5',
+        }}>
           {error}
         </div>
       )}
 
       {!loading && !error && audits.length === 0 && (
-        <div
-          style={{
-            textAlign: 'center',
-            padding: '3.5rem 2rem',
-            borderRadius: '0.875rem',
-            background: 'rgba(255,255,255,0.02)',
-            border: '1px dashed rgba(255,255,255,0.08)',
-          }}
-        >
-          <div
-            style={{
-              width: 52,
-              height: 52,
-              borderRadius: '0.75rem',
-              background: 'rgba(255,255,255,0.04)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              margin: '0 auto 1rem',
-            }}
-          >
-            <FileText size={22} color="#334155" />
+        <div style={{
+          textAlign: 'center', padding: '4rem 2rem', borderRadius: '1rem',
+          background: 'rgba(255,255,255,0.02)', border: '1px dashed rgba(255,255,255,0.07)',
+        }}>
+          <div style={{
+            width: 56, height: 56, borderRadius: '0.875rem',
+            background: 'rgba(163,230,53,0.06)', border: '1px solid rgba(163,230,53,0.12)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            margin: '0 auto 1.25rem',
+          }}>
+            <FileText size={24} color="#a3e635" />
           </div>
-          <h2
-            style={{
-              fontSize: '1rem',
-              fontWeight: 700,
-              color: '#475569',
-              margin: '0 0 0.375rem',
-              letterSpacing: '-0.02em',
-            }}
-          >
-            No audits yet.
+          <h2 style={{ fontSize: '1.0625rem', fontWeight: 700, color: '#475569', margin: '0 0 0.5rem', letterSpacing: '-0.02em' }}>
+            No audits yet
           </h2>
-          <p style={{ fontSize: '0.875rem', color: '#334155', margin: '0 0 1.5rem' }}>
-            Start your first audit.
+          <p style={{ fontSize: '0.875rem', color: '#334155', margin: '0 0 1.75rem', lineHeight: 1.6 }}>
+            Create your first audit to start getting AI-powered<br />conversion insights for your Amazon listing.
           </p>
-          <Link
-            to="/dashboard/new-audit"
-            className="btn-primary glow-button"
-            style={{ padding: '0.625rem 1.125rem', fontSize: '0.875rem' }}
-          >
+          <Link to="/dashboard/new-audit" className="btn-primary glow-button" style={{ padding: '0.625rem 1.25rem', fontSize: '0.875rem' }}>
             <Zap size={14} />
             Start your first audit
           </Link>
@@ -268,9 +189,9 @@ export default function AuditsListPage() {
       )}
 
       {!loading && !error && audits.length > 0 && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
           {audits.map(audit => (
-            <AuditRow key={audit.id} audit={audit} />
+            <AuditCard key={audit.id} audit={audit} />
           ))}
         </div>
       )}
