@@ -2,7 +2,7 @@ export type ImageGenerationStatus = 'generating' | 'completed' | 'failed'
 
 export interface ImageGeneration {
   id: number
-  audit: number | null
+  audit_id: number | null
   image_type: string
   prompt?: string
   status: ImageGenerationStatus
@@ -10,9 +10,21 @@ export interface ImageGeneration {
   model_name: string
   image_url: string | null
   error_message: string
+  brief?: Record<string, unknown> | null
+  product_visual_details?: string
+  style_direction?: string
+  background_preference?: string
+  text_intensity?: string
   created_at: string
   updated_at?: string
   completed_at: string | null
+}
+
+export interface QualityOptions {
+  productVisualDetails: string
+  styleDirection: string
+  backgroundPreference: string
+  textIntensity: string
 }
 
 export interface CreateImageGenerationPayload {
@@ -26,6 +38,9 @@ export interface CreateImageGenerationPayload {
     text_elements?: string[]
     buyer_objection?: string
     suggested_layout?: string
-    product_visual_details?: string
   }
+  product_visual_details?: string
+  style_direction?: string
+  background_preference?: string
+  text_intensity?: string
 }

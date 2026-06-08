@@ -2,9 +2,12 @@ import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { Zap, ArrowLeft } from 'lucide-react'
 import { getAudit } from '../lib/auditsApi'
-import { listImageGenerations, createImageGeneration } from '../lib/imageGenerationsApi'
+import {
+  listImageGenerations, createImageGeneration,
+  deleteImageGeneration, regenerateImageGeneration,
+} from '../lib/imageGenerationsApi'
 import type { AuditDetail, ImagePackPlanItem } from '../types/audit'
-import type { ImageGeneration } from '../types/imageGeneration'
+import type { ImageGeneration, QualityOptions } from '../types/imageGeneration'
 import ImageStudioHeader from '../components/image-studio/ImageStudioHeader'
 import ImagePackCard from '../components/image-studio/ImagePackCard'
 import ImageBriefPanel from '../components/image-studio/ImageBriefPanel'
@@ -81,6 +84,7 @@ export default function AuditImageStudioPage() {
 
   const [generations, setGenerations] = useState<ImageGeneration[]>([])
   const [generatingTypes, setGeneratingTypes] = useState<Set<string>>(new Set())
+  const [regeneratingIds, setRegeneratingIds] = useState<Set<number>>(new Set())
 
   useEffect(() => {
     if (!id) return
@@ -110,7 +114,7 @@ export default function AuditImageStudioPage() {
     return genByNormalizedType.get(normalizeType(itemType))
   }
 
-  async function handleGenerate(item: ImagePackPlanItem, productVisualDetails?: string) {
+  async function handleGenerate(item: ImagePackPlanItem, quality: QualityOptions) {
     if (!audit || generatingTypes.has(item.image_type)) return
 
     setGeneratingTypes(prev => new Set([...prev, item.image_type]))
@@ -126,12 +130,16 @@ export default function AuditImageStudioPage() {
           text_elements: item.text_elements,
           buyer_objection: item.buyer_objection,
           suggested_layout: item.suggested_layout,
-          product_visual_details: productVisualDetails || '',
         },
+        product_visual_details: quality.productVisualDetails,
+        style_direction: quality.styleDirection,
+        background_preference: quality.backgroundPreference,
+        text_intensity: quality.textIntensity,
       })
       setGenerations(prev => [res.data, ...prev])
-    } catch (err: any) {
-      const failedGen = err?.response?.data?.generation as ImageGeneration | undefined
+    } catch (err: unknown) {
+      const apiErr = err as { response?: { data?: { generation?: ImageGeneration } } }
+      const failedGen = apiErr?.response?.data?.generation
       if (failedGen) {
         setGenerations(prev => [failedGen, ...prev])
       }
@@ -139,6 +147,39 @@ export default function AuditImageStudioPage() {
       setGeneratingTypes(prev => {
         const next = new Set(prev)
         next.delete(item.image_type)
+        return next
+      })
+    }
+  }
+
+  async function handleDelete(genId: number) {
+    try {
+      await deleteImageGeneration(genId)
+      setGenerations(prev => prev.filter(g => g.id !== genId))
+    } catch {
+      // generation stays in UI if delete fails
+    }
+  }
+
+  async function handleRegenerate(genId: number) {
+    const orig = generations.find(g => g.id === genId)
+    if (!orig) return
+
+    setRegeneratingIds(prev => new Set([...prev, genId]))
+
+    try {
+      const res = await regenerateImageGeneration(genId)
+      setGenerations(prev => [res.data, ...prev])
+    } catch (err: unknown) {
+      const apiErr = err as { response?: { data?: { generation?: ImageGeneration } } }
+      const failedGen = apiErr?.response?.data?.generation
+      if (failedGen) {
+        setGenerations(prev => [failedGen, ...prev])
+      }
+    } finally {
+      setRegeneratingIds(prev => {
+        const next = new Set(prev)
+        next.delete(genId)
         return next
       })
     }
@@ -293,12 +334,17 @@ export default function AuditImageStudioPage() {
         background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)',
         marginBottom: '1.5rem',
       }}>
-        <GeneratedImageSlots generations={generations} />
+        <GeneratedImageSlots
+          generations={generations}
+          regeneratingIds={regeneratingIds}
+          onDelete={handleDelete}
+          onRegenerate={handleRegenerate}
+        />
       </div>
 
       <div style={{ marginBottom: '1.25rem' }}>
         <p style={{ fontSize: '0.875rem', color: '#64748b', margin: 0, lineHeight: 1.65 }}>
-          Select an image type to view its creative brief and prompt, then generate.
+          Select an image type to view its creative brief, set quality controls, and generate.
         </p>
       </div>
 
@@ -315,7 +361,10 @@ export default function AuditImageStudioPage() {
                 onSelect={() => handleCardSelect(i)}
                 generation={getGenForItem(item.image_type)}
                 isGenerating={generatingTypes.has(item.image_type)}
-                onGenerate={() => handleGenerate(item)}
+                onGenerate={() => {
+                  if (selectedIndex === i) return
+                  setSelectedIndex(i)
+                }}
               />
             ))}
           </div>
@@ -331,7 +380,7 @@ export default function AuditImageStudioPage() {
               index={selectedIndex!}
               generation={getGenForItem(selectedItem.image_type)}
               isGenerating={generatingTypes.has(selectedItem.image_type)}
-              onGenerate={(pvd) => handleGenerate(selectedItem, pvd)}
+              onGenerate={(quality) => handleGenerate(selectedItem, quality)}
             />
           ) : (
             <div style={{
@@ -354,7 +403,7 @@ export default function AuditImageStudioPage() {
                 Select an image type
               </h3>
               <p style={{ fontSize: '0.8125rem', color: '#475569', margin: 0, lineHeight: 1.65 }}>
-                Click <strong style={{ color: '#a3e635' }}>Prepare Brief</strong> on any card to see the creative brief, prompt, and generate.
+                Click <strong style={{ color: '#a3e635' }}>Prepare Brief</strong> on any card to see the creative brief, set quality controls, and generate.
               </p>
             </div>
           )}

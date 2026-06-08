@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Copy, Check, Layers, Zap, Loader2 } from 'lucide-react'
 import type { ImagePackPlanItem } from '../../types/audit'
-import type { ImageGeneration } from '../../types/imageGeneration'
+import type { ImageGeneration, QualityOptions } from '../../types/imageGeneration'
 
 const GRADIENTS = [
   'linear-gradient(135deg, #166534, #4ade80)',
@@ -12,18 +12,42 @@ const GRADIENTS = [
   'linear-gradient(135deg, #065f46, #34d399)',
 ]
 
+const STYLE_DIRECTIONS = [
+  { value: '', label: 'Default style' },
+  { value: 'Premium ecommerce', label: 'Premium ecommerce' },
+  { value: 'Clean Amazon infographic', label: 'Clean Amazon infographic' },
+  { value: 'Luxury product ad', label: 'Luxury product ad' },
+  { value: 'Minimal studio', label: 'Minimal studio' },
+  { value: 'Bold conversion-focused', label: 'Bold conversion-focused' },
+]
+
+const BACKGROUND_PREFS = [
+  { value: '', label: 'Default background' },
+  { value: 'Clean light background', label: 'Clean light background' },
+  { value: 'Dark premium background', label: 'Dark premium background' },
+  { value: 'Soft gradient background', label: 'Soft gradient background' },
+  { value: 'Lifestyle-inspired background', label: 'Lifestyle-inspired background' },
+]
+
+const TEXT_INTENSITIES = [
+  { value: '', label: 'Default text' },
+  { value: 'Minimal text', label: 'Minimal text' },
+  { value: 'Balanced text', label: 'Balanced text' },
+  { value: 'More explanatory text', label: 'More explanatory text' },
+]
+
 function buildPrompt(
   item: ImagePackPlanItem,
   productName: string,
   category: string,
-  productVisualDetails: string,
+  quality: QualityOptions,
 ): string {
   const lines: string[] = []
   if (productName) lines.push(`Product: ${productName}`)
   if (category) lines.push(`Category: ${category}`)
-  if (productVisualDetails) {
+  if (quality.productVisualDetails) {
     lines.push(
-      `Product visual details: ${productVisualDetails}. ` +
+      `Product visual details: ${quality.productVisualDetails}. ` +
       'CRITICAL — preserve color, shape, packaging, label position, and materials exactly.',
     )
   }
@@ -34,6 +58,9 @@ function buildPrompt(
   if (item.text_elements?.length) lines.push(`Text elements: ${item.text_elements.join(', ')}`)
   if (item.buyer_objection) lines.push(`Buyer objection addressed: ${item.buyer_objection}`)
   if (item.suggested_layout) lines.push(`Suggested layout: ${item.suggested_layout}`)
+  if (quality.styleDirection) lines.push(`Style direction: ${quality.styleDirection}`)
+  if (quality.backgroundPreference) lines.push(`Background preference: ${quality.backgroundPreference}`)
+  if (quality.textIntensity) lines.push(`Text intensity: ${quality.textIntensity}`)
   lines.push(
     'Style: Clean premium Amazon product infographic, marketplace-ready composition, ' +
     'high-quality studio lighting, modern premium design, high-converting visual hierarchy, ' +
@@ -62,6 +89,16 @@ function FieldRow({ label, children }: { label: string; children: React.ReactNod
   )
 }
 
+const selectStyle: React.CSSProperties = {
+  width: '100%', boxSizing: 'border-box',
+  padding: '0.5rem 0.75rem', borderRadius: '0.5rem',
+  background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)',
+  color: '#e2e8f0', fontSize: '0.8125rem',
+  fontFamily: 'inherit', outline: 'none',
+  appearance: 'none', WebkitAppearance: 'none',
+  cursor: 'pointer',
+}
+
 interface Props {
   item: ImagePackPlanItem
   productName: string
@@ -69,7 +106,7 @@ interface Props {
   index: number
   generation?: ImageGeneration
   isGenerating: boolean
-  onGenerate: (productVisualDetails: string) => void
+  onGenerate: (quality: QualityOptions) => void
 }
 
 export default function ImageBriefPanel({
@@ -77,8 +114,14 @@ export default function ImageBriefPanel({
   generation, isGenerating, onGenerate,
 }: Props) {
   const [copied, setCopied] = useState(false)
-  const [productVisualDetails, setProductVisualDetails] = useState('')
-  const prompt = buildPrompt(item, productName, category, productVisualDetails)
+  const [quality, setQuality] = useState<QualityOptions>({
+    productVisualDetails: '',
+    styleDirection: '',
+    backgroundPreference: '',
+    textIntensity: '',
+  })
+
+  const prompt = buildPrompt(item, productName, category, quality)
 
   const handleCopy = () => {
     navigator.clipboard.writeText(prompt).then(() => {
@@ -185,30 +228,91 @@ export default function ImageBriefPanel({
             </p>
           </FieldRow>
         )}
+      </div>
 
-        <FieldRow label="Product visual details">
-          <p style={{
-            fontSize: '0.6875rem', color: '#475569', margin: '0 0 0.5rem', lineHeight: 1.55,
-          }}>
-            Describe the product color, packaging, material, shape, and any details that must stay consistent.
-          </p>
-          <textarea
-            value={productVisualDetails}
-            onChange={e => setProductVisualDetails(e.target.value)}
-            placeholder="Example: yellow bottle, black cap, rectangular label, glossy plastic packaging, premium supplement product"
-            rows={3}
-            style={{
-              width: '100%', boxSizing: 'border-box',
-              padding: '0.625rem 0.75rem', borderRadius: '0.5rem',
-              background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)',
-              color: '#e2e8f0', fontSize: '0.8125rem', lineHeight: 1.6,
-              fontFamily: 'inherit', resize: 'vertical',
-              outline: 'none', transition: 'border-color 0.15s',
-            }}
-            onFocus={e => { e.currentTarget.style.borderColor = 'rgba(163,230,53,0.35)' }}
-            onBlur={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)' }}
-          />
-        </FieldRow>
+      <div style={{
+        margin: '0 1.375rem',
+        padding: '1rem 1.125rem',
+        borderRadius: '0.625rem',
+        background: 'rgba(163,230,53,0.025)',
+        border: '1px solid rgba(163,230,53,0.1)',
+        marginBottom: '1rem',
+      }}>
+        <div style={{
+          fontSize: '0.5625rem', fontWeight: 700, color: 'rgba(163,230,53,0.6)',
+          textTransform: 'uppercase', letterSpacing: '0.09em', marginBottom: '0.875rem',
+        }}>
+          Quality Controls
+        </div>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+          <FieldRow label="Product visual details">
+            <textarea
+              value={quality.productVisualDetails}
+              onChange={e => setQuality(q => ({ ...q, productVisualDetails: e.target.value }))}
+              placeholder="e.g. yellow bottle, black cap, rectangular label, glossy plastic, supplement product"
+              rows={3}
+              style={{
+                width: '100%', boxSizing: 'border-box',
+                padding: '0.625rem 0.75rem', borderRadius: '0.5rem',
+                background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)',
+                color: '#e2e8f0', fontSize: '0.8125rem', lineHeight: 1.6,
+                fontFamily: 'inherit', resize: 'vertical',
+                outline: 'none', transition: 'border-color 0.15s',
+              }}
+              onFocus={e => { e.currentTarget.style.borderColor = 'rgba(163,230,53,0.35)' }}
+              onBlur={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)' }}
+            />
+          </FieldRow>
+
+          <FieldRow label="Style direction">
+            <select
+              value={quality.styleDirection}
+              onChange={e => setQuality(q => ({ ...q, styleDirection: e.target.value }))}
+              style={selectStyle}
+              onFocus={e => { e.currentTarget.style.borderColor = 'rgba(163,230,53,0.35)' }}
+              onBlur={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)' }}
+            >
+              {STYLE_DIRECTIONS.map(o => (
+                <option key={o.value} value={o.value} style={{ background: '#0a1510' }}>
+                  {o.label}
+                </option>
+              ))}
+            </select>
+          </FieldRow>
+
+          <FieldRow label="Background">
+            <select
+              value={quality.backgroundPreference}
+              onChange={e => setQuality(q => ({ ...q, backgroundPreference: e.target.value }))}
+              style={selectStyle}
+              onFocus={e => { e.currentTarget.style.borderColor = 'rgba(163,230,53,0.35)' }}
+              onBlur={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)' }}
+            >
+              {BACKGROUND_PREFS.map(o => (
+                <option key={o.value} value={o.value} style={{ background: '#0a1510' }}>
+                  {o.label}
+                </option>
+              ))}
+            </select>
+          </FieldRow>
+
+          <FieldRow label="Text intensity">
+            <select
+              value={quality.textIntensity}
+              onChange={e => setQuality(q => ({ ...q, textIntensity: e.target.value }))}
+              style={selectStyle}
+              onFocus={e => { e.currentTarget.style.borderColor = 'rgba(163,230,53,0.35)' }}
+              onBlur={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)' }}
+            >
+              {TEXT_INTENSITIES.map(o => (
+                <option key={o.value} value={o.value} style={{ background: '#0a1510' }}>
+                  {o.label}
+                </option>
+              ))}
+            </select>
+          </FieldRow>
+        </div>
       </div>
 
       <div style={{ margin: '0 1.375rem', borderRadius: '0.625rem', border: '1px solid rgba(255,255,255,0.07)', overflow: 'hidden' }}>
@@ -267,7 +371,7 @@ export default function ImageBriefPanel({
         <button
           type="button"
           disabled={isGenerating}
-          onClick={() => onGenerate(productVisualDetails)}
+          onClick={() => onGenerate(quality)}
           style={{
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
             padding: '0.6875rem 1.25rem', borderRadius: '0.5rem', width: '100%',

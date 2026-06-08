@@ -54,12 +54,12 @@ const WORKFLOW = [
   {
     num: '03',
     label: 'Generate Images',
-    desc: 'One-click generation using your brief — powered by fal.ai. Coming Day 8.',
+    desc: 'One-click generation using your brief — powered by fal.ai. Preview, download, or regenerate from your gallery.',
   },
   {
     num: '04',
     label: 'Download & Upload',
-    desc: 'Export Amazon-ready PNG files and drop them directly into your listing. Coming soon.',
+    desc: 'Download your images directly and upload them to your Amazon listing.',
   },
 ]
 
@@ -101,7 +101,7 @@ export default function ImageStudioPage() {
           fontSize: '0.9375rem', color: '#64748b',
           margin: '0 0 1.5rem', maxWidth: 540, lineHeight: 1.75,
         }}>
-          Select an audit report and Sellio Image Studio will prepare creative briefs for all 6 image types — ready for AI generation.
+          Select an audit report to generate Amazon-ready visuals. Sellio Image Studio prepares creative briefs for all 6 image types — generate, preview, download, and manage your image pack.
         </p>
         <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
           <Link
@@ -221,7 +221,7 @@ export default function ImageStudioPage() {
             Ready to build your image pack?
           </h3>
           <p style={{ fontSize: '0.8125rem', color: '#475569', margin: 0, lineHeight: 1.5 }}>
-            Open any audit report and click the Image Studio button to get started.
+            Open any audit report and click Image Studio to start generating your pack.
           </p>
         </div>
         <Link
