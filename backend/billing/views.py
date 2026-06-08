@@ -13,6 +13,7 @@ from .serializers import (
     UserBillingProfileSerializer,
 )
 from .services import (
+    get_credit_status,
     get_or_create_billing_profile,
     get_or_create_credit_balance,
     grant_plan_credits,
@@ -32,12 +33,16 @@ class BillingMeView(APIView):
     def get(self, request):
         profile = get_or_create_billing_profile(request.user)
         balance = get_or_create_credit_balance(request.user)
+        credit_status = get_credit_status(request.user)
         transactions = request.user.credit_transactions.order_by('-created_at')[:20]
         payments = request.user.payments.order_by('-created_at')[:10]
 
         return Response({
             'profile': UserBillingProfileSerializer(profile).data,
             'balance': CreditBalanceSerializer(balance).data,
+            'can_run_audit': credit_status['can_run_audit'],
+            'can_generate_image': credit_status['can_generate_image'],
+            'upgrade_required': credit_status['upgrade_required'],
             'recent_transactions': CreditTransactionSerializer(transactions, many=True).data,
             'recent_payments': PaymentSerializer(payments, many=True).data,
         })

@@ -1,6 +1,7 @@
 import os
 
 import requests as http_requests
+from django.conf import settings
 from django.http import HttpResponse
 from django.utils import timezone
 from rest_framework import status
@@ -9,6 +10,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from audits.models import Audit
+from billing.services import consume_credit, get_or_create_credit_balance
 
 from .models import ImageGeneration
 from .serializers import (
@@ -18,6 +20,30 @@ from .serializers import (
 )
 from .services.fal_image_service import FalImageError, generate_image
 from .services.prompt_builder import build_image_prompt
+
+
+def _check_image_credit(user):
+    balance = get_or_create_credit_balance(user)
+    has_image_credit = balance.image_generation_credits > 0
+    has_full_upgrade = balance.full_upgrade_credits > 0
+    is_dev_mode = settings.DEBUG and os.getenv('PAYMENT_PROVIDER', 'mock') == 'mock'
+    allowed = has_image_credit or has_full_upgrade or is_dev_mode
+    return allowed, has_image_credit
+
+
+def _consume_image_credit_if_applicable(user, generation_id, has_image_credit):
+    if not has_image_credit:
+        return
+    try:
+        consume_credit(
+            user,
+            'image_generation',
+            1,
+            reason=f"Image generation {generation_id}",
+            metadata={'generation_id': str(generation_id)},
+        )
+    except Exception:
+        pass
 
 
 class ImageGenerationListCreateView(APIView):
@@ -32,6 +58,17 @@ class ImageGenerationListCreateView(APIView):
         return Response(serializer.data)
 
     def post(self, request):
+        allowed, has_image_credit = _check_image_credit(request.user)
+        if not allowed:
+            return Response(
+                {
+                    'code': 'NO_IMAGE_CREDITS',
+                    'detail': 'You have no image generation credits left. Choose a plan to continue.',
+                    'upgrade_required': True,
+                },
+                status=status.HTTP_402_PAYMENT_REQUIRED,
+            )
+
         serializer = ImageGenerationCreateSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         data = serializer.validated_data
@@ -94,6 +131,9 @@ class ImageGenerationListCreateView(APIView):
             generation.error_message = str(exc)
 
         generation.save()
+
+        if generation.status == ImageGeneration.STATUS_COMPLETED:
+            _consume_image_credit_if_applicable(request.user, generation.id, has_image_credit)
 
         if generation.status == ImageGeneration.STATUS_FAILED:
             return Response(
@@ -166,6 +206,17 @@ class ImageGenerationRegenerateView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, pk):
+        allowed, has_image_credit = _check_image_credit(request.user)
+        if not allowed:
+            return Response(
+                {
+                    'code': 'NO_IMAGE_CREDITS',
+                    'detail': 'You have no image generation credits left. Choose a plan to continue.',
+                    'upgrade_required': True,
+                },
+                status=status.HTTP_402_PAYMENT_REQUIRED,
+            )
+
         try:
             original = ImageGeneration.objects.get(id=pk, user=request.user)
         except ImageGeneration.DoesNotExist:
@@ -200,6 +251,9 @@ class ImageGenerationRegenerateView(APIView):
 
         new_generation.save()
 
+        if new_generation.status == ImageGeneration.STATUS_COMPLETED:
+            _consume_image_credit_if_applicable(request.user, new_generation.id, has_image_credit)
+
         if new_generation.status == ImageGeneration.STATUS_FAILED:
             return Response(
                 {
@@ -219,6 +273,17 @@ class ImageGenerationRetryView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, pk):
+        allowed, has_image_credit = _check_image_credit(request.user)
+        if not allowed:
+            return Response(
+                {
+                    'code': 'NO_IMAGE_CREDITS',
+                    'detail': 'You have no image generation credits left. Choose a plan to continue.',
+                    'upgrade_required': True,
+                },
+                status=status.HTTP_402_PAYMENT_REQUIRED,
+            )
+
         try:
             generation = ImageGeneration.objects.get(
                 id=pk,
@@ -246,6 +311,9 @@ class ImageGenerationRetryView(APIView):
             generation.error_message = str(exc)
 
         generation.save()
+
+        if generation.status == ImageGeneration.STATUS_COMPLETED:
+            _consume_image_credit_if_applicable(request.user, generation.id, has_image_credit)
 
         if generation.status == ImageGeneration.STATUS_FAILED:
             return Response(

@@ -50,6 +50,9 @@ export interface Payment {
 export interface BillingMeResponse {
   profile: UserBillingProfile
   balance: CreditBalance
+  can_run_audit: boolean
+  can_generate_image: boolean
+  upgrade_required: boolean
   recent_transactions: CreditTransaction[]
   recent_payments: Payment[]
 }

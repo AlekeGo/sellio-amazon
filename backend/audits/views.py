@@ -105,6 +105,16 @@ class AuditSubmitView(APIView):
         except Audit.DoesNotExist:
             return Response({'detail': 'Not found.'}, status=status.HTTP_404_NOT_FOUND)
 
+        if audit.status == 'completed':
+            audit = Audit.objects.prefetch_related('images', 'result').get(pk=pk)
+            return Response(AuditDetailSerializer(audit, context={'request': request}).data)
+
+        if audit.status == 'pending_analysis':
+            return Response(
+                {'detail': 'Audit analysis is already in progress. Please wait.'},
+                status=status.HTTP_202_ACCEPTED,
+            )
+
         if audit.status not in ('draft', 'ready_for_analysis', 'failed'):
             return Response(
                 {'detail': 'Audit cannot be submitted in its current status.'},
@@ -127,7 +137,11 @@ class AuditSubmitView(APIView):
         if not already_has_result:
             if not has_credit(request.user, 'audit', 1):
                 return Response(
-                    {'detail': 'You have no audit credits left. Choose a plan to continue.'},
+                    {
+                        'code': 'NO_AUDIT_CREDITS',
+                        'detail': 'You have no audit credits left. Choose a plan to continue.',
+                        'upgrade_required': True,
+                    },
                     status=status.HTTP_402_PAYMENT_REQUIRED,
                 )
             consume_credit(
@@ -135,7 +149,7 @@ class AuditSubmitView(APIView):
                 'audit',
                 1,
                 reason=f"Audit {audit.id} submitted",
-                metadata={'audit_id': audit.id},
+                metadata={'audit_id': str(audit.id)},
             )
             credit_consumed = True
 

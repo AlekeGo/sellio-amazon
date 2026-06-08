@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { Zap, ArrowRight, Crown, FileText, Star } from 'lucide-react'
+import { Zap, ArrowRight, Crown, FileText, Star, Package } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
 import { listAudits } from '../lib/auditsApi'
 import { getMyBilling } from '../lib/billingApi'
@@ -180,7 +180,9 @@ export default function DashboardPage() {
             {billing ? (PLAN_LABELS[billing.profile.current_plan] ?? billing.profile.current_plan) : 'Free Trial'}
           </div>
           <div style={{ fontSize: '0.75rem', color: '#475569' }}>
-            {billing?.profile.subscription_status === 'active' ? 'Active' : 'Limited access'}
+            {billing
+              ? (billing.profile.subscription_status === 'active' ? 'Active' : 'Limited access')
+              : '—'}
           </div>
         </div>
 
@@ -188,12 +190,14 @@ export default function DashboardPage() {
           style={{
             borderRadius: '0.75rem',
             padding: '1.125rem 1.25rem',
-            background: 'rgba(255,255,255,0.03)',
-            border: '1px solid rgba(255,255,255,0.08)',
+            background: billing && !billing.can_run_audit
+              ? 'rgba(249,115,22,0.04)'
+              : 'rgba(255,255,255,0.03)',
+            border: `1px solid ${billing && !billing.can_run_audit ? 'rgba(249,115,22,0.18)' : 'rgba(255,255,255,0.08)'}`,
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.375rem' }}>
-            <FileText size={14} color="#64748b" />
+            <FileText size={14} color={billing && !billing.can_run_audit ? '#f97316' : '#64748b'} />
             <span style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 500 }}>Audit credits</span>
           </div>
           <div
@@ -207,8 +211,8 @@ export default function DashboardPage() {
           >
             {billing?.balance.audit_credits ?? '—'}
           </div>
-          <div style={{ fontSize: '0.75rem', color: '#475569' }}>
-            {billing && billing.balance.audit_credits === 0 ? 'upgrade to audit' : 'AI listing audits'}
+          <div style={{ fontSize: '0.75rem', color: billing && !billing.can_run_audit ? '#f97316' : '#475569' }}>
+            {billing && !billing.can_run_audit ? 'upgrade to audit' : 'AI listing audits'}
           </div>
         </div>
 
@@ -222,7 +226,7 @@ export default function DashboardPage() {
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.375rem' }}>
             <Star size={14} color="#64748b" />
-            <span style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 500 }}>Full upgrade credits</span>
+            <span style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 500 }}>Full upgrade</span>
           </div>
           <div
             style={{
@@ -235,7 +239,33 @@ export default function DashboardPage() {
           >
             {billing?.balance.full_upgrade_credits ?? '—'}
           </div>
-          <div style={{ fontSize: '0.75rem', color: '#334155' }}>complete listing upgrades</div>
+          <div style={{ fontSize: '0.75rem', color: '#475569' }}>listing upgrades</div>
+        </div>
+
+        <div
+          style={{
+            borderRadius: '0.75rem',
+            padding: '1.125rem 1.25rem',
+            background: 'rgba(255,255,255,0.03)',
+            border: '1px solid rgba(255,255,255,0.08)',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.375rem' }}>
+            <Package size={14} color="#64748b" />
+            <span style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 500 }}>Image credits</span>
+          </div>
+          <div
+            style={{
+              fontSize: '1.5rem',
+              fontWeight: 900,
+              letterSpacing: '-0.03em',
+              color: billing && billing.balance.image_generation_credits > 0 ? '#f1f5f9' : '#334155',
+              marginBottom: '0.25rem',
+            }}
+          >
+            {billing?.balance.image_generation_credits ?? '—'}
+          </div>
+          <div style={{ fontSize: '0.75rem', color: '#475569' }}>AI image generations</div>
         </div>
       </div>
 
@@ -244,10 +274,17 @@ export default function DashboardPage() {
           <Zap size={15} />
           Create New Audit
         </Link>
-        <Link to="/dashboard/billing" className="btn-secondary">
-          Manage Billing
-          <ArrowRight size={15} />
-        </Link>
+        {billing?.upgrade_required ? (
+          <Link to="/dashboard/billing" className="btn-primary" style={{ background: 'rgba(163,230,53,0.12)', color: '#a3e635', border: '1px solid rgba(163,230,53,0.3)' }}>
+            <Crown size={15} />
+            Upgrade Plan
+          </Link>
+        ) : (
+          <Link to="/dashboard/billing" className="btn-secondary">
+            Manage Billing
+            <ArrowRight size={15} />
+          </Link>
+        )}
       </div>
 
       <div className="dashboard-bottom-grid">

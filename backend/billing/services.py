@@ -141,3 +141,12 @@ def has_credit(user, credit_type, amount=1):
         return False
 
     return getattr(balance, field) >= amount
+
+
+def get_credit_status(user):
+    balance = get_or_create_credit_balance(user)
+    return {
+        'can_run_audit': balance.audit_credits > 0,
+        'can_generate_image': balance.image_generation_credits > 0 or balance.full_upgrade_credits > 0,
+        'upgrade_required': balance.audit_credits <= 0 and balance.image_generation_credits <= 0 and balance.full_upgrade_credits <= 0,
+    }

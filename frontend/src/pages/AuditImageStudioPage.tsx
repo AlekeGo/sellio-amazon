@@ -1,17 +1,20 @@
 import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import { Zap, ArrowLeft } from 'lucide-react'
+import { Zap, ArrowLeft, Package } from 'lucide-react'
 import { getAudit } from '../lib/auditsApi'
 import {
   listImageGenerations, createImageGeneration,
   deleteImageGeneration, regenerateImageGeneration,
 } from '../lib/imageGenerationsApi'
+import { getMyBilling } from '../lib/billingApi'
 import type { AuditDetail, ImagePackPlanItem } from '../types/audit'
 import type { ImageGeneration, QualityOptions } from '../types/imageGeneration'
+import type { BillingMeResponse } from '../types/billing'
 import ImageStudioHeader from '../components/image-studio/ImageStudioHeader'
 import ImagePackCard from '../components/image-studio/ImagePackCard'
 import ImageBriefPanel from '../components/image-studio/ImageBriefPanel'
 import GeneratedImageSlots from '../components/image-studio/GeneratedImageSlots'
+import PaywallBlock from '../components/ui/PaywallBlock'
 
 const DEFAULT_ITEMS: ImagePackPlanItem[] = [
   {
@@ -85,6 +88,8 @@ export default function AuditImageStudioPage() {
   const [generations, setGenerations] = useState<ImageGeneration[]>([])
   const [generatingTypes, setGeneratingTypes] = useState<Set<string>>(new Set())
   const [regeneratingIds, setRegeneratingIds] = useState<Set<number>>(new Set())
+  const [billing, setBilling] = useState<BillingMeResponse | null>(null)
+  const [imagePaywall, setImagePaywall] = useState(false)
 
   useEffect(() => {
     if (!id) return
@@ -98,6 +103,7 @@ export default function AuditImageStudioPage() {
       })
       .catch(() => setError('Audit not found or you do not have access.'))
       .finally(() => setLoading(false))
+    getMyBilling().then(res => setBilling(res.data)).catch(() => {})
   }, [id])
 
   function normalizeType(t: string) {
@@ -138,6 +144,11 @@ export default function AuditImageStudioPage() {
       })
       setGenerations(prev => [res.data, ...prev])
     } catch (err: unknown) {
+      const httpStatus = (err as { response?: { status?: number } })?.response?.status
+      if (httpStatus === 402) {
+        setImagePaywall(true)
+        return
+      }
       const apiErr = err as { response?: { data?: { generation?: ImageGeneration } } }
       const failedGen = apiErr?.response?.data?.generation
       if (failedGen) {
@@ -157,7 +168,6 @@ export default function AuditImageStudioPage() {
       await deleteImageGeneration(genId)
       setGenerations(prev => prev.filter(g => g.id !== genId))
     } catch {
-      // generation stays in UI if delete fails
     }
   }
 
@@ -171,6 +181,11 @@ export default function AuditImageStudioPage() {
       const res = await regenerateImageGeneration(genId)
       setGenerations(prev => [res.data, ...prev])
     } catch (err: unknown) {
+      const httpStatus = (err as { response?: { status?: number } })?.response?.status
+      if (httpStatus === 402) {
+        setImagePaywall(true)
+        return
+      }
       const apiErr = err as { response?: { data?: { generation?: ImageGeneration } } }
       const failedGen = apiErr?.response?.data?.generation
       if (failedGen) {
@@ -240,6 +255,18 @@ export default function AuditImageStudioPage() {
     <div style={{ maxWidth: 1100 }}>
       <ImageStudioHeader audit={audit} result={audit.result} />
 
+      {imagePaywall && (
+        <div style={{ marginBottom: '1.5rem' }}>
+          <PaywallBlock
+            title="You need image generation credits to create more visuals."
+            subtitle="Choose a plan to continue generating premium Amazon-ready images."
+            creditsLine="Current credits: 0 images left"
+            primaryCta={{ label: 'Manage Billing', to: '/dashboard/billing' }}
+            secondaryCta={{ label: 'View Plans', to: '/dashboard/billing#billing-plans' }}
+          />
+        </div>
+      )}
+
       <div style={{
         borderRadius: '0.75rem', padding: '0.875rem 1.25rem',
         background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)',
@@ -262,7 +289,29 @@ export default function AuditImageStudioPage() {
             <div className="score-bar-fill" style={{ width: `${progressPct}%` }} />
           </div>
         </div>
-        <div style={{ display: 'flex', gap: '0.375rem', flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', gap: '0.375rem', flexWrap: 'wrap', alignItems: 'center' }}>
+          {billing && billing.balance.image_generation_credits > 0 && (
+            <span style={{
+              display: 'inline-flex', alignItems: 'center', gap: '0.3125rem',
+              padding: '0.25rem 0.625rem', borderRadius: '99px',
+              background: 'rgba(163,230,53,0.07)', border: '1px solid rgba(163,230,53,0.18)',
+              fontSize: '0.6875rem', fontWeight: 700, color: '#a3e635',
+            }}>
+              <Package size={11} />
+              {billing.balance.image_generation_credits} image{billing.balance.image_generation_credits !== 1 ? 's' : ''} left
+            </span>
+          )}
+          {billing && billing.balance.image_generation_credits === 0 && billing.balance.full_upgrade_credits > 0 && (
+            <span style={{
+              display: 'inline-flex', alignItems: 'center', gap: '0.3125rem',
+              padding: '0.25rem 0.625rem', borderRadius: '99px',
+              background: 'rgba(52,211,153,0.07)', border: '1px solid rgba(52,211,153,0.18)',
+              fontSize: '0.6875rem', fontWeight: 700, color: '#34d399',
+            }}>
+              <Package size={11} />
+              Full Upgrade active
+            </span>
+          )}
           {[
             { label: 'Planned', active: completedCount === 0 && generatingTypes.size === 0 },
             { label: 'Generating', active: generatingTypes.size > 0 },
@@ -274,7 +323,7 @@ export default function AuditImageStudioPage() {
               border: `1px solid ${s.active ? 'rgba(163,230,53,0.18)' : 'rgba(255,255,255,0.08)'}`,
               fontSize: '0.5625rem', fontWeight: 700,
               color: s.active ? '#a3e635' : '#475569',
-              textTransform: 'uppercase', letterSpacing: '0.05em',
+              textTransform: 'uppercase' as const, letterSpacing: '0.05em',
             }}>
               {s.label}
             </span>

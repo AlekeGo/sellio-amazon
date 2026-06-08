@@ -19,9 +19,9 @@ PLANS = {
         'price_display': '$29',
         'amount_cents': 2900,
         'mode': 'payment',
-        'audit_credits': 0,
+        'audit_credits': 1,
         'full_upgrade_credits': 1,
-        'image_generation_credits': 0,
+        'image_generation_credits': 6,
         'features': [
             '1 full listing upgrade',
             'One-time purchase',
@@ -35,7 +35,7 @@ PLANS = {
         'mode': 'subscription',
         'audit_credits': 3,
         'full_upgrade_credits': 1,
-        'image_generation_credits': 0,
+        'image_generation_credits': 6,
         'features': [
             '3 audits/month',
             '1 full upgrade/month',
@@ -49,7 +49,7 @@ PLANS = {
         'mode': 'subscription',
         'audit_credits': 7,
         'full_upgrade_credits': 3,
-        'image_generation_credits': 0,
+        'image_generation_credits': 18,
         'features': [
             '7 audits/month',
             '3 full upgrades/month',
@@ -63,7 +63,7 @@ PLANS = {
         'mode': 'subscription',
         'audit_credits': 10,
         'full_upgrade_credits': 5,
-        'image_generation_credits': 0,
+        'image_generation_credits': 30,
         'features': [
             '10 audits/month',
             '5 full upgrades/month',
@@ -77,7 +77,7 @@ PLANS = {
         'mode': 'subscription',
         'audit_credits': 25,
         'full_upgrade_credits': 15,
-        'image_generation_credits': 0,
+        'image_generation_credits': 90,
         'features': [
             '25 audits/month',
             '15 full upgrades/month',
@@ -89,9 +89,9 @@ PLANS = {
         'price_display': '$19',
         'amount_cents': 1900,
         'mode': 'payment',
-        'audit_credits': 0,
+        'audit_credits': 1,
         'full_upgrade_credits': 1,
-        'image_generation_credits': 0,
+        'image_generation_credits': 6,
         'features': [
             '1 additional full upgrade',
         ],
@@ -102,11 +102,11 @@ PLANS = {
         'price_display': '$9',
         'amount_cents': 900,
         'mode': 'payment',
-        'audit_credits': 1,
+        'audit_credits': 3,
         'full_upgrade_credits': 0,
         'image_generation_credits': 0,
         'features': [
-            '1 additional audit',
+            '3 additional audits',
         ],
     },
 }

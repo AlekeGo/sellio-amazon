@@ -237,7 +237,7 @@ export default function BillingPage() {
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem' }}>
             <CheckCircle2 size={16} color="#a3e635" />
             <span style={{ fontSize: '0.875rem', fontWeight: 600, color: '#d4f5a0' }}>
-              Payment completed — credits have been added to your account.
+              Credits added successfully.
             </span>
           </div>
           <button onClick={() => setBanner(null)} style={{
@@ -442,7 +442,7 @@ export default function BillingPage() {
                         RECOMMENDED
                       </div>
                     )}
-                    {isCurrent && (
+                    {isCurrent && !isHighlighted && (
                       <div style={{
                         position: 'absolute', top: -12, right: 12,
                         background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)',

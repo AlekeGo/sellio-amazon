@@ -1,8 +1,11 @@
 import { useState, useEffect, useRef, Fragment } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Link2, Upload, ArrowLeft, ArrowRight, ChevronRight, X, AlertCircle, Zap, Crown } from 'lucide-react'
+import { Link2, Upload, ArrowLeft, ChevronRight, X, AlertCircle, Zap } from 'lucide-react'
 import { createAudit, submitAudit, uploadAuditImages } from '../lib/auditsApi'
+import { getMyBilling } from '../lib/billingApi'
 import type { CreateAuditPayload } from '../types/audit'
+import type { BillingMeResponse } from '../types/billing'
+import PaywallBlock from '../components/ui/PaywallBlock'
 
 const AMAZON_URL_RE =
   /amazon\.(com|co\.(uk|jp)|de|fr|es|it|ca|com\.(au|br|mx|tr)|in|nl|sg|ae|sa|pl|se)/i
@@ -338,6 +341,7 @@ export default function NewAuditPage() {
   const [stepError, setStepError] = useState<string | null>(null)
   const [submitError, setSubmitError] = useState<string | null>(null)
   const [creditExhausted, setCreditExhausted] = useState(false)
+  const [billing, setBilling] = useState<BillingMeResponse | null>(null)
 
   const fileUrlsRef = useRef(new Map<File, string>())
   const getFileUrl = (file: File) => {
@@ -362,6 +366,12 @@ export default function NewAuditPage() {
     return () => {
       for (const url of cache.values()) URL.revokeObjectURL(url)
     }
+  }, [])
+
+  useEffect(() => {
+    getMyBilling()
+      .then(res => setBilling(res.data))
+      .catch(() => {})
   }, [])
 
   const sf = (field: keyof FormState) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
@@ -446,7 +456,13 @@ export default function NewAuditPage() {
     setStep(3)
   }
 
+  const showPaywall = creditExhausted || (billing !== null && !billing.can_run_audit)
+
   const handleSubmit = async () => {
+    if (billing && !billing.can_run_audit) {
+      setCreditExhausted(true)
+      return
+    }
     setLoading(true)
     setSubmitError(null)
     setCreditExhausted(false)
@@ -888,42 +904,17 @@ export default function NewAuditPage() {
             )}
           </div>
 
-          {creditExhausted && (
-            <div style={{
-              marginTop: '1.25rem',
-              borderRadius: '0.875rem',
-              padding: '1.5rem',
-              background: 'rgba(163,230,53,0.03)',
-              border: '1px solid rgba(163,230,53,0.18)',
-              textAlign: 'center',
-            }}>
-              <div style={{
-                width: 44, height: 44, borderRadius: '0.625rem',
-                background: 'rgba(163,230,53,0.06)', border: '1px solid rgba(163,230,53,0.14)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                margin: '0 auto 1rem',
-              }}>
-                <Crown size={20} color="#a3e635" />
-              </div>
-              <h3 style={{ fontSize: '1rem', fontWeight: 800, color: '#f1f5f9', margin: '0 0 0.375rem', letterSpacing: '-0.02em' }}>
-                You've used your free audit.
-              </h3>
-              <p style={{ fontSize: '0.875rem', color: '#64748b', margin: '0 0 1.25rem', lineHeight: 1.6 }}>
-                Choose a plan to continue improving your Amazon listings.
-              </p>
-              <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-                <Link to="/dashboard/billing" className="btn-primary">
-                  View Plans
-                  <ArrowRight size={14} />
-                </Link>
-                <Link to="/dashboard/billing" className="btn-secondary">
-                  Manage Billing
-                </Link>
-              </div>
+          {showPaywall && (
+            <div style={{ marginTop: '1.25rem' }}>
+              <PaywallBlock
+                title="You've used your free audit."
+                subtitle="Choose a plan to continue improving your Amazon listings with AI audits and premium image packs."
+                creditsLine="Current credits: 0 audits left"
+              />
             </div>
           )}
 
-          {submitError && !creditExhausted && (
+          {submitError && !showPaywall && (
             <div style={{ marginTop: '1.25rem' }}>
               <ErrorBanner message={submitError} />
             </div>
@@ -938,7 +929,7 @@ export default function NewAuditPage() {
             >
               Back
             </button>
-            {!creditExhausted && (
+            {!showPaywall && (
               <button
                 type="button"
                 onClick={handleSubmit}
