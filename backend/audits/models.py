@@ -21,6 +21,8 @@ class AuditResult(models.Model):
     a_plus_content_ideas = models.JSONField(default=list)
     image_pack_plan = models.JSONField(default=list)
     priority_checklist = models.JSONField(default=list)
+    concise_report = models.JSONField(null=True, blank=True)
+    report_version = models.CharField(max_length=10, default='v1')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -59,6 +61,18 @@ class Audit(models.Model):
     target_audience = models.TextField(blank=True)
     seller_goal = models.TextField(blank=True)
     notes = models.TextField(blank=True)
+
+    about_this_item = models.TextField(blank=True)
+    product_details = models.TextField(blank=True)
+    product_specifications = models.TextField(blank=True)
+    brand_content = models.TextField(blank=True)
+    a_plus_content = models.TextField(blank=True)
+    variations = models.TextField(blank=True)
+    size_guide = models.TextField(blank=True)
+    product_images_notes = models.TextField(blank=True)
+    videos_notes = models.TextField(blank=True)
+    reviews_qna = models.TextField(blank=True)
+    buyer_complaints = models.TextField(blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

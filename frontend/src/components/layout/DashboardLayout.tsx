@@ -11,9 +11,11 @@ import {
   LogOut,
   Menu,
   X,
+  Home,
 } from 'lucide-react'
 
 const NAV_ITEMS = [
+  { icon: Home, label: 'Home', path: '/', end: true },
   { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard', end: true },
   { icon: Zap, label: 'New Audit', path: '/dashboard/new-audit', end: false },
   { icon: ClipboardList, label: 'Audits', path: '/dashboard/audits', end: false },

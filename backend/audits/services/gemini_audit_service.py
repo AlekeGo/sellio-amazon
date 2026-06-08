@@ -7,14 +7,15 @@ from google import genai
 from google.genai import types
 
 
-REQUIRED_FIELDS = [
-    'score', 'score_label', 'executive_summary', 'conversion_diagnosis',
-    'weak_points', 'title_analysis', 'improved_title', 'bullet_improvements',
-    'improved_bullets', 'description_analysis', 'improved_description',
-    'keyword_opportunities', 'review_insights', 'buyer_objections',
-    'a_plus_content_ideas', 'image_pack_plan', 'priority_checklist',
+REQUIRED_FIELDS_V2 = [
+    'score', 'score_label', 'executive_summary',
+    'top_critical_issues', 'fix_this_first',
+    'title_upgrade', 'about_this_item_upgrade',
+    'product_details_fixes', 'description_upgrade',
+    'keyword_opportunities', 'buyer_objections',
+    'image_gallery_plan', 'a_plus_brand_plan',
+    'priority_checklist', 'details',
 ]
-
 
 _TEMPORARY_SIGNALS = (
     '503', 'unavailable', 'rate limit', 'resource exhausted',
@@ -32,18 +33,29 @@ def _is_temporary_error(exc: Exception) -> bool:
 
 
 def _build_prompt(audit) -> str:
-    return f"""You are a senior Amazon listing conversion auditor, Amazon SEO copywriter, and marketplace creative strategist.
+    about_bullets = audit.about_this_item or audit.bullet_points or 'Not provided'
+    brand_aplus = audit.brand_content or audit.a_plus_content or 'Not provided'
 
-Analyze the following Amazon product listing and produce a comprehensive audit report.
+    return f"""You are a senior Amazon listing conversion auditor and SEO copywriter.
+
+Analyze this Amazon product listing and return a concise, actionable audit report.
 
 PRODUCT DATA:
 - Product Name: {audit.product_name or 'Not provided'}
 - Category: {audit.category or 'Not provided'}
 - Amazon URL: {audit.amazon_url or 'Not provided'}
 - Current Title: {audit.current_title or 'Not provided'}
-- Bullet Points: {audit.bullet_points or 'Not provided'}
+- About This Item / Bullet Points: {about_bullets}
+- Product Details / Top Highlights: {audit.product_details or 'Not provided'}
+- Product Specifications: {audit.product_specifications or 'Not provided'}
 - Description: {audit.description or 'Not provided'}
-- Backend Keywords: {audit.backend_keywords or 'Not provided'}
+- Brand / A+ Content: {brand_aplus}
+- Variations (size/color/options): {audit.variations or 'Not provided'}
+- Size Guide: {audit.size_guide or 'Not provided'}
+- Product Images Notes: {audit.product_images_notes or 'Not provided'}
+- Videos Notes: {audit.videos_notes or 'Not provided'}
+- Reviews / Q&A: {audit.reviews_qna or 'Not provided'}
+- Buyer Complaints: {audit.buyer_complaints or 'Not provided'}
 - Price: {audit.price or 'Not provided'}
 - Rating: {audit.rating or 'Not provided'}
 - Review Count: {audit.review_count or 'Not provided'}
@@ -52,88 +64,103 @@ PRODUCT DATA:
 - Seller Goal: {audit.seller_goal or 'Not provided'}
 - Additional Notes: {audit.notes or 'Not provided'}
 
-Return ONLY valid JSON with no markdown fences, no explanation, and no extra text. Use this exact structure:
+Rules:
+- Return ONLY valid JSON. No markdown fences, no explanation, no extra text.
+- Keep all text SHORT. Every field is 1 sentence max unless noted.
+- executive_summary: exactly 1 sentence summarising the biggest opportunity.
+- about_this_item_upgrade.improved_bullets: exactly 5 bullets, each ready to paste into Amazon.
+- title_upgrade.improved_title: ready-to-use Amazon title under 200 chars.
+- description_upgrade.improved_description: max 3 sentences, ready to paste.
+- top_critical_issues: max 5 items.
+- fix_this_first: max 3 items.
+- product_details_fixes: max 5 items.
+- keyword_opportunities: max 8 items.
+- buyer_objections: max 5 items.
+- image_gallery_plan: max 6 items.
+- a_plus_brand_plan: max 3 items.
+- priority_checklist: max 5 items.
+
+Return this exact JSON structure:
 
 {{
   "score": <integer 0-100>,
-  "score_label": "<short label describing the score>",
-  "executive_summary": "<2-3 paragraph overall assessment>",
-  "conversion_diagnosis": {{
-    "attention": "<how well the listing captures attention>",
-    "trust": "<how well it builds trust>",
-    "clarity": "<how clear the value proposition is>",
-    "conversion": "<conversion signal strength>"
-  }},
-  "weak_points": [
+  "score_label": "<short label max 6 words>",
+  "executive_summary": "<1 sentence — the single biggest opportunity for this listing>",
+  "top_critical_issues": [
     {{
-      "area": "<area name>",
-      "issue": "<specific issue>",
-      "impact": "<business impact>",
-      "fix": "<actionable fix>"
+      "area": "<Amazon section name>",
+      "problem": "<1 sentence>",
+      "impact": "<1 sentence>",
+      "fix": "<1 sentence>"
     }}
   ],
-  "title_analysis": {{
-    "current_problem": "<what is wrong with the current title>",
-    "strategy": "<strategy for improvement>"
-  }},
-  "improved_title": "<full improved title under 200 chars>",
-  "bullet_improvements": [
+  "fix_this_first": [
     {{
-      "current_issue": "<what is weak>",
-      "improved_version": "<improved bullet text>"
+      "task": "<short task name>",
+      "reason": "<1 sentence>"
     }}
   ],
-  "improved_bullets": ["<bullet 1>", "<bullet 2>", "<bullet 3>", "<bullet 4>", "<bullet 5>"],
-  "description_analysis": {{
-    "current_problem": "<what is wrong with the description>",
-    "improvement_strategy": "<how to improve it>"
+  "title_upgrade": {{
+    "current_issue": "<1 sentence>",
+    "improved_title": "<ready-to-use Amazon title under 200 chars>"
   }},
-  "improved_description": "<full improved description>",
+  "about_this_item_upgrade": {{
+    "strategy": "<1 sentence>",
+    "improved_bullets": ["<bullet 1>", "<bullet 2>", "<bullet 3>", "<bullet 4>", "<bullet 5>"]
+  }},
+  "product_details_fixes": [
+    {{
+      "field": "<spec or detail name>",
+      "issue": "<1 sentence>",
+      "recommended_fix": "<1 sentence>"
+    }}
+  ],
+  "description_upgrade": {{
+    "current_issue": "<1 sentence>",
+    "improved_description": "<max 3 sentences>"
+  }},
   "keyword_opportunities": [
     {{
       "keyword": "<keyword phrase>",
-      "reason": "<why this keyword matters>"
-    }}
-  ],
-  "review_insights": [
-    {{
-      "signal": "<pattern from reviews>",
-      "what_it_means": "<what it reveals about buyers>",
-      "listing_fix": "<how to address it in the listing>"
+      "reason": "<1 sentence>"
     }}
   ],
   "buyer_objections": [
     {{
-      "objection": "<likely buyer objection>",
-      "how_to_address": "<how to address it in the listing>"
+      "objection": "<1 sentence>",
+      "how_to_address": "<1 sentence>"
     }}
   ],
-  "a_plus_content_ideas": [
+  "image_gallery_plan": [
+    {{
+      "image_type": "<e.g. Hero Shot, Lifestyle, Benefit Infographic>",
+      "goal": "<1 sentence>",
+      "headline": "<short headline text>",
+      "visual_direction": "<1 sentence>",
+      "text_elements": ["<short text>", "<short text>"]
+    }}
+  ],
+  "a_plus_brand_plan": [
     {{
       "section": "<section name>",
-      "purpose": "<purpose of this section>",
-      "content_idea": "<specific content recommendation>"
-    }}
-  ],
-  "image_pack_plan": [
-    {{
-      "image_type": "<type of image>",
-      "goal": "<goal of this image>",
-      "headline": "<headline text for the image>",
-      "visual_direction": "<visual direction>",
-      "text_elements": ["<text element 1>", "<text element 2>"]
+      "purpose": "<1 sentence>",
+      "content_idea": "<1 sentence>"
     }}
   ],
   "priority_checklist": [
     {{
       "priority": "<High|Medium|Low>",
-      "task": "<specific actionable task>",
-      "reason": "<why this matters>"
+      "task": "<short task>",
+      "reason": "<1 sentence>"
     }}
-  ]
-}}
-
-Provide at least 3 weak_points, 5 bullet_improvements, 5 improved_bullets, 5 keyword_opportunities, 3 review_insights, 3 buyer_objections, 3 a_plus_content_ideas, 4 image_pack_plan items, and 5 priority_checklist items."""
+  ],
+  "details": {{
+    "title": "<optional deeper note max 3 sentences>",
+    "bullets": "<optional deeper note max 3 sentences>",
+    "images": "<optional deeper note max 3 sentences>",
+    "product_details": "<optional deeper note max 3 sentences>"
+  }}
+}}"""
 
 
 def _strip_fences(text: str) -> str:
@@ -171,15 +198,13 @@ def run_gemini_audit(audit) -> dict:
             raw = _strip_fences(response.text)
             data = json.loads(raw)
 
-            missing = [f for f in REQUIRED_FIELDS if f not in data]
+            missing = [f for f in REQUIRED_FIELDS_V2 if f not in data]
             if missing:
                 raise ValueError(f'Gemini response missing fields: {missing}')
 
             data['score'] = int(data['score'])
             data['score_label'] = str(data.get('score_label', ''))
             data['executive_summary'] = str(data.get('executive_summary', ''))
-            data['improved_title'] = str(data.get('improved_title', ''))
-            data['improved_description'] = str(data.get('improved_description', ''))
 
             return data
 

@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, Fragment } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Link2, Upload, ArrowLeft, ChevronRight, X, AlertCircle, Zap } from 'lucide-react'
+import { Link2, Upload, ArrowLeft, ChevronRight, ChevronDown, X, AlertCircle, Zap } from 'lucide-react'
 import { createAudit, submitAudit, uploadAuditImages } from '../lib/auditsApi'
 import { getMyBilling } from '../lib/billingApi'
 import type { CreateAuditPayload } from '../types/audit'
@@ -24,6 +24,13 @@ const initialForm = {
   targetAudience: '',
   sellerGoal: '',
   notes: '',
+  aboutThisItem: '',
+  productDetails: '',
+  productSpecifications: '',
+  brandContent: '',
+  aPlusContent: '',
+  productImagesNotes: '',
+  reviewsQna: '',
 }
 
 type FormState = typeof initialForm
@@ -59,9 +66,19 @@ function buildPayload(entryType: 'amazon_url' | 'product_photos', form: FormStat
       price: form.price || undefined,
       rating: form.rating || undefined,
       review_count: form.reviewCount || undefined,
+      about_this_item: form.aboutThisItem || undefined,
+      product_details: form.productDetails || undefined,
+      product_specifications: form.productSpecifications || undefined,
+      brand_content: form.brandContent || undefined,
+      a_plus_content: form.aPlusContent || undefined,
+      product_images_notes: form.productImagesNotes || undefined,
+      reviews_qna: form.reviewsQna || undefined,
     }
   }
-  return base
+  return {
+    ...base,
+    product_specifications: form.productSpecifications || undefined,
+  }
 }
 
 const inputStyle: React.CSSProperties = {
@@ -80,7 +97,7 @@ const inputStyle: React.CSSProperties = {
 const textareaStyle: React.CSSProperties = {
   ...inputStyle,
   resize: 'vertical',
-  minHeight: 72,
+  minHeight: 80,
   lineHeight: 1.6,
 }
 
@@ -92,6 +109,13 @@ const labelStyle: React.CSSProperties = {
   marginBottom: '0.375rem',
   textTransform: 'uppercase',
   letterSpacing: '0.06em',
+}
+
+const helperStyle: React.CSSProperties = {
+  fontSize: '0.75rem',
+  color: '#475569',
+  marginTop: '0.375rem',
+  lineHeight: 1.5,
 }
 
 const backBtnStyle: React.CSSProperties = {
@@ -331,6 +355,94 @@ function InfoNote({ children }: { children: React.ReactNode }) {
   )
 }
 
+function CollapsibleSection({
+  title,
+  badge,
+  defaultOpen = false,
+  children,
+}: {
+  title: string
+  badge?: string
+  defaultOpen?: boolean
+  children: React.ReactNode
+}) {
+  const [open, setOpen] = useState(defaultOpen)
+
+  return (
+    <div
+      style={{
+        borderRadius: '0.75rem',
+        border: '1px solid rgba(255,255,255,0.07)',
+        overflow: 'hidden',
+      }}
+    >
+      <button
+        type="button"
+        onClick={() => setOpen(o => !o)}
+        style={{
+          width: '100%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          padding: '0.875rem 1rem',
+          background: open ? 'rgba(255,255,255,0.04)' : 'rgba(255,255,255,0.02)',
+          border: 'none',
+          cursor: 'pointer',
+          textAlign: 'left',
+          gap: '0.75rem',
+          fontFamily: 'inherit',
+          transition: 'background 0.15s',
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem' }}>
+          <span style={{ fontSize: '0.875rem', fontWeight: 600, color: open ? '#f1f5f9' : '#94a3b8' }}>
+            {title}
+          </span>
+          {badge && (
+            <span
+              style={{
+                fontSize: '0.5875rem',
+                fontWeight: 700,
+                color: '#a3e635',
+                background: 'rgba(163,230,53,0.08)',
+                border: '1px solid rgba(163,230,53,0.18)',
+                padding: '0.125rem 0.4375rem',
+                borderRadius: '99px',
+                textTransform: 'uppercase',
+                letterSpacing: '0.05em',
+              }}
+            >
+              {badge}
+            </span>
+          )}
+        </div>
+        <ChevronDown
+          size={14}
+          color="#475569"
+          style={{
+            transform: open ? 'rotate(180deg)' : 'rotate(0deg)',
+            transition: 'transform 0.2s ease',
+            flexShrink: 0,
+          }}
+        />
+      </button>
+      {open && (
+        <div
+          style={{
+            padding: '1rem',
+            borderTop: '1px solid rgba(255,255,255,0.05)',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '1rem',
+          }}
+        >
+          {children}
+        </div>
+      )}
+    </div>
+  )
+}
+
 export default function NewAuditPage() {
   const navigate = useNavigate()
   const [step, setStep] = useState<1 | 2 | 3>(1)
@@ -406,23 +518,25 @@ export default function NewAuditPage() {
     />
   )
 
-  const fld = (label: string, field: keyof FormState, placeholder?: string, optional = false) => (
+  const fld = (label: string, field: keyof FormState, placeholder?: string, optional = false, helper?: string) => (
     <div>
       <label style={labelStyle}>
         {label}
         {optional && <span style={{ color: '#334155', fontWeight: 400, marginLeft: 4 }}>(optional)</span>}
       </label>
       {inp(field, placeholder)}
+      {helper && <p style={helperStyle}>{helper}</p>}
     </div>
   )
 
-  const tfld = (label: string, field: keyof FormState, placeholder?: string, optional = false, rows = 3) => (
+  const tfld = (label: string, field: keyof FormState, placeholder?: string, optional = false, rows = 3, helper?: string) => (
     <div>
       <label style={labelStyle}>
         {label}
         {optional && <span style={{ color: '#334155', fontWeight: 400, marginLeft: 4 }}>(optional)</span>}
       </label>
       {txta(field, placeholder, rows)}
+      {helper && <p style={helperStyle}>{helper}</p>}
     </div>
   )
 
@@ -785,8 +899,184 @@ export default function NewAuditPage() {
         </div>
       )}
 
-      {/* ── STEP 3: Confirm & Submit ── */}
-      {step === 3 && !loading && (
+      {/* ── STEP 3: Confirm & Submit — Amazon URL ── */}
+      {step === 3 && !loading && entryType === 'amazon_url' && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+          <div style={formCard}>
+            <h2
+              style={{
+                fontSize: '1rem',
+                fontWeight: 700,
+                color: '#f1f5f9',
+                margin: '0 0 0.25rem',
+                letterSpacing: '-0.02em',
+              }}
+            >
+              Confirm your listing details
+            </h2>
+            <p style={{ fontSize: '0.875rem', color: '#64748b', margin: '0 0 1rem' }}>
+              Review and fill in the listing information before analysis. The more you add, the better the audit.
+            </p>
+            <InfoNote>
+              Auto-fill coming soon. For now, paste each section directly from your Amazon product page.
+            </InfoNote>
+          </div>
+
+          {/* Section 1: Listing Basics */}
+          <CollapsibleSection title="Listing Basics" badge="Required" defaultOpen={true}>
+            {fld('Amazon Product URL', 'amazonUrl', 'https://www.amazon.com/dp/...')}
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+                gap: '1rem',
+              }}
+            >
+              {fld('Product Title', 'currentTitle', 'e.g. Bamboo Cutting Board Set with Juice Groove', true)}
+              {fld('Category / Product Type', 'category', 'e.g. Kitchen & Dining', true)}
+            </div>
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(3, 1fr)',
+                gap: '1rem',
+              }}
+            >
+              {fld('Price', 'price', '29.99', true)}
+              {fld('Rating', 'rating', '4.5', true)}
+              {fld('Review Count', 'reviewCount', '1234', true)}
+            </div>
+          </CollapsibleSection>
+
+          {/* Section 2: About This Item */}
+          <CollapsibleSection title="About This Item" defaultOpen={true}>
+            {tfld(
+              'Bullet Points',
+              'aboutThisItem',
+              'Paste the bullet points from the "About this item" section...',
+              true,
+              5,
+              'Paste the bullet points from Amazon\'s "About this item" section.'
+            )}
+          </CollapsibleSection>
+
+          {/* Section 3: Product Details */}
+          <CollapsibleSection title="Product Details" defaultOpen={false}>
+            {tfld(
+              'Top Highlights / Product Details',
+              'productDetails',
+              'Paste visible product details: brand, color, size, material, model, fabric type, care instructions...',
+              true,
+              4,
+              'Paste visible product details like brand, color, size, material, model, processor, fabric type, care instructions, etc.'
+            )}
+          </CollapsibleSection>
+
+          {/* Section 4: Product Specifications */}
+          <CollapsibleSection title="Product Specifications" defaultOpen={false}>
+            {tfld(
+              'Technical Specifications',
+              'productSpecifications',
+              'Paste technical specifications or detailed attribute tables...',
+              true,
+              4,
+              'Paste technical specifications or detailed attribute tables from the product page.'
+            )}
+          </CollapsibleSection>
+
+          {/* Section 5: Description / Brand Content */}
+          <CollapsibleSection title="Description / Brand Content" defaultOpen={false}>
+            {tfld(
+              'Product Description',
+              'description',
+              'Paste the full product description...',
+              true,
+              4
+            )}
+            {tfld(
+              'Brand Content',
+              'brandContent',
+              'Brand story, brand highlights, or additional brand messaging...',
+              true,
+              3
+            )}
+            {tfld(
+              'A+ Content',
+              'aPlusContent',
+              'Paste any A+ or Enhanced Brand Content if present...',
+              true,
+              3
+            )}
+          </CollapsibleSection>
+
+          {/* Section 6: Images & Customer Signals */}
+          <CollapsibleSection title="Images & Customer Signals" defaultOpen={false}>
+            {tfld(
+              'Product Images / Gallery Notes',
+              'productImagesNotes',
+              'Describe what images are currently in the gallery (main image, lifestyle, infographic, etc.)...',
+              true,
+              3
+            )}
+            {tfld(
+              'Reviews / Q&A / Customer Complaints',
+              'reviewsQna',
+              'Paste notable customer reviews, Q&A highlights, or recurring complaints...',
+              true,
+              4
+            )}
+            {tfld(
+              'Seller Goal',
+              'sellerGoal',
+              'What are you trying to achieve? (e.g. increase CTR, reduce returns, boost conversion for a specific audience)',
+              true,
+              2
+            )}
+          </CollapsibleSection>
+
+          {showPaywall && (
+            <PaywallBlock
+              title="You've used your free audit."
+              subtitle="Choose a plan to continue improving your Amazon listings with AI audits and premium image packs."
+              creditsLine="Current credits: 0 audits left"
+            />
+          )}
+
+          {submitError && !showPaywall && (
+            <ErrorBanner message={submitError} />
+          )}
+
+          <div style={{ display: 'flex', gap: '0.75rem' }}>
+            <button
+              type="button"
+              onClick={goBack}
+              disabled={loading}
+              style={{ ...backBtnStyle, opacity: loading ? 0.5 : 1, cursor: loading ? 'not-allowed' : 'pointer' }}
+            >
+              Back
+            </button>
+            {!showPaywall && (
+              <button
+                type="button"
+                onClick={handleSubmit}
+                className="btn-primary glow-button"
+                style={{
+                  flex: 1,
+                  justifyContent: 'center',
+                  padding: '0.6875rem 1rem',
+                  fontSize: '0.875rem',
+                }}
+              >
+                <Zap size={14} />
+                Analyze Listing
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* ── STEP 3: Confirm & Submit — Product Photos ── */}
+      {step === 3 && !loading && entryType === 'product_photos' && (
         <div style={formCard}>
           <h2
             style={{
@@ -797,111 +1087,74 @@ export default function NewAuditPage() {
               letterSpacing: '-0.02em',
             }}
           >
-            {entryType === 'amazon_url' ? 'Confirm your listing details' : 'Confirm your product details'}
+            Confirm your product details
           </h2>
           <p style={{ fontSize: '0.875rem', color: '#64748b', margin: '0 0 1.25rem' }}>
-            {entryType === 'amazon_url'
-              ? 'Review and fill in any missing listing information before analysis.'
-              : 'Add any optional context to help Sellio build a stronger audit.'}
+            Add any optional context to help Sellio build a stronger audit.
           </p>
 
-          {entryType === 'amazon_url' && (
-            <div style={{ marginBottom: '1.25rem' }}>
-              <InfoNote>
-                Auto-fill will be connected soon. For now, confirm or add the missing listing details
-                manually.
-              </InfoNote>
-            </div>
-          )}
-
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            {entryType === 'amazon_url' && (
-              <>
-                {fld('Amazon URL', 'amazonUrl', 'https://www.amazon.com/dp/...')}
-
+            {files.length > 0 && (
+              <div>
+                <label style={labelStyle}>Uploaded Photos ({files.length})</label>
                 <div
                   style={{
                     display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
-                    gap: '1rem',
+                    gridTemplateColumns: 'repeat(auto-fill, minmax(78px, 1fr))',
+                    gap: '0.5rem',
                   }}
                 >
-                  {fld('Product Name', 'productName', 'e.g. Bamboo Cutting Board')}
-                  {fld('Category', 'category', 'e.g. Kitchen & Dining')}
-                </div>
-
-                <div
-                  style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(3, 1fr)',
-                    gap: '1rem',
-                  }}
-                >
-                  {fld('Price', 'price', '29.99')}
-                  {fld('Rating', 'rating', '4.5')}
-                  {fld('Review Count', 'reviewCount', '1234')}
-                </div>
-
-                {fld('Current Title', 'currentTitle', 'Your current Amazon listing title')}
-                {tfld('Bullet Points', 'bulletPoints', 'Your 5 bullet points, one per line', false, 5)}
-                {tfld('Description', 'description', 'Your listing description', false, 4)}
-                {tfld('Main Benefit', 'mainBenefit', 'Primary customer benefit', false, 2)}
-                {tfld('Seller Goal', 'sellerGoal', 'What are you trying to achieve with this listing?', true, 2)}
-                {tfld('Notes', 'notes', 'Any additional context for the analysis', true, 2)}
-              </>
-            )}
-
-            {entryType === 'product_photos' && (
-              <>
-                {files.length > 0 && (
-                  <div>
-                    <label style={labelStyle}>Uploaded Photos ({files.length})</label>
+                  {files.map((file, i) => (
                     <div
+                      key={i}
                       style={{
-                        display: 'grid',
-                        gridTemplateColumns: 'repeat(auto-fill, minmax(78px, 1fr))',
-                        gap: '0.5rem',
+                        borderRadius: '0.5rem',
+                        overflow: 'hidden',
+                        aspectRatio: '1',
+                        background: '#0a1510',
+                        border: '1px solid rgba(255,255,255,0.07)',
                       }}
                     >
-                      {files.map((file, i) => (
-                        <div
-                          key={i}
-                          style={{
-                            borderRadius: '0.5rem',
-                            overflow: 'hidden',
-                            aspectRatio: '1',
-                            background: '#0a1510',
-                            border: '1px solid rgba(255,255,255,0.07)',
-                          }}
-                        >
-                          <img
-                            src={getFileUrl(file)}
-                            alt={file.name}
-                            style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-                          />
-                        </div>
-                      ))}
+                      <img
+                        src={getFileUrl(file)}
+                        alt={file.name}
+                        style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                      />
                     </div>
-                  </div>
-                )}
-
-                <div
-                  style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
-                    gap: '1rem',
-                  }}
-                >
-                  {fld('Product Name', 'productName', 'e.g. Bamboo Cutting Board')}
-                  {fld('Category', 'category', 'e.g. Kitchen & Dining')}
+                  ))}
                 </div>
-
-                {tfld('Main Benefit', 'mainBenefit', 'Primary customer benefit', false, 2)}
-                {fld('Target Audience', 'targetAudience', 'e.g. Home cooks, professional chefs', true)}
-                {tfld('Seller Goal', 'sellerGoal', 'What are you trying to achieve?', true, 2)}
-                {tfld('Notes', 'notes', 'Any additional context for the analysis', true, 2)}
-              </>
+              </div>
             )}
+
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+                gap: '1rem',
+              }}
+            >
+              {fld('Product Name', 'productName', 'e.g. Bamboo Cutting Board')}
+              {fld('Category', 'category', 'e.g. Kitchen & Dining')}
+            </div>
+
+            {tfld('Main Benefit', 'mainBenefit', 'Primary customer benefit', false, 2)}
+            {fld('Target Audience', 'targetAudience', 'e.g. Home cooks, professional chefs', true)}
+            {tfld(
+              'Product Specifications',
+              'productSpecifications',
+              'Dimensions, weight, materials, color options, etc.',
+              true,
+              3
+            )}
+            {tfld(
+              'Product Visual Details',
+              'notes',
+              'Describe the product appearance: shape, packaging, texture, colors, finishes...',
+              true,
+              3,
+              'Helps Sellio generate more accurate image prompts.'
+            )}
+            {tfld('Seller Goal', 'sellerGoal', 'What are you trying to achieve with this listing?', true, 2)}
           </div>
 
           {showPaywall && (

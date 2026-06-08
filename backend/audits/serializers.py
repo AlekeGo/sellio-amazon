@@ -20,6 +20,7 @@ class AuditResultSerializer(serializers.ModelSerializer):
             'description_analysis', 'improved_description',
             'keyword_opportunities', 'review_insights', 'buyer_objections',
             'a_plus_content_ideas', 'image_pack_plan', 'priority_checklist',
+            'concise_report', 'report_version',
             'created_at', 'updated_at',
         )
         read_only_fields = fields
@@ -63,6 +64,9 @@ class AuditDetailSerializer(serializers.ModelSerializer):
             'current_title', 'bullet_points', 'description', 'backend_keywords',
             'price', 'rating', 'review_count',
             'target_audience', 'seller_goal', 'notes',
+            'about_this_item', 'product_details', 'product_specifications',
+            'brand_content', 'a_plus_content', 'variations', 'size_guide',
+            'product_images_notes', 'videos_notes', 'reviews_qna', 'buyer_complaints',
             'created_at', 'updated_at', 'submitted_at',
             'images', 'result',
         )
@@ -84,6 +88,9 @@ class AuditCreateSerializer(serializers.ModelSerializer):
             'current_title', 'bullet_points', 'description', 'backend_keywords',
             'price', 'rating', 'review_count',
             'target_audience', 'seller_goal', 'notes',
+            'about_this_item', 'product_details', 'product_specifications',
+            'brand_content', 'a_plus_content', 'variations', 'size_guide',
+            'product_images_notes', 'videos_notes', 'reviews_qna', 'buyer_complaints',
         )
 
     def validate(self, data):
@@ -109,4 +116,7 @@ class AuditUpdateSerializer(serializers.ModelSerializer):
             'current_title', 'bullet_points', 'description', 'backend_keywords',
             'price', 'rating', 'review_count',
             'target_audience', 'seller_goal', 'notes',
+            'about_this_item', 'product_details', 'product_specifications',
+            'brand_content', 'a_plus_content', 'variations', 'size_guide',
+            'product_images_notes', 'videos_notes', 'reviews_qna', 'buyer_complaints',
         )

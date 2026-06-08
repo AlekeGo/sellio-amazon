@@ -68,26 +68,38 @@ def _run_gemini_and_save(audit):
 
     result_data = run_gemini_audit(audit)
 
+    title_upgrade = result_data.get('title_upgrade', {})
+    about_upgrade = result_data.get('about_this_item_upgrade', {})
+    desc_upgrade = result_data.get('description_upgrade', {})
+
     AuditResult.objects.update_or_create(
         audit=audit,
         defaults={
             'score': result_data['score'],
             'score_label': result_data['score_label'],
             'executive_summary': result_data['executive_summary'],
-            'conversion_diagnosis': result_data['conversion_diagnosis'],
-            'weak_points': result_data['weak_points'],
-            'title_analysis': result_data['title_analysis'],
-            'improved_title': result_data['improved_title'],
-            'bullet_improvements': result_data['bullet_improvements'],
-            'improved_bullets': result_data['improved_bullets'],
-            'description_analysis': result_data['description_analysis'],
-            'improved_description': result_data['improved_description'],
-            'keyword_opportunities': result_data['keyword_opportunities'],
-            'review_insights': result_data['review_insights'],
-            'buyer_objections': result_data['buyer_objections'],
-            'a_plus_content_ideas': result_data['a_plus_content_ideas'],
-            'image_pack_plan': result_data['image_pack_plan'],
-            'priority_checklist': result_data['priority_checklist'],
+            'conversion_diagnosis': {},
+            'weak_points': result_data.get('top_critical_issues', []),
+            'title_analysis': {
+                'current_problem': title_upgrade.get('current_issue', ''),
+                'strategy': '',
+            },
+            'improved_title': title_upgrade.get('improved_title', ''),
+            'bullet_improvements': [],
+            'improved_bullets': about_upgrade.get('improved_bullets', []),
+            'description_analysis': {
+                'current_problem': desc_upgrade.get('current_issue', ''),
+                'improvement_strategy': '',
+            },
+            'improved_description': desc_upgrade.get('improved_description', ''),
+            'keyword_opportunities': result_data.get('keyword_opportunities', []),
+            'review_insights': [],
+            'buyer_objections': result_data.get('buyer_objections', []),
+            'a_plus_content_ideas': result_data.get('a_plus_brand_plan', []),
+            'image_pack_plan': result_data.get('image_gallery_plan', []),
+            'priority_checklist': result_data.get('priority_checklist', []),
+            'concise_report': result_data,
+            'report_version': 'v2',
         },
     )
 

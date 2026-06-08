@@ -2,12 +2,19 @@ import { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { Menu, X } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useAuth } from '../../contexts/AuthContext'
 
-const navLinks = [
+const guestLinks = [
   { label: 'Features', href: '/#features' },
   { label: 'How It Works', href: '/#how-it-works' },
   { label: 'Pricing', href: '/pricing' },
   { label: 'Login', href: '/login' },
+]
+
+const authLinks = [
+  { label: 'Dashboard', href: '/dashboard' },
+  { label: 'New Audit', href: '/dashboard/new-audit' },
+  { label: 'Billing', href: '/dashboard/billing' },
 ]
 
 function SelliöLogo() {
@@ -40,6 +47,11 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
   const location = useLocation()
+  const { isAuthenticated } = useAuth()
+
+  const navLinks = isAuthenticated ? authLinks : guestLinks
+  const ctaLabel = isAuthenticated ? 'New Audit' : 'Start Free Audit'
+  const ctaHref = '/dashboard/new-audit'
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 16)
@@ -116,11 +128,11 @@ export default function Navbar() {
 
             <div className="hidden md:flex items-center gap-3">
               <Link
-                to="/dashboard/new-audit"
+                to={ctaHref}
                 className="btn-primary text-sm"
                 style={{ padding: '0.5rem 1.25rem', borderRadius: '9999px', fontSize: '0.875rem' }}
               >
-                Start Free Audit
+                {ctaLabel}
               </Link>
             </div>
 
@@ -197,12 +209,12 @@ export default function Navbar() {
 
               <div className="p-6">
                 <Link
-                  to="/dashboard/new-audit"
+                  to={ctaHref}
                   className="btn-primary w-full justify-center"
                   style={{ borderRadius: '9999px' }}
                   onClick={() => setMobileOpen(false)}
                 >
-                  Start Free Audit
+                  {ctaLabel}
                 </Link>
               </div>
             </motion.div>

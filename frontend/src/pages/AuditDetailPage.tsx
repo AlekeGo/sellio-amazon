@@ -2,12 +2,12 @@ import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import {
   ArrowLeft, Zap, ExternalLink, Copy, Check,
-  RefreshCw, AlertTriangle, Layers,
+  RefreshCw, AlertTriangle, Layers, ChevronDown,
   Eye, Shield, Target, TrendingUp,
 } from 'lucide-react'
 import { getAudit, submitAudit, regenerateAudit } from '../lib/auditsApi'
 import StatusBadge from '../components/ui/StatusBadge'
-import type { AuditDetail, AuditResult } from '../types/audit'
+import type { AuditDetail, AuditResult, ConciseReport } from '../types/audit'
 
 function extractError(err: unknown): string {
   if (err && typeof err === 'object' && 'response' in err) {
@@ -106,14 +106,14 @@ function Card({ children, style }: { children: React.ReactNode; style?: React.CS
 
 function SL({ children }: { children: React.ReactNode }) {
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5625rem', marginBottom: '1.125rem' }}>
+    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5625rem', marginBottom: '1rem' }}>
       <div style={{
-        width: 3, height: 14, borderRadius: 2,
+        width: 3, height: 16, borderRadius: 2,
         background: 'linear-gradient(180deg, #a3e635, #34d399)', flexShrink: 0,
       }} />
       <span style={{
-        fontSize: '0.6875rem', fontWeight: 700, color: '#6b7280',
-        textTransform: 'uppercase', letterSpacing: '0.08em',
+        fontSize: '0.75rem', fontWeight: 800, color: '#94a3b8',
+        textTransform: 'uppercase', letterSpacing: '0.07em',
       }}>
         {children}
       </span>
@@ -140,6 +140,30 @@ function PriorityBadge({ priority }: { priority: string }) {
       {priority}
     </span>
   )
+}
+
+function SeverityBadge({ index }: { index: number }) {
+  const cfg =
+    index === 0
+      ? { label: 'Critical', color: '#f87171', bg: 'rgba(248,113,113,0.12)', border: 'rgba(248,113,113,0.22)' }
+      : index === 1
+      ? { label: 'High Impact', color: '#fb923c', bg: 'rgba(251,146,60,0.1)', border: 'rgba(251,146,60,0.2)' }
+      : { label: 'Fix This', color: '#fbbf24', bg: 'rgba(251,191,36,0.1)', border: 'rgba(251,191,36,0.2)' }
+  return (
+    <span style={{
+      display: 'inline-flex', alignItems: 'center',
+      padding: '0.125rem 0.5rem', borderRadius: '99px',
+      fontSize: '0.5625rem', fontWeight: 700, letterSpacing: '0.06em',
+      textTransform: 'uppercase', color: cfg.color,
+      background: cfg.bg, border: `1px solid ${cfg.border}`, flexShrink: 0,
+    }}>
+      {cfg.label}
+    </span>
+  )
+}
+
+function formatImageBrief(img: { image_type: string; goal: string; headline: string; visual_direction: string }) {
+  return `${img.image_type}\nGoal: ${img.goal}\nHeadline: "${img.headline}"\nVisual: ${img.visual_direction}`
 }
 
 const DIAG = [
@@ -234,7 +258,22 @@ function ReportHeader({ audit, result }: { audit: AuditDetail; result: AuditResu
               style={{ padding: '0.5rem 1rem', fontSize: '0.8125rem' }}
             >
               <Layers size={13} />
-              Generate Image Pack
+              Open Image Studio
+            </Link>
+            <Link
+              to="/dashboard/new-audit"
+              style={{
+                display: 'inline-flex', alignItems: 'center', gap: '0.375rem',
+                padding: '0.5rem 1rem', borderRadius: '0.5rem',
+                background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.09)',
+                color: '#64748b', fontSize: '0.8125rem', fontWeight: 500,
+                textDecoration: 'none', transition: 'all 0.15s',
+              }}
+              onMouseEnter={e => { e.currentTarget.style.color = '#94a3b8'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.16)' }}
+              onMouseLeave={e => { e.currentTarget.style.color = '#64748b'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.09)' }}
+            >
+              <Zap size={13} />
+              New Audit
             </Link>
           </div>
         </div>
@@ -248,6 +287,521 @@ function ReportHeader({ audit, result }: { audit: AuditDetail; result: AuditResu
           </div>
         </div>
       </div>
+    </div>
+  )
+}
+
+function ConciseAuditReport({
+  report,
+  audit,
+  onRegenerate,
+  regenerating,
+  regenError,
+}: {
+  report: ConciseReport
+  audit: AuditDetail
+  onRegenerate: () => void
+  regenerating: boolean
+  regenError: string | null
+}) {
+  const [detailsOpen, setDetailsOpen] = useState(false)
+
+  const hasDetails =
+    (Array.isArray(report.keyword_opportunities) && report.keyword_opportunities.length > 0) ||
+    (Array.isArray(report.buyer_objections) && report.buyer_objections.length > 0) ||
+    (Array.isArray(report.a_plus_brand_plan) && report.a_plus_brand_plan.length > 0) ||
+    (report.details != null && Object.keys(report.details).length > 0)
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+
+      {/* Summary */}
+      <Card>
+        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '1rem', marginBottom: '0.75rem', flexWrap: 'wrap' }}>
+          <SL>Summary</SL>
+          <button
+            type="button"
+            disabled={regenerating}
+            onClick={onRegenerate}
+            style={{
+              display: 'inline-flex', alignItems: 'center', gap: '0.375rem',
+              padding: '0.3125rem 0.6875rem', borderRadius: '0.375rem',
+              background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)',
+              color: '#64748b', fontSize: '0.75rem', fontWeight: 600,
+              cursor: regenerating ? 'not-allowed' : 'pointer',
+              fontFamily: 'inherit', opacity: regenerating ? 0.6 : 1, transition: 'all 0.15s',
+            }}
+          >
+            <RefreshCw size={12} style={{ animation: regenerating ? 'spin 1s linear infinite' : 'none' }} />
+            {regenerating ? 'Regenerating...' : 'Regenerate'}
+          </button>
+        </div>
+        <p style={{ fontSize: '0.9375rem', color: '#cbd5e1', lineHeight: 1.65, margin: 0 }}>
+          {report.executive_summary}
+        </p>
+        {regenError && (
+          <div style={{
+            marginTop: '0.75rem', padding: '0.625rem 0.875rem', borderRadius: '0.5rem',
+            background: 'rgba(239,68,68,0.07)', border: '1px solid rgba(239,68,68,0.16)',
+            fontSize: '0.8125rem', color: '#fca5a5',
+          }}>
+            {regenError}
+          </div>
+        )}
+      </Card>
+
+      {/* Top Problems */}
+      {Array.isArray(report.top_critical_issues) && report.top_critical_issues.length > 0 && (
+        <Card>
+          <SL>Top Problems</SL>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4375rem' }}>
+            {report.top_critical_issues.map((issue, i) => (
+              <div key={i} style={{
+                borderRadius: '0.625rem',
+                border: i === 0
+                  ? '1px solid rgba(248,113,113,0.18)'
+                  : i === 1
+                  ? '1px solid rgba(251,146,60,0.15)'
+                  : '1px solid rgba(251,191,36,0.12)',
+                overflow: 'hidden',
+              }}>
+                <div style={{
+                  display: 'flex', alignItems: 'center', gap: '0.5rem',
+                  padding: '0.4375rem 0.875rem', flexWrap: 'wrap',
+                  background: i === 0
+                    ? 'rgba(248,113,113,0.06)'
+                    : i === 1
+                    ? 'rgba(251,146,60,0.05)'
+                    : 'rgba(251,191,36,0.04)',
+                  borderBottom: i === 0
+                    ? '1px solid rgba(248,113,113,0.08)'
+                    : i === 1
+                    ? '1px solid rgba(251,146,60,0.07)'
+                    : '1px solid rgba(251,191,36,0.06)',
+                }}>
+                  <SeverityBadge index={i} />
+                  <span style={{
+                    fontSize: '0.6875rem', fontWeight: 700, letterSpacing: '0.05em',
+                    textTransform: 'uppercase',
+                    color: i === 0 ? '#f87171' : i === 1 ? '#fb923c' : '#fbbf24',
+                  }}>
+                    {issue.area}
+                  </span>
+                </div>
+                <div style={{
+                  padding: '0.625rem 0.875rem',
+                  display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '0.4375rem 1.25rem',
+                }}>
+                  <div>
+                    <div style={{ fontSize: '0.5625rem', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.1875rem' }}>Problem</div>
+                    <p style={{ fontSize: '0.8125rem', color: '#f1f5f9', margin: 0, lineHeight: 1.5 }}>{issue.problem}</p>
+                  </div>
+                  {issue.fix && (
+                    <div>
+                      <div style={{ fontSize: '0.5625rem', fontWeight: 700, color: '#a3e635', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.1875rem' }}>Fix</div>
+                      <p style={{ fontSize: '0.8125rem', color: '#a3e635', margin: 0, lineHeight: 1.5 }}>{issue.fix}</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </Card>
+      )}
+
+      {/* Fix This First */}
+      {Array.isArray(report.fix_this_first) && report.fix_this_first.length > 0 && (
+        <Card>
+          <SL>Fix This First</SL>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '0.625rem' }}>
+            {report.fix_this_first.slice(0, 3).map((item, i) => (
+              <div key={i} style={{
+                padding: '0.875rem 1rem', borderRadius: '0.625rem',
+                background: 'rgba(163,230,53,0.04)', border: '1px solid rgba(163,230,53,0.12)',
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.4375rem' }}>
+                  <span style={{
+                    width: 22, height: 22, borderRadius: '50%',
+                    background: 'rgba(163,230,53,0.15)', border: '1px solid rgba(163,230,53,0.28)',
+                    color: '#a3e635', fontSize: '0.6875rem', fontWeight: 800,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+                  }}>
+                    {i + 1}
+                  </span>
+                  <span style={{ fontSize: '0.875rem', fontWeight: 700, color: '#f1f5f9' }}>{item.task}</span>
+                </div>
+                {item.reason && (
+                  <p style={{ fontSize: '0.8125rem', color: '#64748b', margin: 0, lineHeight: 1.5 }}>{item.reason}</p>
+                )}
+              </div>
+            ))}
+          </div>
+        </Card>
+      )}
+
+      {/* Ready-to-Copy Listing Upgrade */}
+      {(report.title_upgrade?.improved_title || (report.about_this_item_upgrade?.improved_bullets?.length ?? 0) > 0 || report.description_upgrade?.improved_description) && (
+        <Card>
+          <SL>Ready-to-Copy Listing Upgrade</SL>
+
+          {report.title_upgrade?.improved_title && (
+            <div style={{ marginBottom: '1.25rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.75rem', marginBottom: '0.5rem', flexWrap: 'wrap' }}>
+                <span style={{ fontSize: '0.8125rem', fontWeight: 700, color: '#94a3b8' }}>Copy-ready Title</span>
+                <CopyButton text={report.title_upgrade.improved_title} label="Copy Title" />
+              </div>
+              <div style={{ padding: '0.875rem 1rem', borderRadius: '0.625rem', background: 'rgba(163,230,53,0.04)', border: '1px solid rgba(163,230,53,0.14)' }}>
+                <p style={{ fontSize: '0.9375rem', color: '#f1f5f9', lineHeight: 1.6, margin: 0, fontWeight: 600 }}>
+                  {report.title_upgrade.improved_title}
+                </p>
+              </div>
+            </div>
+          )}
+
+          {Array.isArray(report.about_this_item_upgrade?.improved_bullets) && report.about_this_item_upgrade.improved_bullets.length > 0 && (
+            <div style={{ marginBottom: '1.25rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.75rem', marginBottom: '0.5rem', flexWrap: 'wrap' }}>
+                <span style={{ fontSize: '0.8125rem', fontWeight: 700, color: '#94a3b8' }}>Copy-ready Bullets</span>
+                <CopyButton text={report.about_this_item_upgrade.improved_bullets.join('\n')} label="Copy All Bullets" />
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.375rem' }}>
+                {report.about_this_item_upgrade.improved_bullets.map((bullet, i) => (
+                  <div key={i} style={{
+                    display: 'flex', alignItems: 'flex-start', gap: '0.625rem',
+                    padding: '0.625rem 0.875rem', borderRadius: '0.5rem',
+                    background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)',
+                  }}>
+                    <span style={{
+                      width: 20, height: 20, borderRadius: '50%',
+                      background: 'rgba(163,230,53,0.1)', border: '1px solid rgba(163,230,53,0.2)',
+                      color: '#a3e635', fontSize: '0.625rem', fontWeight: 800,
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      flexShrink: 0, marginTop: 1,
+                    }}>
+                      {i + 1}
+                    </span>
+                    <p style={{ fontSize: '0.875rem', color: '#cbd5e1', lineHeight: 1.55, margin: 0, flex: 1, minWidth: 0 }}>
+                      {bullet}
+                    </p>
+                    <CopyButton text={bullet} />
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {report.description_upgrade?.improved_description && (
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.75rem', marginBottom: '0.5rem', flexWrap: 'wrap' }}>
+                <span style={{ fontSize: '0.8125rem', fontWeight: 700, color: '#94a3b8' }}>Copy-ready Description</span>
+                <CopyButton text={report.description_upgrade.improved_description} label="Copy Description" />
+              </div>
+              <div style={{ padding: '0.875rem 1rem', borderRadius: '0.625rem', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)' }}>
+                <p style={{ fontSize: '0.875rem', color: '#cbd5e1', lineHeight: 1.75, margin: 0, whiteSpace: 'pre-wrap' }}>
+                  {report.description_upgrade.improved_description}
+                </p>
+              </div>
+            </div>
+          )}
+        </Card>
+      )}
+
+      {/* Product Details Fixes */}
+      {Array.isArray(report.product_details_fixes) && report.product_details_fixes.length > 0 && (
+        <Card>
+          <SL>Product Details Fixes</SL>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.375rem' }}>
+            {report.product_details_fixes.map((fix, i) => (
+              <div key={i} style={{
+                display: 'flex', alignItems: 'flex-start', gap: '0.75rem',
+                padding: '0.625rem 0.875rem', borderRadius: '0.5rem',
+                background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)',
+                flexWrap: 'wrap',
+              }}>
+                <div style={{ flex: 1, minWidth: 0, display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '0.25rem 1rem' }}>
+                  <div>
+                    <div style={{ fontSize: '0.5625rem', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.125rem' }}>Field</div>
+                    <p style={{ fontSize: '0.8125rem', fontWeight: 600, color: '#f1f5f9', margin: 0 }}>{fix.field}</p>
+                  </div>
+                  {fix.recommended_fix && (
+                    <div>
+                      <div style={{ fontSize: '0.5625rem', fontWeight: 700, color: '#a3e635', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.125rem' }}>Fix</div>
+                      <p style={{ fontSize: '0.8125rem', color: '#a3e635', margin: 0, lineHeight: 1.5 }}>{fix.recommended_fix}</p>
+                    </div>
+                  )}
+                </div>
+                {fix.recommended_fix && <CopyButton text={fix.recommended_fix} label="Copy Fix" />}
+              </div>
+            ))}
+          </div>
+        </Card>
+      )}
+
+      {/* Image Plan */}
+      {Array.isArray(report.image_gallery_plan) && report.image_gallery_plan.length > 0 && (
+        <Card style={{ borderColor: 'rgba(52,211,153,0.15)', background: 'rgba(52,211,153,0.018)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', marginBottom: '0.875rem', flexWrap: 'wrap' }}>
+            <SL>Image Plan — {report.image_gallery_plan.length} images</SL>
+            <Link
+              to={`/dashboard/audits/${audit.id}/image-studio`}
+              className="btn-primary glow-button"
+              style={{ padding: '0.4375rem 0.875rem', fontSize: '0.8125rem', flexShrink: 0 }}
+            >
+              <Layers size={13} />
+              Image Studio
+            </Link>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4375rem' }}>
+            {report.image_gallery_plan.slice(0, 6).map((img, i) => (
+              <div key={i} style={{
+                borderRadius: '0.625rem', background: 'rgba(255,255,255,0.02)',
+                border: '1px solid rgba(52,211,153,0.1)', overflow: 'hidden',
+              }}>
+                <div style={{
+                  display: 'flex', alignItems: 'center', gap: '0.5rem',
+                  padding: '0.4375rem 0.875rem', background: 'rgba(52,211,153,0.05)',
+                  borderBottom: '1px solid rgba(52,211,153,0.08)', flexWrap: 'wrap',
+                }}>
+                  <span style={{
+                    width: 20, height: 20, borderRadius: '50%',
+                    background: 'rgba(52,211,153,0.15)', border: '1px solid rgba(52,211,153,0.28)',
+                    color: '#34d399', fontSize: '0.625rem', fontWeight: 800,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+                  }}>
+                    {i + 1}
+                  </span>
+                  <span style={{ fontSize: '0.875rem', fontWeight: 700, color: '#f1f5f9', flex: 1 }}>
+                    {img.image_type}
+                  </span>
+                  <CopyButton text={formatImageBrief(img)} label="Copy Brief" />
+                </div>
+                <div style={{
+                  padding: '0.625rem 0.875rem',
+                  display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '0.4375rem 1rem',
+                }}>
+                  {img.goal && (
+                    <div>
+                      <div style={{ fontSize: '0.5625rem', fontWeight: 700, color: '#34d399', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.1875rem', opacity: 0.7 }}>Goal</div>
+                      <p style={{ fontSize: '0.8125rem', color: '#94a3b8', margin: 0, lineHeight: 1.5 }}>{img.goal}</p>
+                    </div>
+                  )}
+                  {img.headline && (
+                    <div>
+                      <div style={{ fontSize: '0.5625rem', fontWeight: 700, color: '#a3e635', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.1875rem', opacity: 0.7 }}>Headline</div>
+                      <p style={{ fontSize: '0.875rem', color: '#a3e635', margin: 0, fontWeight: 700 }}>"{img.headline}"</p>
+                    </div>
+                  )}
+                  {img.visual_direction && (
+                    <div>
+                      <div style={{ fontSize: '0.5625rem', fontWeight: 700, color: '#34d399', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.1875rem', opacity: 0.7 }}>Visual Direction</div>
+                      <p style={{ fontSize: '0.8125rem', color: '#94a3b8', margin: 0, lineHeight: 1.5 }}>{img.visual_direction}</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </Card>
+      )}
+
+      {/* Next Actions */}
+      {Array.isArray(report.priority_checklist) && report.priority_checklist.length > 0 && (
+        <Card>
+          <SL>Next Actions</SL>
+          <div>
+            {report.priority_checklist.map((item, i) => (
+              <div key={i} style={{
+                display: 'flex', alignItems: 'flex-start', gap: '0.75rem',
+                padding: '0.75rem 0',
+                borderBottom: i < report.priority_checklist.length - 1 ? '1px solid rgba(255,255,255,0.04)' : 'none',
+              }}>
+                <span style={{
+                  width: 22, height: 22, borderRadius: '50%',
+                  background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.09)',
+                  color: '#475569', fontSize: '0.625rem', fontWeight: 800,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  flexShrink: 0, marginTop: 1,
+                }}>
+                  {i + 1}
+                </span>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem', marginBottom: '0.1875rem', flexWrap: 'wrap' }}>
+                    <p style={{ fontSize: '0.875rem', fontWeight: 600, color: '#f1f5f9', margin: 0, lineHeight: 1.45, wordBreak: 'break-word' }}>
+                      {item.task}
+                    </p>
+                    <PriorityBadge priority={item.priority} />
+                  </div>
+                  {item.reason && (
+                    <p style={{ fontSize: '0.8125rem', color: '#64748b', margin: 0, lineHeight: 1.5 }}>
+                      {item.reason}
+                    </p>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </Card>
+      )}
+
+      {/* View Details — keywords, objections, A+, notes */}
+      {hasDetails && (
+        <Card>
+          <button
+            type="button"
+            onClick={() => setDetailsOpen(o => !o)}
+            style={{
+              display: 'flex', alignItems: 'center', gap: '0.5rem',
+              background: 'none', border: 'none', cursor: 'pointer',
+              color: '#64748b', fontSize: '0.8125rem', fontWeight: 600,
+              fontFamily: 'inherit', padding: 0, width: '100%', textAlign: 'left',
+            }}
+          >
+            <ChevronDown
+              size={14}
+              style={{ transform: detailsOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s', flexShrink: 0 }}
+            />
+            {detailsOpen ? 'Hide Details' : 'View Details'}
+          </button>
+          {detailsOpen && (
+            <div style={{ marginTop: '1.25rem', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+
+              {Array.isArray(report.keyword_opportunities) && report.keyword_opportunities.length > 0 && (
+                <div>
+                  <div style={{ fontSize: '0.6875rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.5rem', paddingBottom: '0.5rem', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                    Keyword Opportunities — {report.keyword_opportunities.length}
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3125rem' }}>
+                    {report.keyword_opportunities.map((kw, i) => (
+                      <div key={i} style={{
+                        display: 'flex', alignItems: 'flex-start', gap: '0.625rem',
+                        padding: '0.5rem 0.75rem', borderRadius: '0.5rem',
+                        background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)',
+                        flexWrap: 'wrap',
+                      }}>
+                        <span style={{
+                          padding: '0.1875rem 0.625rem', borderRadius: '99px',
+                          background: 'rgba(163,230,53,0.08)', border: '1px solid rgba(163,230,53,0.15)',
+                          color: '#a3e635', fontSize: '0.8125rem', fontWeight: 700,
+                          flexShrink: 0, whiteSpace: 'nowrap',
+                        }}>
+                          {kw.keyword}
+                        </span>
+                        <span style={{ fontSize: '0.8125rem', color: '#94a3b8', lineHeight: 1.5, paddingTop: 2 }}>
+                          {kw.reason}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {Array.isArray(report.buyer_objections) && report.buyer_objections.length > 0 && (
+                <div>
+                  <div style={{ fontSize: '0.6875rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.5rem', paddingBottom: '0.5rem', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                    Buyer Objections
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3125rem' }}>
+                    {report.buyer_objections.map((bo, i) => (
+                      <div key={i} style={{
+                        display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))',
+                        gap: '0.375rem 1.25rem', padding: '0.625rem 0.75rem', borderRadius: '0.5rem',
+                        background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)',
+                      }}>
+                        <div>
+                          <div style={{ fontSize: '0.5625rem', fontWeight: 700, color: '#f97316', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.1875rem' }}>Objection</div>
+                          <p style={{ fontSize: '0.8125rem', color: '#cbd5e1', margin: 0, lineHeight: 1.5 }}>{bo.objection}</p>
+                        </div>
+                        <div>
+                          <div style={{ fontSize: '0.5625rem', fontWeight: 700, color: '#a3e635', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.1875rem' }}>How to Address</div>
+                          <p style={{ fontSize: '0.8125rem', color: '#cbd5e1', margin: 0, lineHeight: 1.5 }}>{bo.how_to_address}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {Array.isArray(report.a_plus_brand_plan) && report.a_plus_brand_plan.length > 0 && (
+                <div>
+                  <div style={{ fontSize: '0.6875rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.5rem', paddingBottom: '0.5rem', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                    A+ / Brand Content Plan
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '0.375rem' }}>
+                    {report.a_plus_brand_plan.map((item, i) => (
+                      <div key={i} style={{
+                        padding: '0.625rem 0.75rem', borderRadius: '0.5rem',
+                        background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)',
+                      }}>
+                        <div style={{ fontSize: '0.5875rem', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.25rem' }}>
+                          {item.section}
+                        </div>
+                        {item.purpose && (
+                          <p style={{ fontSize: '0.75rem', color: '#a3e635', margin: '0 0 0.25rem', fontWeight: 600 }}>
+                            {item.purpose}
+                          </p>
+                        )}
+                        <p style={{ fontSize: '0.8125rem', color: '#94a3b8', margin: 0, lineHeight: 1.5 }}>
+                          {item.content_idea}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {report.details != null && Object.keys(report.details).length > 0 && (
+                <div>
+                  <div style={{ fontSize: '0.6875rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.5rem', paddingBottom: '0.5rem', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                    Details
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                    {Object.entries(report.details).map(([key, value]) => (
+                      <div key={key}>
+                        <div style={{ fontSize: '0.6875rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.25rem' }}>
+                          {key.replace(/_/g, ' ')}
+                        </div>
+                        <p style={{ fontSize: '0.8125rem', color: '#94a3b8', margin: 0, lineHeight: 1.6, whiteSpace: 'pre-wrap' }}>
+                          {typeof value === 'string' ? value : JSON.stringify(value, null, 2)}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+            </div>
+          )}
+        </Card>
+      )}
+
+      {/* Image Studio CTA */}
+      <div style={{
+        borderRadius: '0.875rem', padding: '1.5rem 1.75rem',
+        background: 'linear-gradient(135deg, rgba(163,230,53,0.06), rgba(52,211,153,0.04))',
+        border: '1px solid rgba(163,230,53,0.15)',
+        display: 'flex', alignItems: 'center', gap: '1.25rem', flexWrap: 'wrap',
+      }}>
+        <div style={{
+          width: 52, height: 52, borderRadius: '0.875rem',
+          background: 'linear-gradient(135deg, #166534, #4ade80)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+        }}>
+          <Layers size={24} color="white" />
+        </div>
+        <div style={{ flex: 1, minWidth: 160 }}>
+          <h3 style={{ fontSize: '1rem', fontWeight: 800, color: '#f1f5f9', margin: '0 0 0.3125rem', letterSpacing: '-0.025em' }}>
+            Ready to build your Image Pack?
+          </h3>
+          <p style={{ fontSize: '0.8125rem', color: '#64748b', margin: 0, lineHeight: 1.5 }}>
+            Turn your audit insights into premium Amazon-ready visuals with Sellio Image Studio.
+          </p>
+        </div>
+        <Link to={`/dashboard/audits/${audit.id}/image-studio`} className="btn-primary glow-button" style={{ padding: '0.6875rem 1.25rem', fontSize: '0.875rem' }}>
+          <Zap size={14} />
+          Open Image Studio
+        </Link>
+      </div>
+
     </div>
   )
 }
@@ -850,6 +1404,7 @@ export default function AuditDetailPage() {
   }
 
   const isCompleted = audit.status === 'completed' && !!audit.result
+  const isV2 = isCompleted && audit.result?.report_version === 'v2' && !!audit.result?.concise_report
   const maxWidth = isCompleted ? 900 : 700
 
   return (
@@ -1018,8 +1573,19 @@ export default function AuditDetailPage() {
         </div>
       )}
 
-      {/* Full report */}
-      {isCompleted && audit.result && (
+      {/* Full report — v2 concise */}
+      {isCompleted && isV2 && audit.result?.concise_report && (
+        <ConciseAuditReport
+          report={audit.result.concise_report}
+          audit={audit}
+          onRegenerate={handleRegenerate}
+          regenerating={regenerating}
+          regenError={regenError}
+        />
+      )}
+
+      {/* Full report — v1 legacy */}
+      {isCompleted && !isV2 && audit.result && (
         <AuditReport
           result={audit.result}
           audit={audit}

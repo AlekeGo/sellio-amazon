@@ -9,6 +9,31 @@ export interface ImagePackPlanItem {
   buyer_objection?: string
   suggested_layout?: string
 }
+
+export interface ConciseReport {
+  score: number
+  score_label: string
+  executive_summary: string
+  top_critical_issues: Array<{ area: string; problem: string; impact: string; fix: string }>
+  fix_this_first: Array<{ task: string; reason: string }>
+  title_upgrade: { current_issue?: string; improved_title: string }
+  about_this_item_upgrade: { strategy?: string; improved_bullets: string[] }
+  product_details_fixes: Array<{ field: string; issue: string; recommended_fix: string }>
+  description_upgrade: { current_issue?: string; improved_description: string }
+  keyword_opportunities: Array<{ keyword: string; reason: string }>
+  buyer_objections: Array<{ objection: string; how_to_address: string }>
+  image_gallery_plan: Array<{
+    image_type: string
+    goal: string
+    headline: string
+    visual_direction: string
+    text_elements?: string[]
+  }>
+  a_plus_brand_plan: Array<{ section: string; purpose: string; content_idea: string }>
+  priority_checklist: Array<{ priority: string; task: string; reason: string }>
+  details?: Record<string, unknown>
+}
+
 export type AuditStatus = 'draft' | 'ready_for_analysis' | 'pending_analysis' | 'completed' | 'failed'
 
 export interface AuditImage {
@@ -42,6 +67,8 @@ export interface AuditResult {
   a_plus_content_ideas: Array<{ section: string; purpose: string; content_idea: string }>
   image_pack_plan: ImagePackPlanItem[]
   priority_checklist: Array<{ priority: string; task: string; reason: string }>
+  concise_report: ConciseReport | null
+  report_version: string
   created_at: string
   updated_at: string
 }
@@ -76,6 +103,17 @@ export interface AuditDetail {
   target_audience: string
   seller_goal: string
   notes: string
+  about_this_item: string
+  product_details: string
+  product_specifications: string
+  brand_content: string
+  a_plus_content: string
+  variations: string
+  size_guide: string
+  product_images_notes: string
+  videos_notes: string
+  reviews_qna: string
+  buyer_complaints: string
   created_at: string
   updated_at: string
   submitted_at: string | null
@@ -99,4 +137,11 @@ export interface CreateAuditPayload {
   target_audience?: string
   seller_goal?: string
   notes?: string
+  about_this_item?: string
+  product_details?: string
+  product_specifications?: string
+  brand_content?: string
+  a_plus_content?: string
+  product_images_notes?: string
+  reviews_qna?: string
 }
