@@ -75,7 +75,7 @@ class CreateCheckoutSessionView(APIView):
         return Response({
             'payment_id': payment.id,
             'checkout_url': checkout_url,
-            'message': 'Real checkout provider will be connected later with Polar.',
+            'message': 'Mock checkout — no real charge will be made.',
         })
 
 

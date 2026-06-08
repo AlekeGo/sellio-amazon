@@ -647,7 +647,7 @@ export default function BillingPage() {
             display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap',
           }}>
             <p style={{ fontSize: '0.8125rem', color: '#334155', margin: 0 }}>
-              All plans include a free first audit. Polar checkout will be connected before launch.
+              All plans include a free first audit. Payments are currently in test mode — no real charges.
             </p>
             <Link to="/pricing" style={{ fontSize: '0.8125rem', color: '#475569', textDecoration: 'none', fontWeight: 500, flexShrink: 0 }}>
               View full pricing
@@ -721,7 +721,6 @@ export default function BillingPage() {
                 marginBottom: '1.25rem',
               }}>
                 <p style={{ fontSize: '0.8125rem', color: '#64748b', margin: 0, lineHeight: 1.6 }}>
-                  <span style={{ color: '#a3e635', fontWeight: 600 }}>Polar checkout</span> will be connected before launch.
                   This is a test payment — no real charge will be made.
                 </p>
               </div>
