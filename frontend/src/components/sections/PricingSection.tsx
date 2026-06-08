@@ -1,6 +1,7 @@
-import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { Check, Zap, Star } from 'lucide-react'
 import AnimatedSection from '../ui/AnimatedSection'
+import { useAuth } from '../../contexts/AuthContext'
 
 const oneTimeFeatures = [
   '1 complete listing upgrade',
@@ -12,6 +13,7 @@ const oneTimeFeatures = [
 
 const subscriptionPlans = [
   {
+    key: 'free_trial',
     name: 'Free Trial',
     price: '$0',
     period: 'free',
@@ -26,9 +28,9 @@ const subscriptionPlans = [
     ],
     cta: 'Start Free',
     ctaVariant: 'secondary' as const,
-    href: '/dashboard/new-audit',
   },
   {
+    key: 'launch',
     name: 'Launch',
     price: '$19',
     period: '/mo',
@@ -43,9 +45,9 @@ const subscriptionPlans = [
     ],
     cta: 'Start Launch',
     ctaVariant: 'secondary' as const,
-    href: '/dashboard/new-audit',
   },
   {
+    key: 'pro',
     name: 'Pro',
     price: '$39',
     period: '/mo',
@@ -60,9 +62,9 @@ const subscriptionPlans = [
     ],
     cta: 'Start Pro',
     ctaVariant: 'primary' as const,
-    href: '/dashboard/new-audit',
   },
   {
+    key: 'growth',
     name: 'Growth',
     price: '$59',
     period: '/mo',
@@ -77,9 +79,9 @@ const subscriptionPlans = [
     ],
     cta: 'Start Growth',
     ctaVariant: 'secondary' as const,
-    href: '/dashboard/new-audit',
   },
   {
+    key: 'agency',
     name: 'Agency',
     price: '$149',
     period: '/mo',
@@ -94,12 +96,12 @@ const subscriptionPlans = [
     ],
     cta: 'Start Agency',
     ctaVariant: 'secondary' as const,
-    href: '/dashboard/new-audit',
   },
 ]
 
 const addons = [
   {
+    key: 'extra_upgrade',
     icon: Star,
     name: 'Extra Full Upgrade',
     price: '$19',
@@ -109,10 +111,11 @@ const addons = [
     accentBorder: 'rgba(163,230,53,0.2)',
   },
   {
+    key: 'extra_audit_pack',
     icon: Zap,
     name: 'Extra Audit Pack',
     price: '$9',
-    desc: '5 additional audits added to your current plan billing cycle.',
+    desc: '1 additional audit added to your current plan billing cycle.',
     accentColor: '#34d399',
     accentBg: 'rgba(52,211,153,0.05)',
     accentBorder: 'rgba(52,211,153,0.18)',
@@ -140,6 +143,29 @@ function FeatureItem({ text, highlighted }: { text: string; highlighted?: boolea
 }
 
 export default function PricingSection() {
+  const { isAuthenticated } = useAuth()
+  const navigate = useNavigate()
+
+  const handlePlanClick = (planKey: string) => {
+    if (!isAuthenticated) {
+      navigate(planKey === 'free_trial' ? '/signup' : '/login')
+      return
+    }
+    if (planKey === 'free_trial') {
+      navigate('/dashboard/new-audit')
+      return
+    }
+    navigate(`/dashboard/billing?plan=${planKey}`)
+  }
+
+  const handleOneTimeClick = (planKey: string) => {
+    if (!isAuthenticated) {
+      navigate('/login')
+      return
+    }
+    navigate(`/dashboard/billing?plan=${planKey}`)
+  }
+
   return (
     <section id="pricing" className="section-padding relative overflow-hidden">
       <div
@@ -217,13 +243,13 @@ export default function PricingSection() {
               </ul>
 
               <div className="flex-shrink-0">
-                <Link
-                  to="/dashboard/new-audit"
+                <button
+                  onClick={() => handleOneTimeClick('full_upgrade')}
                   className="btn-secondary"
-                  style={{ whiteSpace: 'nowrap' }}
+                  style={{ whiteSpace: 'nowrap', fontFamily: 'inherit' }}
                 >
                   Buy Once — $29
-                </Link>
+                </button>
               </div>
             </div>
           </div>
@@ -303,13 +329,13 @@ export default function PricingSection() {
                   ))}
                 </ul>
 
-                <Link
-                  to={plan.href}
+                <button
+                  onClick={() => handlePlanClick(plan.key)}
                   className={plan.ctaVariant === 'primary' ? 'btn-primary justify-center' : 'btn-secondary justify-center'}
-                  style={{ padding: '0.6rem 0.875rem', fontSize: '0.8125rem' }}
+                  style={{ padding: '0.6rem 0.875rem', fontSize: '0.8125rem', width: '100%', fontFamily: 'inherit' }}
                 >
                   {plan.cta}
-                </Link>
+                </button>
               </div>
             ))}
           </div>
@@ -360,11 +386,24 @@ export default function PricingSection() {
                         letterSpacing: '-0.04em',
                         lineHeight: 1,
                         fontSize: '1.5rem',
+                        marginBottom: '0.375rem',
                       }}
                     >
                       {addon.price}
                     </span>
-                    <span className="text-xs" style={{ color: '#475569' }}>one-time</span>
+                    <button
+                      onClick={() => handleOneTimeClick(addon.key)}
+                      className="text-xs font-bold px-3 py-1 rounded-lg"
+                      style={{
+                        background: `${addon.accentColor}14`,
+                        border: `1px solid ${addon.accentColor}30`,
+                        color: addon.accentColor,
+                        cursor: 'pointer',
+                        fontFamily: 'inherit',
+                      }}
+                    >
+                      Buy
+                    </button>
                   </div>
                 </div>
               )

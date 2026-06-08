@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, Fragment } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Link2, Upload, ArrowLeft, ChevronRight, X, AlertCircle, Zap } from 'lucide-react'
+import { Link2, Upload, ArrowLeft, ArrowRight, ChevronRight, X, AlertCircle, Zap, Crown } from 'lucide-react'
 import { createAudit, submitAudit, uploadAuditImages } from '../lib/auditsApi'
 import type { CreateAuditPayload } from '../types/audit'
 
@@ -337,6 +337,7 @@ export default function NewAuditPage() {
   const [loading, setLoading] = useState(false)
   const [stepError, setStepError] = useState<string | null>(null)
   const [submitError, setSubmitError] = useState<string | null>(null)
+  const [creditExhausted, setCreditExhausted] = useState(false)
 
   const fileUrlsRef = useRef(new Map<File, string>())
   const getFileUrl = (file: File) => {
@@ -448,6 +449,7 @@ export default function NewAuditPage() {
   const handleSubmit = async () => {
     setLoading(true)
     setSubmitError(null)
+    setCreditExhausted(false)
     try {
       const payload = buildPayload(entryType!, form)
       const { data: audit } = await createAudit(payload)
@@ -456,7 +458,13 @@ export default function NewAuditPage() {
       }
       await submitAudit(audit.id)
       navigate(`/dashboard/audits/${audit.id}`)
-    } catch (err) {
+    } catch (err: unknown) {
+      const status = (err as { response?: { status?: number } })?.response?.status
+      if (status === 402) {
+        setCreditExhausted(true)
+        setLoading(false)
+        return
+      }
       setSubmitError(extractError(err))
       setLoading(false)
     }
@@ -880,7 +888,42 @@ export default function NewAuditPage() {
             )}
           </div>
 
-          {submitError && (
+          {creditExhausted && (
+            <div style={{
+              marginTop: '1.25rem',
+              borderRadius: '0.875rem',
+              padding: '1.5rem',
+              background: 'rgba(163,230,53,0.03)',
+              border: '1px solid rgba(163,230,53,0.18)',
+              textAlign: 'center',
+            }}>
+              <div style={{
+                width: 44, height: 44, borderRadius: '0.625rem',
+                background: 'rgba(163,230,53,0.06)', border: '1px solid rgba(163,230,53,0.14)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                margin: '0 auto 1rem',
+              }}>
+                <Crown size={20} color="#a3e635" />
+              </div>
+              <h3 style={{ fontSize: '1rem', fontWeight: 800, color: '#f1f5f9', margin: '0 0 0.375rem', letterSpacing: '-0.02em' }}>
+                You've used your free audit.
+              </h3>
+              <p style={{ fontSize: '0.875rem', color: '#64748b', margin: '0 0 1.25rem', lineHeight: 1.6 }}>
+                Choose a plan to continue improving your Amazon listings.
+              </p>
+              <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+                <Link to="/dashboard/billing" className="btn-primary">
+                  View Plans
+                  <ArrowRight size={14} />
+                </Link>
+                <Link to="/dashboard/billing" className="btn-secondary">
+                  Manage Billing
+                </Link>
+              </div>
+            </div>
+          )}
+
+          {submitError && !creditExhausted && (
             <div style={{ marginTop: '1.25rem' }}>
               <ErrorBanner message={submitError} />
             </div>
@@ -895,20 +938,22 @@ export default function NewAuditPage() {
             >
               Back
             </button>
-            <button
-              type="button"
-              onClick={handleSubmit}
-              className="btn-primary glow-button"
-              style={{
-                flex: 1,
-                justifyContent: 'center',
-                padding: '0.6875rem 1rem',
-                fontSize: '0.875rem',
-              }}
-            >
-              <Zap size={14} />
-              Analyze Listing
-            </button>
+            {!creditExhausted && (
+              <button
+                type="button"
+                onClick={handleSubmit}
+                className="btn-primary glow-button"
+                style={{
+                  flex: 1,
+                  justifyContent: 'center',
+                  padding: '0.6875rem 1rem',
+                  fontSize: '0.875rem',
+                }}
+              >
+                <Zap size={14} />
+                Analyze Listing
+              </button>
+            )}
           </div>
         </div>
       )}

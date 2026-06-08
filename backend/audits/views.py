@@ -1,4 +1,3 @@
-import json
 import os
 
 from django.utils import timezone
@@ -6,6 +5,8 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
+from billing.services import consume_credit, has_credit, refund_credit
 
 from .models import Audit, AuditImage, AuditResult
 from .serializers import (
@@ -116,6 +117,28 @@ class AuditSubmitView(APIView):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
 
+        try:
+            existing_result = audit.result
+            already_has_result = True
+        except AuditResult.DoesNotExist:
+            already_has_result = False
+
+        credit_consumed = False
+        if not already_has_result:
+            if not has_credit(request.user, 'audit', 1):
+                return Response(
+                    {'detail': 'You have no audit credits left. Choose a plan to continue.'},
+                    status=status.HTTP_402_PAYMENT_REQUIRED,
+                )
+            consume_credit(
+                request.user,
+                'audit',
+                1,
+                reason=f"Audit {audit.id} submitted",
+                metadata={'audit_id': audit.id},
+            )
+            credit_consumed = True
+
         audit.submitted_at = timezone.now()
         audit.save(update_fields=['submitted_at', 'updated_at'])
 
@@ -124,14 +147,35 @@ class AuditSubmitView(APIView):
         except ValueError as exc:
             audit.status = 'failed'
             audit.save(update_fields=['status', 'updated_at'])
+            if credit_consumed:
+                try:
+                    refund_credit(request.user, 'audit', 1,
+                                  reason=f"Refund: analysis failed for audit {audit.id}",
+                                  metadata={'audit_id': audit.id})
+                except Exception:
+                    pass
             return Response({'detail': str(exc)}, status=status.HTTP_400_BAD_REQUEST)
         except GeminiTemporaryError as exc:
             audit.status = 'failed'
             audit.save(update_fields=['status', 'updated_at'])
+            if credit_consumed:
+                try:
+                    refund_credit(request.user, 'audit', 1,
+                                  reason=f"Refund: analysis failed for audit {audit.id}",
+                                  metadata={'audit_id': audit.id})
+                except Exception:
+                    pass
             return Response({'detail': str(exc)}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
-        except Exception as exc:
+        except Exception:
             audit.status = 'failed'
             audit.save(update_fields=['status', 'updated_at'])
+            if credit_consumed:
+                try:
+                    refund_credit(request.user, 'audit', 1,
+                                  reason=f"Refund: analysis failed for audit {audit.id}",
+                                  metadata={'audit_id': audit.id})
+                except Exception:
+                    pass
             return Response({'detail': 'Gemini analysis failed. Please try again.'}, status=status.HTTP_502_BAD_GATEWAY)
 
         audit = Audit.objects.prefetch_related('images', 'result').get(pk=pk)

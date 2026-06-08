@@ -1,10 +1,21 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { Zap, ArrowRight, Crown, FileText } from 'lucide-react'
+import { Zap, ArrowRight, Crown, FileText, Star } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
 import { listAudits } from '../lib/auditsApi'
+import { getMyBilling } from '../lib/billingApi'
 import StatusBadge from '../components/ui/StatusBadge'
 import type { AuditListItem } from '../types/audit'
+import type { BillingMeResponse } from '../types/billing'
+
+const PLAN_LABELS: Record<string, string> = {
+  free_trial: 'Free Trial',
+  full_upgrade: 'Full Listing Upgrade',
+  launch: 'Launch',
+  pro: 'Pro',
+  growth: 'Growth',
+  agency: 'Agency',
+}
 
 function ChecklistStep({ num, text }: { num: number; text: string }) {
   return (
@@ -115,6 +126,7 @@ export default function DashboardPage() {
   const [audits, setAudits] = useState<AuditListItem[]>([])
   const [auditsLoading, setAuditsLoading] = useState(true)
   const [auditsError, setAuditsError] = useState(false)
+  const [billing, setBilling] = useState<BillingMeResponse | null>(null)
 
   const firstName =
     user?.full_name?.trim().split(' ')[0] || user?.email?.split('@')[0] || 'there'
@@ -124,6 +136,9 @@ export default function DashboardPage() {
       .then(res => setAudits(res.data.slice(0, 5)))
       .catch(() => setAuditsError(true))
       .finally(() => setAuditsLoading(false))
+    getMyBilling()
+      .then(res => setBilling(res.data))
+      .catch(() => {})
   }, [])
 
   return (
@@ -162,9 +177,11 @@ export default function DashboardPage() {
             <span style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 500 }}>Current plan</span>
           </div>
           <div className="gradient-text" style={{ fontSize: '1.25rem', fontWeight: 900, letterSpacing: '-0.03em' }}>
-            Free Trial
+            {billing ? (PLAN_LABELS[billing.profile.current_plan] ?? billing.profile.current_plan) : 'Free Trial'}
           </div>
-          <div style={{ fontSize: '0.75rem', color: '#475569' }}>Limited access</div>
+          <div style={{ fontSize: '0.75rem', color: '#475569' }}>
+            {billing?.profile.subscription_status === 'active' ? 'Active' : 'Limited access'}
+          </div>
         </div>
 
         <div
@@ -184,13 +201,15 @@ export default function DashboardPage() {
               fontSize: '1.5rem',
               fontWeight: 900,
               letterSpacing: '-0.03em',
-              color: '#f1f5f9',
+              color: billing && billing.balance.audit_credits > 0 ? '#f1f5f9' : '#334155',
               marginBottom: '0.25rem',
             }}
           >
-            1
+            {billing?.balance.audit_credits ?? '—'}
           </div>
-          <div style={{ fontSize: '0.75rem', color: '#475569' }}>limited free audit</div>
+          <div style={{ fontSize: '0.75rem', color: '#475569' }}>
+            {billing && billing.balance.audit_credits === 0 ? 'upgrade to audit' : 'AI listing audits'}
+          </div>
         </div>
 
         <div
@@ -202,21 +221,21 @@ export default function DashboardPage() {
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.375rem' }}>
-            <Zap size={14} color="#64748b" />
-            <span style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 500 }}>Image credits</span>
+            <Star size={14} color="#64748b" />
+            <span style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 500 }}>Full upgrade credits</span>
           </div>
           <div
             style={{
               fontSize: '1.5rem',
               fontWeight: 900,
               letterSpacing: '-0.03em',
-              color: '#475569',
+              color: billing && billing.balance.full_upgrade_credits > 0 ? '#f1f5f9' : '#334155',
               marginBottom: '0.25rem',
             }}
           >
-            0
+            {billing?.balance.full_upgrade_credits ?? '—'}
           </div>
-          <div style={{ fontSize: '0.75rem', color: '#334155' }}>upgrade to generate</div>
+          <div style={{ fontSize: '0.75rem', color: '#334155' }}>complete listing upgrades</div>
         </div>
       </div>
 
@@ -225,8 +244,8 @@ export default function DashboardPage() {
           <Zap size={15} />
           Create New Audit
         </Link>
-        <Link to="/pricing" className="btn-secondary">
-          View Pricing
+        <Link to="/dashboard/billing" className="btn-secondary">
+          Manage Billing
           <ArrowRight size={15} />
         </Link>
       </div>

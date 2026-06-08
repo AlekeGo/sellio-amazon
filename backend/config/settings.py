@@ -92,6 +92,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ALLOWED_ORIGINS = os.getenv('CORS_ALLOWED_ORIGINS', 'http://localhost:5173').split(',')
 
+PAYMENT_PROVIDER = os.getenv('PAYMENT_PROVIDER', 'mock')
+FRONTEND_URL = os.getenv('FRONTEND_URL', 'http://localhost:5173')
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
