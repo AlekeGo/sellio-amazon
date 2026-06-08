@@ -2,7 +2,9 @@ import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { Zap, ArrowLeft } from 'lucide-react'
 import { getAudit } from '../lib/auditsApi'
+import { listImageGenerations, createImageGeneration } from '../lib/imageGenerationsApi'
 import type { AuditDetail, ImagePackPlanItem } from '../types/audit'
+import type { ImageGeneration } from '../types/imageGeneration'
 import ImageStudioHeader from '../components/image-studio/ImageStudioHeader'
 import ImagePackCard from '../components/image-studio/ImagePackCard'
 import ImageBriefPanel from '../components/image-studio/ImageBriefPanel'
@@ -77,13 +79,70 @@ export default function AuditImageStudioPage() {
   const [error, setError] = useState<string | null>(null)
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null)
 
+  const [generations, setGenerations] = useState<ImageGeneration[]>([])
+  const [generatingTypes, setGeneratingTypes] = useState<Set<string>>(new Set())
+
   useEffect(() => {
     if (!id) return
-    getAudit(Number(id))
-      .then(res => setAudit(res.data))
+    Promise.all([
+      getAudit(Number(id)),
+      listImageGenerations(Number(id)),
+    ])
+      .then(([auditRes, genRes]) => {
+        setAudit(auditRes.data)
+        setGenerations(genRes.data)
+      })
       .catch(() => setError('Audit not found or you do not have access.'))
       .finally(() => setLoading(false))
   }, [id])
+
+  function normalizeType(t: string) {
+    return t.toLowerCase().replace(/\s+/g, ' ').trim()
+  }
+
+  const genByNormalizedType = new Map<string, ImageGeneration>()
+  for (const g of generations) {
+    const key = normalizeType(g.image_type)
+    if (!genByNormalizedType.has(key)) genByNormalizedType.set(key, g)
+  }
+
+  function getGenForItem(itemType: string) {
+    return genByNormalizedType.get(normalizeType(itemType))
+  }
+
+  async function handleGenerate(item: ImagePackPlanItem, productVisualDetails?: string) {
+    if (!audit || generatingTypes.has(item.image_type)) return
+
+    setGeneratingTypes(prev => new Set([...prev, item.image_type]))
+
+    try {
+      const res = await createImageGeneration({
+        audit_id: audit.id,
+        image_type: item.image_type,
+        brief: {
+          goal: item.goal,
+          headline: item.headline,
+          visual_direction: item.visual_direction,
+          text_elements: item.text_elements,
+          buyer_objection: item.buyer_objection,
+          suggested_layout: item.suggested_layout,
+          product_visual_details: productVisualDetails || '',
+        },
+      })
+      setGenerations(prev => [res.data, ...prev])
+    } catch (err: any) {
+      const failedGen = err?.response?.data?.generation as ImageGeneration | undefined
+      if (failedGen) {
+        setGenerations(prev => [failedGen, ...prev])
+      }
+    } finally {
+      setGeneratingTypes(prev => {
+        const next = new Set(prev)
+        next.delete(item.image_type)
+        return next
+      })
+    }
+  }
 
   if (loading) {
     return (
@@ -129,6 +188,8 @@ export default function AuditImageStudioPage() {
   const category = audit.category || 'Amazon Product'
   const selectedItem = selectedIndex !== null ? items[selectedIndex] : null
   const totalCount = items.length
+  const completedCount = generations.filter(g => g.status === 'completed').length
+  const progressPct = totalCount > 0 ? (completedCount / totalCount) * 100 : 0
 
   const handleCardSelect = (i: number) => {
     setSelectedIndex(prev => (prev === i ? null : i))
@@ -153,24 +214,28 @@ export default function AuditImageStudioPage() {
               Image Pack Progress
             </span>
             <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#475569' }}>
-              0 / {totalCount} generated
+              {completedCount} / {totalCount} generated
             </span>
           </div>
           <div className="score-bar-track">
-            <div className="score-bar-fill" style={{ width: '0%' }} />
+            <div className="score-bar-fill" style={{ width: `${progressPct}%` }} />
           </div>
         </div>
         <div style={{ display: 'flex', gap: '0.375rem', flexWrap: 'wrap' }}>
-          {(['Planned', 'Ready for generation', 'Generated', 'Needs review'] as const).map(s => (
-            <span key={s} style={{
+          {[
+            { label: 'Planned', active: completedCount === 0 && generatingTypes.size === 0 },
+            { label: 'Generating', active: generatingTypes.size > 0 },
+            { label: 'Generated', active: completedCount > 0 },
+          ].map(s => (
+            <span key={s.label} style={{
               padding: '0.1875rem 0.5625rem', borderRadius: '99px',
-              background: s === 'Planned' ? 'rgba(163,230,53,0.07)' : 'rgba(255,255,255,0.03)',
-              border: `1px solid ${s === 'Planned' ? 'rgba(163,230,53,0.18)' : 'rgba(255,255,255,0.08)'}`,
+              background: s.active ? 'rgba(163,230,53,0.07)' : 'rgba(255,255,255,0.03)',
+              border: `1px solid ${s.active ? 'rgba(163,230,53,0.18)' : 'rgba(255,255,255,0.08)'}`,
               fontSize: '0.5625rem', fontWeight: 700,
-              color: s === 'Planned' ? '#a3e635' : '#475569',
+              color: s.active ? '#a3e635' : '#475569',
               textTransform: 'uppercase', letterSpacing: '0.05em',
             }}>
-              {s}
+              {s.label}
             </span>
           ))}
         </div>
@@ -223,9 +288,17 @@ export default function AuditImageStudioPage() {
         </div>
       )}
 
+      <div style={{
+        borderRadius: '0.75rem', padding: '1.375rem',
+        background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)',
+        marginBottom: '1.5rem',
+      }}>
+        <GeneratedImageSlots generations={generations} />
+      </div>
+
       <div style={{ marginBottom: '1.25rem' }}>
         <p style={{ fontSize: '0.875rem', color: '#64748b', margin: 0, lineHeight: 1.65 }}>
-          Select an image type to view its creative brief and prompt. Image generation connects in Day 8.
+          Select an image type to view its creative brief and prompt, then generate.
         </p>
       </div>
 
@@ -240,6 +313,9 @@ export default function AuditImageStudioPage() {
                 index={i}
                 selected={selectedIndex === i}
                 onSelect={() => handleCardSelect(i)}
+                generation={getGenForItem(item.image_type)}
+                isGenerating={generatingTypes.has(item.image_type)}
+                onGenerate={() => handleGenerate(item)}
               />
             ))}
           </div>
@@ -248,10 +324,14 @@ export default function AuditImageStudioPage() {
         <div style={{ position: 'sticky', top: '1.5rem' }}>
           {selectedItem !== null ? (
             <ImageBriefPanel
+              key={selectedIndex ?? -1}
               item={selectedItem}
               productName={productName}
               category={category}
               index={selectedIndex!}
+              generation={getGenForItem(selectedItem.image_type)}
+              isGenerating={generatingTypes.has(selectedItem.image_type)}
+              onGenerate={(pvd) => handleGenerate(selectedItem, pvd)}
             />
           ) : (
             <div style={{
@@ -274,19 +354,11 @@ export default function AuditImageStudioPage() {
                 Select an image type
               </h3>
               <p style={{ fontSize: '0.8125rem', color: '#475569', margin: 0, lineHeight: 1.65 }}>
-                Click <strong style={{ color: '#a3e635' }}>Prepare Brief</strong> on any card to see the detailed creative brief and prompt preview.
+                Click <strong style={{ color: '#a3e635' }}>Prepare Brief</strong> on any card to see the creative brief, prompt, and generate.
               </p>
             </div>
           )}
         </div>
-      </div>
-
-      <div style={{
-        marginTop: '2rem', padding: '1.375rem',
-        borderRadius: '0.875rem',
-        background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)',
-      }}>
-        <GeneratedImageSlots />
       </div>
 
       <div style={{ marginTop: '1.5rem', display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>

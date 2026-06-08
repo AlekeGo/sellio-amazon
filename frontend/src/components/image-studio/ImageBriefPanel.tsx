@@ -1,6 +1,7 @@
 import { useState } from 'react'
-import { Copy, Check, Layers } from 'lucide-react'
+import { Copy, Check, Layers, Zap, Loader2 } from 'lucide-react'
 import type { ImagePackPlanItem } from '../../types/audit'
+import type { ImageGeneration } from '../../types/imageGeneration'
 
 const GRADIENTS = [
   'linear-gradient(135deg, #166534, #4ade80)',
@@ -11,19 +12,39 @@ const GRADIENTS = [
   'linear-gradient(135deg, #065f46, #34d399)',
 ]
 
-function buildPrompt(item: ImagePackPlanItem, productName: string, category: string): string {
-  const lines = [
-    `Create a premium Amazon-ready ${item.image_type} for "${productName}" in the ${category} category.`,
-    '',
-    `Goal: ${item.goal}`,
-    `Headline: "${item.headline}"`,
-    `Visual Direction: ${item.visual_direction}`,
-    `Text Elements: ${item.text_elements.join(', ')}`,
-  ]
-  if (item.buyer_objection) lines.push(`Buyer Objection to Address: ${item.buyer_objection}`)
-  if (item.suggested_layout) lines.push(`Suggested Layout: ${item.suggested_layout}`)
-  lines.push('')
-  lines.push(`Style: Clean product infographic, marketplace-ready composition, premium dark brand aesthetic, Amazon listing optimized, high-converting visual hierarchy.`)
+function buildPrompt(
+  item: ImagePackPlanItem,
+  productName: string,
+  category: string,
+  productVisualDetails: string,
+): string {
+  const lines: string[] = []
+  if (productName) lines.push(`Product: ${productName}`)
+  if (category) lines.push(`Category: ${category}`)
+  if (productVisualDetails) {
+    lines.push(
+      `Product visual details: ${productVisualDetails}. ` +
+      'CRITICAL — preserve color, shape, packaging, label position, and materials exactly.',
+    )
+  }
+  lines.push(`Image type: ${item.image_type}`)
+  if (item.goal) lines.push(`Goal: ${item.goal}`)
+  if (item.headline) lines.push(`Headline: "${item.headline}"`)
+  if (item.visual_direction) lines.push(`Visual direction: ${item.visual_direction}`)
+  if (item.text_elements?.length) lines.push(`Text elements: ${item.text_elements.join(', ')}`)
+  if (item.buyer_objection) lines.push(`Buyer objection addressed: ${item.buyer_objection}`)
+  if (item.suggested_layout) lines.push(`Suggested layout: ${item.suggested_layout}`)
+  lines.push(
+    'Style: Clean premium Amazon product infographic, marketplace-ready composition, ' +
+    'high-quality studio lighting, modern premium design, high-converting visual hierarchy, ' +
+    'readable text at all sizes, product as the main focus.',
+  )
+  lines.push(
+    'Constraints: Preserve product color exactly. Preserve packaging shape exactly. ' +
+    'Do not replace the product. No brand logos invented. No Amazon logo. ' +
+    'No medical claims. No tiny unreadable text. No cluttered layout. ' +
+    'No random extra products. Keep product as primary visual focus.',
+  )
   return lines.join('\n')
 }
 
@@ -46,11 +67,18 @@ interface Props {
   productName: string
   category: string
   index: number
+  generation?: ImageGeneration
+  isGenerating: boolean
+  onGenerate: (productVisualDetails: string) => void
 }
 
-export default function ImageBriefPanel({ item, productName, category, index }: Props) {
+export default function ImageBriefPanel({
+  item, productName, category, index,
+  generation, isGenerating, onGenerate,
+}: Props) {
   const [copied, setCopied] = useState(false)
-  const prompt = buildPrompt(item, productName, category)
+  const [productVisualDetails, setProductVisualDetails] = useState('')
+  const prompt = buildPrompt(item, productName, category, productVisualDetails)
 
   const handleCopy = () => {
     navigator.clipboard.writeText(prompt).then(() => {
@@ -58,6 +86,14 @@ export default function ImageBriefPanel({ item, productName, category, index }: 
       setTimeout(() => setCopied(false), 2000)
     }).catch(() => {})
   }
+
+  const generateLabel = isGenerating
+    ? 'Generating Amazon-ready visual...'
+    : generation?.status === 'failed'
+    ? 'Retry Generation'
+    : generation?.status === 'completed'
+    ? 'Re-generate Image'
+    : 'Generate Image'
 
   return (
     <div style={{
@@ -149,9 +185,33 @@ export default function ImageBriefPanel({ item, productName, category, index }: 
             </p>
           </FieldRow>
         )}
+
+        <FieldRow label="Product visual details">
+          <p style={{
+            fontSize: '0.6875rem', color: '#475569', margin: '0 0 0.5rem', lineHeight: 1.55,
+          }}>
+            Describe the product color, packaging, material, shape, and any details that must stay consistent.
+          </p>
+          <textarea
+            value={productVisualDetails}
+            onChange={e => setProductVisualDetails(e.target.value)}
+            placeholder="Example: yellow bottle, black cap, rectangular label, glossy plastic packaging, premium supplement product"
+            rows={3}
+            style={{
+              width: '100%', boxSizing: 'border-box',
+              padding: '0.625rem 0.75rem', borderRadius: '0.5rem',
+              background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)',
+              color: '#e2e8f0', fontSize: '0.8125rem', lineHeight: 1.6,
+              fontFamily: 'inherit', resize: 'vertical',
+              outline: 'none', transition: 'border-color 0.15s',
+            }}
+            onFocus={e => { e.currentTarget.style.borderColor = 'rgba(163,230,53,0.35)' }}
+            onBlur={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)' }}
+          />
+        </FieldRow>
       </div>
 
-      <div style={{ margin: '0 1.375rem 1.375rem', borderRadius: '0.625rem', border: '1px solid rgba(255,255,255,0.07)', overflow: 'hidden' }}>
+      <div style={{ margin: '0 1.375rem', borderRadius: '0.625rem', border: '1px solid rgba(255,255,255,0.07)', overflow: 'hidden' }}>
         <div style={{
           padding: '0.625rem 0.875rem',
           background: 'rgba(255,255,255,0.03)',
@@ -191,6 +251,56 @@ export default function ImageBriefPanel({ item, productName, category, index }: 
             {prompt}
           </pre>
         </div>
+      </div>
+
+      <div style={{ padding: '1rem 1.375rem', display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
+        {generation?.status === 'failed' && (
+          <div style={{
+            padding: '0.5rem 0.75rem', borderRadius: '0.5rem',
+            background: 'rgba(239,68,68,0.06)', border: '1px solid rgba(239,68,68,0.15)',
+            fontSize: '0.8125rem', color: '#fca5a5', lineHeight: 1.5,
+          }}>
+            Image generation failed. Please try again.
+          </div>
+        )}
+
+        <button
+          type="button"
+          disabled={isGenerating}
+          onClick={() => onGenerate(productVisualDetails)}
+          style={{
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
+            padding: '0.6875rem 1.25rem', borderRadius: '0.5rem', width: '100%',
+            background: isGenerating ? 'rgba(163,230,53,0.06)' : '#a3e635',
+            border: 'none',
+            color: isGenerating ? 'rgba(163,230,53,0.55)' : '#071008',
+            fontSize: '0.875rem', fontWeight: 700,
+            cursor: isGenerating ? 'not-allowed' : 'pointer',
+            fontFamily: 'inherit', transition: 'all 0.15s',
+            boxShadow: isGenerating ? 'none' : '0 4px 16px rgba(163,230,53,0.2)',
+          }}
+        >
+          {isGenerating
+            ? <Loader2 size={15} style={{ animation: 'spin 1s linear infinite', flexShrink: 0 }} />
+            : <Zap size={15} style={{ flexShrink: 0 }} />
+          }
+          {generateLabel}
+        </button>
+
+        {generation?.status === 'completed' && generation.image_url && (
+          <div style={{
+            borderRadius: '0.5rem', overflow: 'hidden',
+            border: '1px solid rgba(52,211,153,0.18)',
+            background: 'rgba(0,0,0,0.2)',
+          }}>
+            <img
+              src={generation.image_url}
+              alt={item.image_type}
+              style={{ width: '100%', display: 'block', maxHeight: 200, objectFit: 'contain' }}
+              loading="lazy"
+            />
+          </div>
+        )}
       </div>
     </div>
   )

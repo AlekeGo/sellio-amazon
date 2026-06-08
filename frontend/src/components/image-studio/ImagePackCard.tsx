@@ -1,11 +1,15 @@
-import { FileText, Clock } from 'lucide-react'
+import { FileText, Loader2, Zap } from 'lucide-react'
 import type { ImagePackPlanItem } from '../../types/audit'
+import type { ImageGeneration } from '../../types/imageGeneration'
 
 interface Props {
   item: ImagePackPlanItem
   index: number
   selected: boolean
   onSelect: () => void
+  generation?: ImageGeneration
+  isGenerating: boolean
+  onGenerate: () => void
 }
 
 const GRADIENTS = [
@@ -17,14 +21,36 @@ const GRADIENTS = [
   'linear-gradient(135deg, #065f46, #34d399)',
 ]
 
-export default function ImagePackCard({ item, index, selected, onSelect }: Props) {
+function cardStatusBadge(gen?: ImageGeneration, generating?: boolean) {
+  if (generating) return { label: 'Generating', c: '#fbbf24', bg: 'rgba(251,191,36,0.08)', bd: 'rgba(251,191,36,0.22)' }
+  if (!gen) return { label: 'Planned', c: '#a3e635', bg: 'rgba(163,230,53,0.07)', bd: 'rgba(163,230,53,0.18)' }
+  if (gen.status === 'completed') return { label: 'Generated', c: '#34d399', bg: 'rgba(52,211,153,0.08)', bd: 'rgba(52,211,153,0.2)' }
+  if (gen.status === 'failed') return { label: 'Failed', c: '#f87171', bg: 'rgba(248,113,113,0.07)', bd: 'rgba(248,113,113,0.18)' }
+  return { label: 'Planned', c: '#a3e635', bg: 'rgba(163,230,53,0.07)', bd: 'rgba(163,230,53,0.18)' }
+}
+
+function genButtonLabel(gen?: ImageGeneration, generating?: boolean) {
+  if (generating) return 'Generating...'
+  if (gen?.status === 'failed') return 'Retry'
+  if (gen?.status === 'completed') return 'Re-generate'
+  return 'Generate Image'
+}
+
+export default function ImagePackCard({
+  item, index, selected, onSelect,
+  generation, isGenerating, onGenerate,
+}: Props) {
+  const badge = cardStatusBadge(generation, isGenerating)
+
   return (
     <div
+      onClick={onSelect}
       style={{
         borderRadius: '0.875rem', padding: '1.25rem',
         background: selected ? 'rgba(163,230,53,0.035)' : 'rgba(255,255,255,0.02)',
         border: `1px solid ${selected ? 'rgba(163,230,53,0.3)' : 'rgba(255,255,255,0.07)'}`,
         transition: 'all 0.15s',
+        cursor: 'pointer',
       }}
       onMouseEnter={e => { if (!selected) e.currentTarget.style.borderColor = 'rgba(255,255,255,0.13)' }}
       onMouseLeave={e => { if (!selected) e.currentTarget.style.borderColor = 'rgba(255,255,255,0.07)' }}
@@ -56,12 +82,12 @@ export default function ImagePackCard({ item, index, selected, onSelect }: Props
         </div>
         <span style={{
           padding: '0.1875rem 0.5rem', borderRadius: '99px',
-          background: 'rgba(163,230,53,0.07)', border: '1px solid rgba(163,230,53,0.18)',
-          fontSize: '0.5625rem', fontWeight: 700, color: '#a3e635',
+          background: badge.bg, border: `1px solid ${badge.bd}`,
+          fontSize: '0.5625rem', fontWeight: 700, color: badge.c,
           textTransform: 'uppercase', letterSpacing: '0.06em', flexShrink: 0,
           whiteSpace: 'nowrap',
         }}>
-          Planned
+          {badge.label}
         </span>
       </div>
 
@@ -117,7 +143,7 @@ export default function ImagePackCard({ item, index, selected, onSelect }: Props
       <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
         <button
           type="button"
-          onClick={onSelect}
+          onClick={e => { e.stopPropagation(); onSelect() }}
           style={{
             display: 'inline-flex', alignItems: 'center', gap: '0.3125rem',
             padding: '0.4375rem 0.875rem', borderRadius: '0.4375rem',
@@ -132,19 +158,39 @@ export default function ImagePackCard({ item, index, selected, onSelect }: Props
           <FileText size={12} />
           {selected ? 'Brief Open' : 'Prepare Brief'}
         </button>
+
         <button
           type="button"
-          disabled
+          disabled={isGenerating}
+          onClick={e => { e.stopPropagation(); onGenerate() }}
           style={{
             display: 'inline-flex', alignItems: 'center', gap: '0.3125rem',
             padding: '0.4375rem 0.875rem', borderRadius: '0.4375rem',
-            background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)',
-            color: '#475569', fontSize: '0.8125rem', fontWeight: 600,
-            cursor: 'not-allowed', fontFamily: 'inherit',
+            background: isGenerating
+              ? 'rgba(163,230,53,0.035)'
+              : generation?.status === 'failed'
+              ? 'rgba(248,113,113,0.07)'
+              : 'rgba(163,230,53,0.09)',
+            border: isGenerating
+              ? '1px solid rgba(163,230,53,0.1)'
+              : generation?.status === 'failed'
+              ? '1px solid rgba(248,113,113,0.2)'
+              : '1px solid rgba(163,230,53,0.25)',
+            color: isGenerating
+              ? 'rgba(163,230,53,0.45)'
+              : generation?.status === 'failed'
+              ? '#f87171'
+              : '#a3e635',
+            fontSize: '0.8125rem', fontWeight: 600,
+            cursor: isGenerating ? 'not-allowed' : 'pointer',
+            fontFamily: 'inherit', transition: 'all 0.15s',
           }}
         >
-          <Clock size={12} />
-          Generate — Coming Day 8
+          {isGenerating
+            ? <Loader2 size={12} style={{ animation: 'spin 1s linear infinite' }} />
+            : <Zap size={12} />
+          }
+          {genButtonLabel(generation, isGenerating)}
         </button>
       </div>
     </div>

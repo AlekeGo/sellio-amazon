@@ -14,6 +14,7 @@ urlpatterns = [
     path('api/health/', health_check),
     path('api/auth/', include('accounts.urls')),
     path('api/audits/', include('audits.urls')),
+    path('api/images/', include('images.urls')),
 ]
 
 if settings.DEBUG:
