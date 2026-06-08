@@ -1,5 +1,7 @@
 import os
 
+import requests as http_requests
+from django.http import HttpResponse
 from django.utils import timezone
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
@@ -57,7 +59,10 @@ class ImageGenerationListCreateView(APIView):
             headline=brief.get('headline', ''),
             visual_direction=brief.get('visual_direction', ''),
             text_elements=brief.get('text_elements', []),
-            product_visual_details=brief.get('product_visual_details', ''),
+            product_visual_details=data.get('product_visual_details', ''),
+            style_direction=data.get('style_direction', ''),
+            background_preference=data.get('background_preference', ''),
+            text_intensity=data.get('text_intensity', ''),
             user_prompt=data.get('prompt', ''),
         )
 
@@ -71,6 +76,11 @@ class ImageGenerationListCreateView(APIView):
             status=ImageGeneration.STATUS_GENERATING,
             provider='fal',
             model_name=model_name,
+            brief=brief if brief else None,
+            product_visual_details=data.get('product_visual_details', ''),
+            style_direction=data.get('style_direction', ''),
+            background_preference=data.get('background_preference', ''),
+            text_intensity=data.get('text_intensity', ''),
         )
 
         try:
@@ -109,6 +119,100 @@ class ImageGenerationDetailView(APIView):
         except ImageGeneration.DoesNotExist:
             return Response({'detail': 'Not found.'}, status=status.HTTP_404_NOT_FOUND)
         return Response(ImageGenerationDetailSerializer(generation).data)
+
+    def delete(self, request, pk):
+        try:
+            generation = ImageGeneration.objects.get(id=pk, user=request.user)
+        except ImageGeneration.DoesNotExist:
+            return Response({'detail': 'Not found.'}, status=status.HTTP_404_NOT_FOUND)
+        generation.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class ImageGenerationDownloadView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, pk):
+        try:
+            generation = ImageGeneration.objects.get(id=pk, user=request.user)
+        except ImageGeneration.DoesNotExist:
+            return Response({'detail': 'Not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+        if not generation.image_url:
+            return Response(
+                {'detail': 'No image available for this generation.'},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        try:
+            remote = http_requests.get(generation.image_url, timeout=30)
+            remote.raise_for_status()
+        except Exception:
+            return Response(
+                {'detail': 'Could not fetch image from provider. Try opening the original URL.'},
+                status=status.HTTP_502_BAD_GATEWAY,
+            )
+
+        type_slug = generation.image_type.replace(' ', '-').lower()
+        filename = f"sellio-{generation.id}-{type_slug}.jpg"
+
+        content_type = remote.headers.get('Content-Type', 'image/jpeg')
+        response = HttpResponse(remote.content, content_type=content_type)
+        response['Content-Disposition'] = f'attachment; filename="{filename}"'
+        return response
+
+
+class ImageGenerationRegenerateView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, pk):
+        try:
+            original = ImageGeneration.objects.get(id=pk, user=request.user)
+        except ImageGeneration.DoesNotExist:
+            return Response({'detail': 'Not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+        model_name = os.getenv('FAL_TEXT_TO_IMAGE_MODEL', 'fal-ai/flux/schnell')
+
+        new_generation = ImageGeneration.objects.create(
+            user=request.user,
+            audit=original.audit,
+            image_type=original.image_type,
+            prompt=original.prompt,
+            status=ImageGeneration.STATUS_GENERATING,
+            provider='fal',
+            model_name=model_name,
+            brief=original.brief,
+            product_visual_details=original.product_visual_details,
+            style_direction=original.style_direction,
+            background_preference=original.background_preference,
+            text_intensity=original.text_intensity,
+        )
+
+        try:
+            result = generate_image(new_generation.prompt)
+            new_generation.image_url = result['image_url']
+            new_generation.provider_response = result['raw']
+            new_generation.status = ImageGeneration.STATUS_COMPLETED
+            new_generation.completed_at = timezone.now()
+        except FalImageError as exc:
+            new_generation.status = ImageGeneration.STATUS_FAILED
+            new_generation.error_message = str(exc)
+
+        new_generation.save()
+
+        if new_generation.status == ImageGeneration.STATUS_FAILED:
+            return Response(
+                {
+                    'detail': 'Image regeneration failed. Please try again.',
+                    'generation': ImageGenerationDetailSerializer(new_generation).data,
+                },
+                status=status.HTTP_502_BAD_GATEWAY,
+            )
+
+        return Response(
+            ImageGenerationDetailSerializer(new_generation).data,
+            status=status.HTTP_201_CREATED,
+        )
 
 
 class ImageGenerationRetryView(APIView):

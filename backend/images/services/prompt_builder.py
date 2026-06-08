@@ -7,6 +7,9 @@ def build_image_prompt(
     visual_direction: str = '',
     text_elements: list = None,
     product_visual_details: str = '',
+    style_direction: str = '',
+    background_preference: str = '',
+    text_intensity: str = '',
     user_prompt: str = '',
 ) -> str:
     lines = []
@@ -33,6 +36,12 @@ def build_image_prompt(
         lines.append(f"Visual direction: {visual_direction}")
     if text_elements:
         lines.append(f"Text elements: {', '.join(text_elements)}")
+    if style_direction:
+        lines.append(f"Style direction: {style_direction}")
+    if background_preference:
+        lines.append(f"Background preference: {background_preference}")
+    if text_intensity:
+        lines.append(f"Text intensity: {text_intensity}")
     if user_prompt:
         lines.append(f"Additional instructions: {user_prompt}")
 
