@@ -7,7 +7,7 @@ import {
 } from 'lucide-react'
 import { getAudit, submitAudit, regenerateAudit } from '../lib/auditsApi'
 import StatusBadge from '../components/ui/StatusBadge'
-import type { AuditDetail, AuditResult, ConciseReport, ProUpgradePack, BuyerObjectionRadarItem, CompetitorAnalysisLite } from '../types/audit'
+import type { AuditDetail, AuditResult, ConciseReport, ProUpgradePack, BuyerObjectionRadarItem, CompetitorAnalysisLite, CompactReport, CompactFixFirstRow, CompactNextAction } from '../types/audit'
 
 function extractError(err: unknown): string {
   if (err && typeof err === 'object' && 'response' in err) {
@@ -142,25 +142,6 @@ function PriorityBadge({ priority }: { priority: string }) {
   )
 }
 
-function SeverityBadge({ index }: { index: number }) {
-  const cfg =
-    index === 0
-      ? { label: 'Critical', color: '#f87171', bg: 'rgba(248,113,113,0.12)', border: 'rgba(248,113,113,0.22)' }
-      : index === 1
-      ? { label: 'High Impact', color: '#fb923c', bg: 'rgba(251,146,60,0.1)', border: 'rgba(251,146,60,0.2)' }
-      : { label: 'Fix This', color: '#fbbf24', bg: 'rgba(251,191,36,0.1)', border: 'rgba(251,191,36,0.2)' }
-  return (
-    <span style={{
-      display: 'inline-flex', alignItems: 'center',
-      padding: '0.125rem 0.5rem', borderRadius: '99px',
-      fontSize: '0.5625rem', fontWeight: 700, letterSpacing: '0.06em',
-      textTransform: 'uppercase', color: cfg.color,
-      background: cfg.bg, border: `1px solid ${cfg.border}`, flexShrink: 0,
-    }}>
-      {cfg.label}
-    </span>
-  )
-}
 
 const PERSONA_LABELS: Record<string, string> = {
   premium: 'Premium',
@@ -171,6 +152,8 @@ const PERSONA_LABELS: Record<string, string> = {
   problem_solver: 'Problem Solver',
   minimal_clean: 'Minimal / Clean',
 }
+
+type ProTab = 'title' | 'bullets' | 'description' | 'details' | 'image_plan'
 
 function formatImageBrief(img: { image_type: string; goal: string; headline: string; visual_direction: string }) {
   return `${img.image_type}\nGoal: ${img.goal}\nHeadline: "${img.headline}"\nVisual: ${img.visual_direction}`
@@ -197,6 +180,17 @@ function ProUpgradePackBlock({
   persona: string
 }) {
   const personaLabel = persona ? (PERSONA_LABELS[persona] || '') : ''
+  const [activeTab, setActiveTab] = useState<ProTab>('title')
+
+  const tabDefs: Array<{ id: ProTab; label: string; show: boolean }> = [
+    { id: 'title', label: 'Title', show: !!pack.copy_ready_title },
+    { id: 'bullets', label: 'Bullets', show: Array.isArray(pack.copy_ready_bullets) && pack.copy_ready_bullets.length > 0 },
+    { id: 'description', label: 'Description', show: !!pack.copy_ready_description },
+    { id: 'details', label: 'Details', show: Array.isArray(pack.product_details_fixes) && pack.product_details_fixes.length > 0 },
+    { id: 'image_plan', label: 'Image Plan', show: Array.isArray(pack.image_briefs) && pack.image_briefs.length > 0 },
+  ]
+  const tabs = tabDefs.filter(t => t.show)
+  const safeTab: ProTab = tabs.find(t => t.id === activeTab) ? activeTab : (tabs[0]?.id ?? 'title')
 
   const fullPackText = [
     `TITLE:\n${pack.copy_ready_title}`,
@@ -210,9 +204,6 @@ function ProUpgradePackBlock({
     Array.isArray(pack.image_briefs) && pack.image_briefs.length > 0
       ? `\n\nIMAGE BRIEFS:\n${pack.image_briefs.map((b, i) => `${i + 1}. ${b.image_type}\n   Headline: "${b.headline}"\n   Visual: ${b.visual_direction}`).join('\n\n')}`
       : '',
-    Array.isArray(pack.priority_checklist) && pack.priority_checklist.length > 0
-      ? `\n\nPRIORITY CHECKLIST:\n${pack.priority_checklist.map((c, i) => `${i + 1}. [${c.priority}] ${c.task} — ${c.reason}`).join('\n')}`
-      : '',
   ].join('')
 
   return (
@@ -224,19 +215,19 @@ function ProUpgradePackBlock({
     }}>
 
       <div style={{
-        padding: '1.375rem 1.5rem',
+        padding: '1.25rem 1.5rem',
         borderBottom: '1px solid rgba(163,230,53,0.12)',
         background: 'linear-gradient(135deg, rgba(163,230,53,0.07), rgba(52,211,153,0.035))',
       }}>
         <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem', flexWrap: 'wrap' }}>
           <div style={{ flex: 1, minWidth: 200 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5625rem', flexWrap: 'wrap', marginBottom: '0.3125rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5625rem', flexWrap: 'wrap', marginBottom: '0.25rem' }}>
               <Crown size={16} color="#a3e635" strokeWidth={2.5} />
               <h3 style={{
                 fontSize: '1.0625rem', fontWeight: 900, color: '#f1f5f9',
                 margin: 0, letterSpacing: '-0.025em',
               }}>
-                One-click Pro Upgrade
+                Your Pro Upgrade Pack is ready
               </h3>
               {personaLabel && (
                 <span style={{
@@ -250,16 +241,58 @@ function ProUpgradePackBlock({
               )}
             </div>
             <p style={{ fontSize: '0.8125rem', color: '#64748b', margin: 0, lineHeight: 1.5 }}>
-              Copy the upgraded listing assets and apply them directly to your Amazon page.
+              Copy these assets and apply them directly to your Amazon listing.
             </p>
           </div>
-          <CopyButton text={fullPackText} label="Copy Full Pack" />
+          <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', alignItems: 'center' }}>
+            <CopyButton text={fullPackText} label="Copy Full Pack" />
+            <Link
+              to={`/dashboard/audits/${auditId}/image-studio`}
+              className="btn-primary glow-button"
+              style={{ padding: '0.375rem 0.75rem', fontSize: '0.75rem', flexShrink: 0 }}
+            >
+              <Layers size={12} />
+              Image Studio
+            </Link>
+          </div>
         </div>
       </div>
 
-      <div style={{ padding: '1.375rem 1.5rem', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+      {tabs.length > 1 && (
+        <div style={{
+          display: 'flex', overflow: 'auto',
+          borderBottom: '1px solid rgba(255,255,255,0.06)',
+          background: 'rgba(0,0,0,0.12)',
+        }}>
+          {tabs.map(tab => (
+            <button
+              key={tab.id}
+              type="button"
+              onClick={() => setActiveTab(tab.id)}
+              style={{
+                padding: '0.5625rem 1rem',
+                background: safeTab === tab.id ? 'rgba(163,230,53,0.07)' : 'none',
+                border: 'none',
+                borderBottom: safeTab === tab.id ? '2px solid #a3e635' : '2px solid transparent',
+                color: safeTab === tab.id ? '#a3e635' : '#64748b',
+                fontSize: '0.75rem',
+                fontWeight: safeTab === tab.id ? 700 : 600,
+                cursor: 'pointer',
+                fontFamily: 'inherit',
+                transition: 'all 0.15s',
+                whiteSpace: 'nowrap',
+                flexShrink: 0,
+              }}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+      )}
 
-        {pack.copy_ready_title && (
+      <div style={{ padding: '1.25rem 1.5rem' }}>
+
+        {safeTab === 'title' && pack.copy_ready_title && (
           <div>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.75rem', marginBottom: '0.5rem', flexWrap: 'wrap' }}>
               <SubLabel>Copy-ready Title</SubLabel>
@@ -273,7 +306,7 @@ function ProUpgradePackBlock({
           </div>
         )}
 
-        {Array.isArray(pack.copy_ready_bullets) && pack.copy_ready_bullets.length > 0 && (
+        {safeTab === 'bullets' && Array.isArray(pack.copy_ready_bullets) && pack.copy_ready_bullets.length > 0 && (
           <div>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.75rem', marginBottom: '0.5rem', flexWrap: 'wrap' }}>
               <SubLabel>Copy-ready Bullets</SubLabel>
@@ -305,7 +338,7 @@ function ProUpgradePackBlock({
           </div>
         )}
 
-        {pack.copy_ready_description && (
+        {safeTab === 'description' && pack.copy_ready_description && (
           <div>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.75rem', marginBottom: '0.5rem', flexWrap: 'wrap' }}>
               <SubLabel>Copy-ready Description</SubLabel>
@@ -319,13 +352,13 @@ function ProUpgradePackBlock({
           </div>
         )}
 
-        {Array.isArray(pack.product_details_fixes) && pack.product_details_fixes.length > 0 && (
+        {safeTab === 'details' && Array.isArray(pack.product_details_fixes) && pack.product_details_fixes.length > 0 && (
           <div>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.75rem', marginBottom: '0.5rem', flexWrap: 'wrap' }}>
               <SubLabel>Product Details Fixes</SubLabel>
               <CopyButton
                 text={pack.product_details_fixes.map(f => `${f.field}: ${f.recommended_value}`).join('\n')}
-                label="Copy All Fixes"
+                label="Copy All"
               />
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.375rem' }}>
@@ -348,127 +381,39 @@ function ProUpgradePackBlock({
                       </div>
                     )}
                   </div>
-                  {fix.recommended_value && <CopyButton text={fix.recommended_value} label="Copy" />}
+                  {fix.recommended_value && <CopyButton text={fix.recommended_value} />}
                 </div>
               ))}
             </div>
           </div>
         )}
 
-        {Array.isArray(pack.image_briefs) && pack.image_briefs.length > 0 && (
+        {safeTab === 'image_plan' && Array.isArray(pack.image_briefs) && pack.image_briefs.length > 0 && (
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', marginBottom: '0.5rem', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', marginBottom: '0.75rem', flexWrap: 'wrap' }}>
               <SubLabel>Image Briefs</SubLabel>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
-                <CopyButton
-                  text={pack.image_briefs.map((b, i) => `${i + 1}. ${b.image_type}\n   Headline: "${b.headline}"\n   Visual: ${b.visual_direction}`).join('\n\n')}
-                  label="Copy Image Briefs"
-                />
-                <Link
-                  to={`/dashboard/audits/${auditId}/image-studio`}
-                  className="btn-primary glow-button"
-                  style={{ padding: '0.4375rem 0.875rem', fontSize: '0.8125rem', flexShrink: 0 }}
-                >
-                  <Layers size={13} />
-                  Open Image Studio
-                </Link>
+              <CopyButton
+                text={pack.image_briefs.map((b, i) => `${i + 1}. ${b.image_type}\n   Headline: "${b.headline}"\n   Visual: ${b.visual_direction}`).join('\n\n')}
+                label="Copy All Briefs"
+              />
+            </div>
+            <div style={{ borderRadius: '0.5rem', overflow: 'hidden', border: '1px solid rgba(52,211,153,0.12)' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 2fr 1fr', background: 'rgba(52,211,153,0.05)', borderBottom: '1px solid rgba(52,211,153,0.1)' }}>
+                <div style={{ padding: '0.375rem 0.75rem' }}><span style={{ fontSize: '0.5625rem', fontWeight: 700, color: '#34d399', textTransform: 'uppercase', letterSpacing: '0.07em' }}>Image</span></div>
+                <div style={{ padding: '0.375rem 0.75rem', borderLeft: '1px solid rgba(52,211,153,0.08)' }}><span style={{ fontSize: '0.5625rem', fontWeight: 700, color: '#a3e635', textTransform: 'uppercase', letterSpacing: '0.07em' }}>Headline</span></div>
+                <div style={{ padding: '0.375rem 0.75rem', borderLeft: '1px solid rgba(52,211,153,0.08)' }}><span style={{ fontSize: '0.5625rem', fontWeight: 700, color: '#34d399', textTransform: 'uppercase', letterSpacing: '0.07em' }}>Action</span></div>
               </div>
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4375rem' }}>
-              {pack.image_briefs.map((brief, i) => (
-                <div key={i} style={{
-                  borderRadius: '0.625rem', background: 'rgba(255,255,255,0.02)',
-                  border: '1px solid rgba(52,211,153,0.1)', overflow: 'hidden',
-                }}>
-                  <div style={{
-                    display: 'flex', alignItems: 'center', gap: '0.5rem',
-                    padding: '0.4375rem 0.875rem', background: 'rgba(52,211,153,0.05)',
-                    borderBottom: '1px solid rgba(52,211,153,0.08)', flexWrap: 'wrap',
-                  }}>
-                    <span style={{
-                      width: 20, height: 20, borderRadius: '50%',
-                      background: 'rgba(52,211,153,0.15)', border: '1px solid rgba(52,211,153,0.28)',
-                      color: '#34d399', fontSize: '0.625rem', fontWeight: 800,
-                      display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-                    }}>
-                      {i + 1}
-                    </span>
-                    <span style={{ fontSize: '0.875rem', fontWeight: 700, color: '#f1f5f9', flex: 1 }}>
-                      {brief.image_type}
-                    </span>
-                    <CopyButton
-                      text={`${brief.image_type}\nHeadline: "${brief.headline}"\nVisual: ${brief.visual_direction}`}
-                      label="Copy Brief"
-                    />
+              {pack.image_briefs.slice(0, 6).map((brief, i) => (
+                <div key={i} style={{ display: 'grid', gridTemplateColumns: '1.5fr 2fr 1fr', borderTop: '1px solid rgba(52,211,153,0.06)', background: i % 2 === 0 ? 'transparent' : 'rgba(52,211,153,0.02)' }}>
+                  <div style={{ padding: '0.625rem 0.75rem' }}>
+                    <p style={{ fontSize: '0.8125rem', fontWeight: 600, color: '#34d399', margin: 0, lineHeight: 1.4 }}>{brief.image_type}</p>
+                    {brief.visual_direction && <p style={{ fontSize: '0.6875rem', color: '#475569', margin: '0.25rem 0 0', lineHeight: 1.4 }}>{brief.visual_direction}</p>}
                   </div>
-                  <div style={{
-                    padding: '0.625rem 0.875rem',
-                    display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '0.4375rem 1rem',
-                  }}>
-                    {brief.headline && (
-                      <div>
-                        <div style={{ fontSize: '0.5625rem', fontWeight: 700, color: '#a3e635', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.1875rem', opacity: 0.7 }}>Headline</div>
-                        <p style={{ fontSize: '0.875rem', color: '#a3e635', margin: 0, fontWeight: 700 }}>"{brief.headline}"</p>
-                      </div>
-                    )}
-                    {brief.visual_direction && (
-                      <div>
-                        <div style={{ fontSize: '0.5625rem', fontWeight: 700, color: '#34d399', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.1875rem', opacity: 0.7 }}>Visual Direction</div>
-                        <p style={{ fontSize: '0.8125rem', color: '#94a3b8', margin: 0, lineHeight: 1.5 }}>{brief.visual_direction}</p>
-                      </div>
-                    )}
-                    {Array.isArray(brief.text_elements) && brief.text_elements.length > 0 && (
-                      <div>
-                        <div style={{ fontSize: '0.5625rem', fontWeight: 700, color: '#34d399', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.375rem', opacity: 0.7 }}>Text Elements</div>
-                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.25rem' }}>
-                          {brief.text_elements.map((el, j) => (
-                            <span key={j} style={{
-                              padding: '0.1875rem 0.5rem', borderRadius: '0.3125rem',
-                              background: 'rgba(52,211,153,0.06)', border: '1px solid rgba(52,211,153,0.14)',
-                              fontSize: '0.75rem', color: '#6b7280',
-                            }}>{el}</span>
-                          ))}
-                        </div>
-                      </div>
-                    )}
+                  <div style={{ padding: '0.625rem 0.75rem', borderLeft: '1px solid rgba(52,211,153,0.06)' }}>
+                    <p style={{ fontSize: '0.8125rem', color: '#a3e635', margin: 0, lineHeight: 1.4, fontWeight: 600 }}>{brief.headline ? `"${brief.headline}"` : '—'}</p>
                   </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {Array.isArray(pack.priority_checklist) && pack.priority_checklist.length > 0 && (
-          <div>
-            <div style={{ marginBottom: '0.5rem' }}>
-              <SubLabel>Priority Checklist</SubLabel>
-            </div>
-            <div>
-              {pack.priority_checklist.map((item, i) => (
-                <div key={i} style={{
-                  display: 'flex', alignItems: 'flex-start', gap: '0.75rem',
-                  padding: '0.75rem 0',
-                  borderBottom: i < pack.priority_checklist.length - 1 ? '1px solid rgba(255,255,255,0.04)' : 'none',
-                }}>
-                  <span style={{
-                    width: 22, height: 22, borderRadius: '50%',
-                    background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.09)',
-                    color: '#475569', fontSize: '0.625rem', fontWeight: 800,
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    flexShrink: 0, marginTop: 1,
-                  }}>
-                    {i + 1}
-                  </span>
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem', marginBottom: '0.1875rem', flexWrap: 'wrap' }}>
-                      <p style={{ fontSize: '0.875rem', fontWeight: 600, color: '#f1f5f9', margin: 0, lineHeight: 1.45, wordBreak: 'break-word' }}>
-                        {item.task}
-                      </p>
-                      <PriorityBadge priority={item.priority} />
-                    </div>
-                    {item.reason && (
-                      <p style={{ fontSize: '0.8125rem', color: '#64748b', margin: 0, lineHeight: 1.5 }}>{item.reason}</p>
-                    )}
+                  <div style={{ padding: '0.625rem 0.75rem', borderLeft: '1px solid rgba(52,211,153,0.06)', display: 'flex', alignItems: 'flex-start' }}>
+                    <CopyButton text={`${brief.image_type}\nHeadline: "${brief.headline}"\nVisual: ${brief.visual_direction}`} label="Copy" />
                   </div>
                 </div>
               ))}
@@ -940,95 +885,6 @@ function ConciseAuditReport({
         )}
       </Card>
 
-      {/* Top Problems */}
-      {Array.isArray(report.top_critical_issues) && report.top_critical_issues.length > 0 && (
-        <Card>
-          <SL>Top Problems</SL>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4375rem' }}>
-            {report.top_critical_issues.map((issue, i) => (
-              <div key={i} style={{
-                borderRadius: '0.625rem',
-                border: i === 0
-                  ? '1px solid rgba(248,113,113,0.18)'
-                  : i === 1
-                  ? '1px solid rgba(251,146,60,0.15)'
-                  : '1px solid rgba(251,191,36,0.12)',
-                overflow: 'hidden',
-              }}>
-                <div style={{
-                  display: 'flex', alignItems: 'center', gap: '0.5rem',
-                  padding: '0.4375rem 0.875rem', flexWrap: 'wrap',
-                  background: i === 0
-                    ? 'rgba(248,113,113,0.06)'
-                    : i === 1
-                    ? 'rgba(251,146,60,0.05)'
-                    : 'rgba(251,191,36,0.04)',
-                  borderBottom: i === 0
-                    ? '1px solid rgba(248,113,113,0.08)'
-                    : i === 1
-                    ? '1px solid rgba(251,146,60,0.07)'
-                    : '1px solid rgba(251,191,36,0.06)',
-                }}>
-                  <SeverityBadge index={i} />
-                  <span style={{
-                    fontSize: '0.6875rem', fontWeight: 700, letterSpacing: '0.05em',
-                    textTransform: 'uppercase',
-                    color: i === 0 ? '#f87171' : i === 1 ? '#fb923c' : '#fbbf24',
-                  }}>
-                    {issue.area}
-                  </span>
-                </div>
-                <div style={{
-                  padding: '0.625rem 0.875rem',
-                  display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '0.4375rem 1.25rem',
-                }}>
-                  <div>
-                    <div style={{ fontSize: '0.5625rem', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.1875rem' }}>Problem</div>
-                    <p style={{ fontSize: '0.8125rem', color: '#f1f5f9', margin: 0, lineHeight: 1.5 }}>{issue.problem}</p>
-                  </div>
-                  {issue.fix && (
-                    <div>
-                      <div style={{ fontSize: '0.5625rem', fontWeight: 700, color: '#a3e635', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.1875rem' }}>Fix</div>
-                      <p style={{ fontSize: '0.8125rem', color: '#a3e635', margin: 0, lineHeight: 1.5 }}>{issue.fix}</p>
-                    </div>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-        </Card>
-      )}
-
-      {/* Fix This First */}
-      {Array.isArray(report.fix_this_first) && report.fix_this_first.length > 0 && (
-        <Card>
-          <SL>Fix This First</SL>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '0.625rem' }}>
-            {report.fix_this_first.slice(0, 3).map((item, i) => (
-              <div key={i} style={{
-                padding: '0.875rem 1rem', borderRadius: '0.625rem',
-                background: 'rgba(163,230,53,0.04)', border: '1px solid rgba(163,230,53,0.12)',
-              }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.4375rem' }}>
-                  <span style={{
-                    width: 22, height: 22, borderRadius: '50%',
-                    background: 'rgba(163,230,53,0.15)', border: '1px solid rgba(163,230,53,0.28)',
-                    color: '#a3e635', fontSize: '0.6875rem', fontWeight: 800,
-                    display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-                  }}>
-                    {i + 1}
-                  </span>
-                  <span style={{ fontSize: '0.875rem', fontWeight: 700, color: '#f1f5f9' }}>{item.task}</span>
-                </div>
-                {item.reason && (
-                  <p style={{ fontSize: '0.8125rem', color: '#64748b', margin: 0, lineHeight: 1.5 }}>{item.reason}</p>
-                )}
-              </div>
-            ))}
-          </div>
-        </Card>
-      )}
-
       {/* One-click Pro Upgrade Pack */}
       {proUpgradePack && (
         <ProUpgradePackBlock
@@ -1044,8 +900,8 @@ function ConciseAuditReport({
       {/* Competitor Analysis Lite */}
       <CompetitorAnalysisLiteBlock data={report.competitor_analysis_lite} />
 
-      {/* Ready-to-Copy Listing Upgrade */}
-      {(report.title_upgrade?.improved_title || (report.about_this_item_upgrade?.improved_bullets?.length ?? 0) > 0 || report.description_upgrade?.improved_description) && (
+      {/* Ready-to-Copy Listing Upgrade — only shown when no Pro Upgrade Pack */}
+      {!proUpgradePack && (report.title_upgrade?.improved_title || (report.about_this_item_upgrade?.improved_bullets?.length ?? 0) > 0 || report.description_upgrade?.improved_description) && (
         <Card>
           <SL>Ready-to-Copy Listing Upgrade</SL>
 
@@ -1111,8 +967,8 @@ function ConciseAuditReport({
         </Card>
       )}
 
-      {/* Product Details Fixes */}
-      {Array.isArray(report.product_details_fixes) && report.product_details_fixes.length > 0 && (
+      {/* Product Details Fixes — only shown when no Pro Upgrade Pack */}
+      {!proUpgradePack && Array.isArray(report.product_details_fixes) && report.product_details_fixes.length > 0 && (
         <Card>
           <SL>Product Details Fixes</SL>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.375rem' }}>
@@ -1380,6 +1236,417 @@ function ConciseAuditReport({
       )}
 
       {/* Image Studio CTA */}
+      <div style={{
+        borderRadius: '0.875rem', padding: '1.5rem 1.75rem',
+        background: 'linear-gradient(135deg, rgba(163,230,53,0.06), rgba(52,211,153,0.04))',
+        border: '1px solid rgba(163,230,53,0.15)',
+        display: 'flex', alignItems: 'center', gap: '1.25rem', flexWrap: 'wrap',
+      }}>
+        <div style={{
+          width: 52, height: 52, borderRadius: '0.875rem',
+          background: 'linear-gradient(135deg, #166534, #4ade80)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+        }}>
+          <Layers size={24} color="white" />
+        </div>
+        <div style={{ flex: 1, minWidth: 160 }}>
+          <h3 style={{ fontSize: '1rem', fontWeight: 800, color: '#f1f5f9', margin: '0 0 0.3125rem', letterSpacing: '-0.025em' }}>
+            Ready to build your Image Pack?
+          </h3>
+          <p style={{ fontSize: '0.8125rem', color: '#64748b', margin: 0, lineHeight: 1.5 }}>
+            Turn your audit insights into premium Amazon-ready visuals with Sellio Image Studio.
+          </p>
+        </div>
+        <Link to={`/dashboard/audits/${audit.id}/image-studio`} className="btn-primary glow-button" style={{ padding: '0.6875rem 1.25rem', fontSize: '0.875rem' }}>
+          <Zap size={14} />
+          Open Image Studio
+        </Link>
+      </div>
+
+    </div>
+  )
+}
+
+function SubScoreBar({ label, score }: { label: string; score: number }) {
+  const color = sc(score)
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <span style={{ fontSize: '0.6875rem', fontWeight: 600, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+          {label}
+        </span>
+        <span style={{ fontSize: '0.75rem', fontWeight: 800, color }}>{score}</span>
+      </div>
+      <div style={{ height: 4, borderRadius: 2, background: 'rgba(255,255,255,0.06)', overflow: 'hidden' }}>
+        <div style={{ height: '100%', width: `${Math.max(0, Math.min(100, score))}%`, borderRadius: 2, background: color }} />
+      </div>
+    </div>
+  )
+}
+
+function CompactFixTable({ rows }: { rows: CompactFixFirstRow[] }) {
+  return (
+    <div style={{ overflowX: 'auto', borderRadius: '0.5rem', border: '1px solid rgba(255,255,255,0.07)' }}>
+      <div style={{ minWidth: 380 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.4fr 1.4fr' }}>
+          <div style={{ padding: '0.5rem 0.75rem', background: 'rgba(255,255,255,0.04)', borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
+            <span style={{ fontSize: '0.5625rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.07em' }}>Problem</span>
+          </div>
+          <div style={{ padding: '0.5rem 0.75rem', background: 'rgba(255,255,255,0.04)', borderBottom: '1px solid rgba(255,255,255,0.07)', borderLeft: '1px solid rgba(255,255,255,0.05)' }}>
+            <span style={{ fontSize: '0.5625rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.07em' }}>Why It Matters</span>
+          </div>
+          <div style={{ padding: '0.5rem 0.75rem', background: 'rgba(255,255,255,0.04)', borderBottom: '1px solid rgba(255,255,255,0.07)', borderLeft: '1px solid rgba(255,255,255,0.05)' }}>
+            <span style={{ fontSize: '0.5625rem', fontWeight: 700, color: '#a3e635', textTransform: 'uppercase', letterSpacing: '0.07em' }}>Fix</span>
+          </div>
+        </div>
+        {rows.slice(0, 3).map((row, i) => (
+          <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr 1.4fr 1.4fr', borderTop: '1px solid rgba(255,255,255,0.05)', background: i % 2 === 0 ? 'transparent' : 'rgba(255,255,255,0.01)' }}>
+            <div style={{ padding: '0.625rem 0.75rem' }}>
+              <p style={{ fontSize: '0.8125rem', fontWeight: 600, color: '#f1f5f9', margin: 0, lineHeight: 1.4 }}>{row.problem}</p>
+            </div>
+            <div style={{ padding: '0.625rem 0.75rem', borderLeft: '1px solid rgba(255,255,255,0.05)' }}>
+              <p style={{ fontSize: '0.8125rem', color: '#94a3b8', margin: 0, lineHeight: 1.4 }}>{row.why_it_matters}</p>
+            </div>
+            <div style={{ padding: '0.625rem 0.75rem', borderLeft: '1px solid rgba(255,255,255,0.05)' }}>
+              <p style={{ fontSize: '0.8125rem', color: '#a3e635', margin: 0, lineHeight: 1.4 }}>{row.fix}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function CompactNextActionsList({ actions }: { actions: CompactNextAction[] }) {
+  return (
+    <div>
+      {actions.slice(0, 5).map((item, i) => (
+        <div key={i} style={{
+          display: 'flex', alignItems: 'flex-start', gap: '0.75rem',
+          padding: '0.75rem 0',
+          borderBottom: i < Math.min(actions.length, 5) - 1 ? '1px solid rgba(255,255,255,0.04)' : 'none',
+        }}>
+          <span style={{
+            width: 22, height: 22, borderRadius: '50%',
+            background: 'rgba(163,230,53,0.1)', border: '1px solid rgba(163,230,53,0.22)',
+            color: '#a3e635', fontSize: '0.625rem', fontWeight: 800,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            flexShrink: 0, marginTop: 1,
+          }}>
+            {item.step}
+          </span>
+          <div style={{ flex: 1, minWidth: 0, display: 'flex', alignItems: 'flex-start', gap: '0.5rem', flexWrap: 'wrap' }}>
+            <p style={{ fontSize: '0.875rem', fontWeight: 600, color: '#f1f5f9', margin: 0, lineHeight: 1.45, flex: 1, minWidth: 0, wordBreak: 'break-word' }}>
+              {item.action}
+            </p>
+            <PriorityBadge priority={item.priority} />
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+const SUB_SCORE_LABELS: Record<string, string> = {
+  seo: 'SEO',
+  copy: 'Copy',
+  images: 'Images',
+  trust: 'Trust',
+  competitor_position: 'Position',
+}
+
+function CompactAuditReport({
+  compact,
+  audit,
+  proUpgradePack,
+  imagePlan,
+  onRegenerate,
+  regenerating,
+  regenError,
+}: {
+  compact: CompactReport
+  audit: AuditDetail
+  proUpgradePack: ProUpgradePack | null | undefined
+  imagePlan?: Array<{ image_type: string; goal: string; headline: string; visual_direction: string; text_elements?: string[] }>
+  onRegenerate: () => void
+  regenerating: boolean
+  regenError: string | null
+}) {
+  const [advancedOpen, setAdvancedOpen] = useState(false)
+  const { score_snapshot, fix_first_table, buyer_and_competitor_insights, next_actions, advanced_details } = compact
+  const ss = score_snapshot ?? {}
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+
+      <Card>
+        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '1rem', marginBottom: '0.875rem', flexWrap: 'wrap' }}>
+          <SL>Score Snapshot</SL>
+          <button
+            type="button"
+            disabled={regenerating}
+            onClick={onRegenerate}
+            style={{
+              display: 'inline-flex', alignItems: 'center', gap: '0.375rem',
+              padding: '0.3125rem 0.6875rem', borderRadius: '0.375rem',
+              background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)',
+              color: '#64748b', fontSize: '0.75rem', fontWeight: 600,
+              cursor: regenerating ? 'not-allowed' : 'pointer',
+              fontFamily: 'inherit', opacity: regenerating ? 0.6 : 1, transition: 'all 0.15s',
+            }}
+          >
+            <RefreshCw size={12} style={{ animation: regenerating ? 'spin 1s linear infinite' : 'none' }} />
+            {regenerating ? 'Regenerating...' : 'Regenerate'}
+          </button>
+        </div>
+
+        {(ss.status || ss.main_problem || ss.quick_win) && (
+          <div style={{ marginBottom: '1rem' }}>
+            {ss.status && (
+              <span style={{
+                display: 'inline-flex', alignItems: 'center',
+                padding: '0.1875rem 0.625rem', borderRadius: '99px',
+                background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)',
+                fontSize: '0.6875rem', fontWeight: 700, color: '#94a3b8',
+                textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.625rem',
+              }}>
+                {ss.status}
+              </span>
+            )}
+            {ss.main_problem && (
+              <p style={{ fontSize: '0.9375rem', fontWeight: 600, color: '#f1f5f9', margin: '0 0 0.375rem', lineHeight: 1.4 }}>
+                {ss.main_problem}
+              </p>
+            )}
+            {ss.quick_win && (
+              <p style={{ fontSize: '0.875rem', color: '#a3e635', margin: 0, lineHeight: 1.5 }}>
+                Quick win: {ss.quick_win}
+              </p>
+            )}
+          </div>
+        )}
+
+        {ss.sub_scores && (
+          <div style={{
+            display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))',
+            gap: '0.875rem', paddingTop: '1rem', borderTop: '1px solid rgba(255,255,255,0.05)',
+          }}>
+            {Object.entries(ss.sub_scores).map(([key, val]) => (
+              <SubScoreBar key={key} label={SUB_SCORE_LABELS[key] ?? key} score={val as number} />
+            ))}
+          </div>
+        )}
+
+        {regenError && (
+          <div style={{
+            marginTop: '0.75rem', padding: '0.625rem 0.875rem', borderRadius: '0.5rem',
+            background: 'rgba(239,68,68,0.07)', border: '1px solid rgba(239,68,68,0.16)',
+            fontSize: '0.8125rem', color: '#fca5a5',
+          }}>
+            {regenError}
+          </div>
+        )}
+      </Card>
+
+      {Array.isArray(fix_first_table) && fix_first_table.length > 0 && (
+        <Card>
+          <SL>Fix This First</SL>
+          <CompactFixTable rows={fix_first_table} />
+        </Card>
+      )}
+
+      {proUpgradePack && (
+        <ProUpgradePackBlock
+          pack={proUpgradePack}
+          auditId={audit.id}
+          persona={audit.seller_persona ?? ''}
+        />
+      )}
+
+      {buyer_and_competitor_insights && (
+        <Card>
+          <SL>Buyer & Competitor Insights</SL>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1rem' }}>
+
+            {Array.isArray(buyer_and_competitor_insights.buyer_objections) && buyer_and_competitor_insights.buyer_objections.length > 0 && (
+              <div>
+                <div style={{ fontSize: '0.6875rem', fontWeight: 700, color: '#f97316', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.5rem' }}>
+                  Buyer Concerns
+                </div>
+                <div style={{ borderRadius: '0.5rem', overflow: 'hidden', border: '1px solid rgba(249,115,22,0.14)' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', background: 'rgba(249,115,22,0.06)', borderBottom: '1px solid rgba(249,115,22,0.1)' }}>
+                    <div style={{ padding: '0.375rem 0.625rem' }}><span style={{ fontSize: '0.5rem', fontWeight: 700, color: '#f97316', textTransform: 'uppercase', letterSpacing: '0.07em' }}>Buyer Concern</span></div>
+                    <div style={{ padding: '0.375rem 0.625rem', borderLeft: '1px solid rgba(249,115,22,0.09)' }}><span style={{ fontSize: '0.5rem', fontWeight: 700, color: '#a3e635', textTransform: 'uppercase', letterSpacing: '0.07em' }}>Fix</span></div>
+                  </div>
+                  {buyer_and_competitor_insights.buyer_objections.slice(0, 3).map((item, i) => (
+                    <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid rgba(249,115,22,0.07)', background: i % 2 === 0 ? 'transparent' : 'rgba(249,115,22,0.02)' }}>
+                      <div style={{ padding: '0.5rem 0.625rem' }}>
+                        <p style={{ fontSize: '0.8125rem', color: '#f97316', margin: 0, lineHeight: 1.4 }}>{item.buyer_concern}</p>
+                      </div>
+                      <div style={{ padding: '0.5rem 0.625rem', borderLeft: '1px solid rgba(249,115,22,0.07)' }}>
+                        <p style={{ fontSize: '0.8125rem', color: '#a3e635', margin: 0, lineHeight: 1.4 }}>{item.fix}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {Array.isArray(buyer_and_competitor_insights.competitor_actions) && buyer_and_competitor_insights.competitor_actions.length > 0 && (
+              <div>
+                <div style={{ fontSize: '0.6875rem', fontWeight: 700, color: '#60a5fa', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.5rem' }}>
+                  Competitor Gaps
+                </div>
+                <div style={{ borderRadius: '0.5rem', overflow: 'hidden', border: '1px solid rgba(96,165,250,0.14)' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', background: 'rgba(96,165,250,0.06)', borderBottom: '1px solid rgba(96,165,250,0.1)' }}>
+                    <div style={{ padding: '0.375rem 0.625rem' }}><span style={{ fontSize: '0.5rem', fontWeight: 700, color: '#60a5fa', textTransform: 'uppercase', letterSpacing: '0.07em' }}>Competitor Wins In</span></div>
+                    <div style={{ padding: '0.375rem 0.625rem', borderLeft: '1px solid rgba(96,165,250,0.09)' }}><span style={{ fontSize: '0.5rem', fontWeight: 700, color: '#a3e635', textTransform: 'uppercase', letterSpacing: '0.07em' }}>Your Action</span></div>
+                  </div>
+                  {buyer_and_competitor_insights.competitor_actions.slice(0, 3).map((item, i) => (
+                    <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid rgba(96,165,250,0.07)', background: i % 2 === 0 ? 'transparent' : 'rgba(96,165,250,0.02)' }}>
+                      <div style={{ padding: '0.5rem 0.625rem' }}>
+                        <p style={{ fontSize: '0.8125rem', color: '#60a5fa', margin: 0, lineHeight: 1.4 }}>{item.competitor_wins_in}</p>
+                      </div>
+                      <div style={{ padding: '0.5rem 0.625rem', borderLeft: '1px solid rgba(96,165,250,0.07)' }}>
+                        <p style={{ fontSize: '0.8125rem', color: '#a3e635', margin: 0, lineHeight: 1.4 }}>{item.your_action}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+          </div>
+        </Card>
+      )}
+
+      {Array.isArray(imagePlan) && imagePlan.length > 0 && (
+        <Card style={{ borderColor: 'rgba(52,211,153,0.15)', background: 'rgba(52,211,153,0.018)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', marginBottom: '0.875rem', flexWrap: 'wrap' }}>
+            <SL>Image Plan — {Math.min(imagePlan.length, 6)} images</SL>
+            <Link
+              to={`/dashboard/audits/${audit.id}/image-studio`}
+              className="btn-primary glow-button"
+              style={{ padding: '0.4375rem 0.875rem', fontSize: '0.8125rem', flexShrink: 0 }}
+            >
+              <Layers size={13} />
+              Image Studio
+            </Link>
+          </div>
+          <div style={{ overflowX: 'auto', borderRadius: '0.5rem', border: '1px solid rgba(52,211,153,0.1)' }}>
+            <div style={{ minWidth: 500 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.5fr 1.5fr 1fr', background: 'rgba(52,211,153,0.05)', borderBottom: '1px solid rgba(52,211,153,0.1)' }}>
+                <div style={{ padding: '0.5rem 0.75rem' }}><span style={{ fontSize: '0.5625rem', fontWeight: 700, color: '#34d399', textTransform: 'uppercase', letterSpacing: '0.07em' }}>Image</span></div>
+                <div style={{ padding: '0.5rem 0.75rem', borderLeft: '1px solid rgba(52,211,153,0.07)' }}><span style={{ fontSize: '0.5625rem', fontWeight: 700, color: '#34d399', textTransform: 'uppercase', letterSpacing: '0.07em' }}>Goal</span></div>
+                <div style={{ padding: '0.5rem 0.75rem', borderLeft: '1px solid rgba(52,211,153,0.07)' }}><span style={{ fontSize: '0.5625rem', fontWeight: 700, color: '#a3e635', textTransform: 'uppercase', letterSpacing: '0.07em' }}>Headline</span></div>
+                <div style={{ padding: '0.5rem 0.75rem', borderLeft: '1px solid rgba(52,211,153,0.07)' }}><span style={{ fontSize: '0.5625rem', fontWeight: 700, color: '#34d399', textTransform: 'uppercase', letterSpacing: '0.07em' }}>Action</span></div>
+              </div>
+              {imagePlan.slice(0, 6).map((img, i) => (
+                <div key={i} style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.5fr 1.5fr 1fr', borderTop: '1px solid rgba(52,211,153,0.06)', background: i % 2 === 0 ? 'transparent' : 'rgba(52,211,153,0.02)' }}>
+                  <div style={{ padding: '0.625rem 0.75rem' }}>
+                    <p style={{ fontSize: '0.8125rem', fontWeight: 600, color: '#34d399', margin: 0, lineHeight: 1.4 }}>{img.image_type}</p>
+                  </div>
+                  <div style={{ padding: '0.625rem 0.75rem', borderLeft: '1px solid rgba(52,211,153,0.06)' }}>
+                    <p style={{ fontSize: '0.8125rem', color: '#94a3b8', margin: 0, lineHeight: 1.4 }}>{img.goal}</p>
+                  </div>
+                  <div style={{ padding: '0.625rem 0.75rem', borderLeft: '1px solid rgba(52,211,153,0.06)' }}>
+                    <p style={{ fontSize: '0.8125rem', color: '#a3e635', margin: 0, lineHeight: 1.4, fontWeight: 600 }}>{img.headline ? `"${img.headline}"` : '—'}</p>
+                  </div>
+                  <div style={{ padding: '0.625rem 0.75rem', borderLeft: '1px solid rgba(52,211,153,0.06)', display: 'flex', alignItems: 'flex-start' }}>
+                    <CopyButton text={`${img.image_type}\nGoal: ${img.goal}\nHeadline: "${img.headline}"\nVisual: ${img.visual_direction}`} label="Copy" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </Card>
+      )}
+
+      {Array.isArray(next_actions) && next_actions.length > 0 && (
+        <Card>
+          <SL>Next Actions</SL>
+          <CompactNextActionsList actions={next_actions} />
+        </Card>
+      )}
+
+      {advanced_details && (
+        <Card>
+          <button
+            type="button"
+            onClick={() => setAdvancedOpen(o => !o)}
+            style={{
+              display: 'flex', alignItems: 'center', gap: '0.5rem',
+              background: 'none', border: 'none', cursor: 'pointer',
+              color: '#64748b', fontSize: '0.8125rem', fontWeight: 600,
+              fontFamily: 'inherit', padding: 0, width: '100%', textAlign: 'left',
+            }}
+          >
+            <ChevronDown size={14} style={{ transform: advancedOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s', flexShrink: 0 }} />
+            {advancedOpen ? 'Hide Advanced Details' : 'View Advanced Details'}
+          </button>
+
+          {advancedOpen && (
+            <div style={{ marginTop: '1.25rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+
+              {Array.isArray(advanced_details.keywords) && advanced_details.keywords.length > 0 && (
+                <div>
+                  <div style={{ fontSize: '0.6875rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.5rem', paddingBottom: '0.5rem', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                    Keywords
+                  </div>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.375rem' }}>
+                    {advanced_details.keywords.map((kw, i) => (
+                      <span key={i} style={{
+                        padding: '0.25rem 0.625rem', borderRadius: '99px',
+                        background: 'rgba(163,230,53,0.08)', border: '1px solid rgba(163,230,53,0.15)',
+                        color: '#a3e635', fontSize: '0.8125rem', fontWeight: 600,
+                      }}>
+                        {kw}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {Array.isArray(advanced_details.a_plus_content_plan) && advanced_details.a_plus_content_plan.length > 0 && (
+                <div>
+                  <div style={{ fontSize: '0.6875rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.5rem', paddingBottom: '0.5rem', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                    A+ Content Plan
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                    {advanced_details.a_plus_content_plan.map((item, i) => (
+                      <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
+                        <span style={{ color: '#a3e635', fontSize: '0.75rem', fontWeight: 700, flexShrink: 0, marginTop: 2 }}>→</span>
+                        <p style={{ fontSize: '0.8125rem', color: '#94a3b8', margin: 0, lineHeight: 1.5 }}>{item}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {Array.isArray(advanced_details.detailed_notes) && advanced_details.detailed_notes.length > 0 && (
+                <div>
+                  <div style={{ fontSize: '0.6875rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.5rem', paddingBottom: '0.5rem', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                    Detailed Notes
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                    {advanced_details.detailed_notes.map((note, i) => (
+                      <p key={i} style={{
+                        fontSize: '0.8125rem', color: '#94a3b8', margin: 0, lineHeight: 1.55,
+                        paddingBottom: '0.375rem',
+                        borderBottom: i < advanced_details.detailed_notes.length - 1 ? '1px solid rgba(255,255,255,0.04)' : 'none',
+                      }}>
+                        {note}
+                      </p>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+            </div>
+          )}
+        </Card>
+      )}
+
       <div style={{
         borderRadius: '0.875rem', padding: '1.5rem 1.75rem',
         background: 'linear-gradient(135deg, rgba(163,230,53,0.06), rgba(52,211,153,0.04))',
@@ -2010,6 +2277,7 @@ export default function AuditDetailPage() {
 
   const isCompleted = audit.status === 'completed' && !!audit.result
   const isV2 = isCompleted && audit.result?.report_version === 'v2' && !!audit.result?.concise_report
+  const hasCompact = isV2 && !!(audit.result?.concise_report as ConciseReport | null)?.compact_report
   const maxWidth = isCompleted ? 900 : 700
 
   return (
@@ -2178,8 +2446,21 @@ export default function AuditDetailPage() {
         </div>
       )}
 
-      {/* Full report — v2 concise */}
-      {isCompleted && isV2 && audit.result?.concise_report && (
+      {/* Full report — compact v2 */}
+      {isCompleted && hasCompact && audit.result?.concise_report && (
+        <CompactAuditReport
+          compact={(audit.result.concise_report as ConciseReport).compact_report!}
+          audit={audit}
+          proUpgradePack={audit.result.pro_upgrade_pack}
+          imagePlan={(audit.result.concise_report as ConciseReport).image_gallery_plan}
+          onRegenerate={handleRegenerate}
+          regenerating={regenerating}
+          regenError={regenError}
+        />
+      )}
+
+      {/* Full report — v2 concise (no compact_report, backward compat) */}
+      {isCompleted && isV2 && !hasCompact && audit.result?.concise_report && (
         <ConciseAuditReport
           report={audit.result.concise_report}
           audit={audit}

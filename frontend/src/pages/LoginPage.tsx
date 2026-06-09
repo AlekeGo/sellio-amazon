@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { ArrowLeft, Eye, EyeOff } from 'lucide-react'
 import { GoogleLogin } from '@react-oauth/google'
 import { useAuth } from '../contexts/AuthContext'
@@ -26,6 +26,8 @@ export default function LoginPage() {
   const [googleHovered, setGoogleHovered] = useState(false)
   const { login, googleLogin } = useAuth()
   const navigate = useNavigate()
+  const location = useLocation()
+  const next = new URLSearchParams(location.search).get('next') || '/dashboard'
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
@@ -34,7 +36,7 @@ export default function LoginPage() {
     setError('')
     try {
       await login(email, password)
-      navigate('/dashboard')
+      navigate(next)
     } catch (err) {
       setError(extractError(err))
     } finally {
@@ -48,7 +50,7 @@ export default function LoginPage() {
     setError('')
     try {
       await googleLogin(resp.credential)
-      navigate('/dashboard')
+      navigate(next)
     } catch (err) {
       setError(extractError(err))
     } finally {

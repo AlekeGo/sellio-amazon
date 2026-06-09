@@ -16,7 +16,7 @@ REQUIRED_FIELDS_V2 = [
     'image_gallery_plan', 'a_plus_brand_plan',
     'priority_checklist', 'details',
     'buyer_objection_radar', 'competitor_analysis_lite',
-    'pro_upgrade_pack',
+    'pro_upgrade_pack', 'compact_report',
 ]
 
 _TEMPORARY_SIGNALS = (
@@ -165,11 +165,21 @@ OUTPUT RULES — follow all of these exactly:
 23. pro_upgrade_pack.image_briefs: max 6 items.
 24. pro_upgrade_pack.priority_checklist: max 5 items.
 25. pro_upgrade_pack: required. All copy must reflect the seller persona.
+26. compact_report: required. This is the 30-60 second executive summary. Every field must be short and specific.
+27. compact_report.score_snapshot.overall_score must equal the top-level "score" field exactly.
+28. The top-level "score" and all compact_report sub_scores must be VARIED integers 0-100. Never use multiples of 5 or 10. Good: 47, 62, 71, 83. Bad: 40, 60, 70, 80.
+29. compact_report.score_snapshot.sub_scores: all 5 values must be varied integers 0-100. No rounding.
+30. compact_report.fix_first_table: max 3 items. Each problem, why_it_matters, and fix must be 1 short sentence or phrase.
+31. compact_report.buyer_and_competitor_insights.buyer_objections: max 3 items. Each buyer_concern and fix must be concise.
+32. compact_report.buyer_and_competitor_insights.competitor_actions: max 3 items. Use [] if no competitor data was provided.
+33. compact_report.next_actions: max 5 items in descending priority order. Do not repeat fix_first_table content verbatim.
+34. compact_report.advanced_details: use [] for any array with no relevant data. Do NOT invent content.
+35. Never invent fake certifications, fake test results, fake sourcing, fake materials, or fake credentials in any output field.
 
 Return this exact JSON structure:
 
 {{
-  "score": <integer 0-100>,
+  "score": <integer 0-100, varied — not a multiple of 5 or 10, e.g. 47 62 71 83>,
   "score_label": "<short label max 6 words>",
   "executive_summary": "<1 sentence — the single biggest opportunity for this listing>",
   "top_critical_issues": [
@@ -306,6 +316,54 @@ Return this exact JSON structure:
         "reason": "<1 sentence>"
       }}
     ]
+  }},
+  "compact_report": {{
+    "score_snapshot": {{
+      "overall_score": <same integer as top-level score>,
+      "status": "<Needs work | Decent start | Solid | Strong>",
+      "main_problem": "<single biggest issue, 5-8 words>",
+      "quick_win": "<fastest single fix available, 5-8 words>",
+      "sub_scores": {{
+        "seo": <integer 0-100, varied>,
+        "copy": <integer 0-100, varied>,
+        "images": <integer 0-100, varied>,
+        "trust": <integer 0-100, varied>,
+        "competitor_position": <integer 0-100, varied>
+      }}
+    }},
+    "fix_first_table": [
+      {{
+        "problem": "<short problem label>",
+        "why_it_matters": "<1 short sentence>",
+        "fix": "<1 short action>"
+      }}
+    ],
+    "buyer_and_competitor_insights": {{
+      "buyer_objections": [
+        {{
+          "buyer_concern": "<short buyer concern>",
+          "fix": "<short fix>"
+        }}
+      ],
+      "competitor_actions": [
+        {{
+          "competitor_wins_in": "<area where they win>",
+          "your_action": "<short action to match or beat>"
+        }}
+      ]
+    }},
+    "next_actions": [
+      {{
+        "step": 1,
+        "action": "<short specific action>",
+        "priority": "<High|Medium|Low>"
+      }}
+    ],
+    "advanced_details": {{
+      "keywords": ["<keyword>"],
+      "a_plus_content_plan": ["<short plan item>"],
+      "detailed_notes": ["<short note>"]
+    }}
   }}
 }}"""
 
@@ -385,6 +443,19 @@ def _fallback_report() -> dict:
             'product_details_fixes': [],
             'image_briefs': [],
             'priority_checklist': [],
+        },
+        'compact_report': {
+            'score_snapshot': {
+                'overall_score': 0,
+                'status': 'Incomplete',
+                'main_problem': 'AI response was incomplete.',
+                'quick_win': 'Try regenerating the report.',
+                'sub_scores': {'seo': 0, 'copy': 0, 'images': 0, 'trust': 0, 'competitor_position': 0},
+            },
+            'fix_first_table': [],
+            'buyer_and_competitor_insights': {'buyer_objections': [], 'competitor_actions': []},
+            'next_actions': [],
+            'advanced_details': {'keywords': [], 'a_plus_content_plan': [], 'detailed_notes': []},
         },
     }
 

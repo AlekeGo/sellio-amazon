@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, Fragment } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { Link2, Upload, ArrowLeft, ChevronRight, ChevronDown, X, AlertCircle, Zap, Plus } from 'lucide-react'
 import { createAudit, submitAudit, uploadAuditImages } from '../lib/auditsApi'
 import { getMyBilling } from '../lib/billingApi'
@@ -62,6 +62,33 @@ const initialForm = {
 }
 
 type FormState = typeof initialForm
+
+const DRAFT_KEY = 'sellio_guest_audit_draft'
+
+interface DraftData {
+  entryType: 'amazon_url' | 'product_photos' | null
+  step: 1 | 2 | 3
+  form: FormState
+  competitors: CompetitorField[]
+  competitorNotes: string
+}
+
+function saveDraft(data: DraftData): void {
+  try { localStorage.setItem(DRAFT_KEY, JSON.stringify(data)) } catch {}
+}
+
+function loadDraft(): DraftData | null {
+  try {
+    const raw = localStorage.getItem(DRAFT_KEY)
+    return raw ? (JSON.parse(raw) as DraftData) : null
+  } catch {
+    return null
+  }
+}
+
+function clearDraft(): void {
+  localStorage.removeItem(DRAFT_KEY)
+}
 
 function extractError(err: unknown): string {
   if (err && typeof err === 'object' && 'response' in err) {
@@ -731,6 +758,7 @@ function CompetitorSection({
 
 export default function NewAuditPage() {
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const [step, setStep] = useState<1 | 2 | 3>(1)
   const [entryType, setEntryType] = useState<'amazon_url' | 'product_photos' | null>(null)
   const [form, setForm] = useState<FormState>({ ...initialForm })
@@ -742,6 +770,7 @@ export default function NewAuditPage() {
   const [billing, setBilling] = useState<BillingMeResponse | null>(null)
   const [competitors, setCompetitors] = useState<CompetitorField[]>([])
   const [competitorNotes, setCompetitorNotes] = useState('')
+  const [showDraftBanner, setShowDraftBanner] = useState(false)
 
   const addCompetitor = () => {
     if (competitors.length >= 3) return
@@ -781,6 +810,26 @@ export default function NewAuditPage() {
       .then(res => setBilling(res.data))
       .catch(() => {})
   }, [])
+
+  useEffect(() => {
+    if (searchParams.get('resumeDraft') === '1') {
+      const draft = loadDraft()
+      if (draft) {
+        if (draft.entryType) setEntryType(draft.entryType)
+        if (draft.step) setStep(draft.step)
+        setForm({ ...initialForm, ...draft.form })
+        setCompetitors(draft.competitors || [])
+        setCompetitorNotes(draft.competitorNotes || '')
+        setShowDraftBanner(true)
+      }
+    }
+  }, [])
+
+  useEffect(() => {
+    const hasData = !!(form.amazonUrl || form.productName || entryType)
+    if (!hasData) return
+    saveDraft({ entryType, step, form, competitors, competitorNotes })
+  }, [form, entryType, step, competitors, competitorNotes])
 
   const sf = (field: keyof FormState) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setForm(f => ({ ...f, [field]: e.target.value }))
@@ -898,11 +947,17 @@ export default function NewAuditPage() {
         await uploadAuditImages(audit.id, files)
       }
       await submitAudit(audit.id)
+      clearDraft()
       navigate(`/dashboard/audits/${audit.id}`)
     } catch (err: unknown) {
-      const status = (err as { response?: { status?: number } })?.response?.status
-      if (status === 402) {
+      const respStatus = (err as { response?: { status?: number } })?.response?.status
+      if (respStatus === 402) {
         setCreditExhausted(true)
+        setLoading(false)
+        return
+      }
+      if (respStatus === 503) {
+        setSubmitError('AI is temporarily busy. Your draft is saved. Please try again in a moment.')
         setLoading(false)
         return
       }
@@ -973,6 +1028,69 @@ export default function NewAuditPage() {
           Sellio will do the rest — audit your listing, score it, and generate premium visuals.
         </p>
       </div>
+
+      {showDraftBanner && (
+        <div
+          style={{
+            padding: '0.875rem 1rem',
+            borderRadius: '0.625rem',
+            background: 'rgba(163,230,53,0.06)',
+            border: '1px solid rgba(163,230,53,0.2)',
+            marginBottom: '1.25rem',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '0.75rem',
+          }}
+        >
+          <p style={{ margin: 0, fontSize: '0.875rem', color: '#a3e635', fontWeight: 600 }}>
+            Your audit draft was restored. Continue where you left off.
+          </p>
+          <div style={{ display: 'flex', gap: '0.625rem' }}>
+            <button
+              type="button"
+              onClick={() => setShowDraftBanner(false)}
+              style={{
+                padding: '0.4375rem 0.875rem',
+                borderRadius: '0.5rem',
+                background: 'rgba(163,230,53,0.1)',
+                border: '1px solid rgba(163,230,53,0.3)',
+                color: '#a3e635',
+                fontSize: '0.8125rem',
+                fontWeight: 600,
+                cursor: 'pointer',
+                fontFamily: 'inherit',
+              }}
+            >
+              Continue saved audit
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                clearDraft()
+                setForm({ ...initialForm })
+                setEntryType(null)
+                setStep(1)
+                setCompetitors([])
+                setCompetitorNotes('')
+                setShowDraftBanner(false)
+              }}
+              style={{
+                padding: '0.4375rem 0.875rem',
+                borderRadius: '0.5rem',
+                background: 'transparent',
+                border: '1px solid rgba(255,255,255,0.1)',
+                color: '#64748b',
+                fontSize: '0.8125rem',
+                fontWeight: 500,
+                cursor: 'pointer',
+                fontFamily: 'inherit',
+              }}
+            >
+              Discard draft
+            </button>
+          </div>
+        </div>
+      )}
 
       <StepIndicator current={step} />
 

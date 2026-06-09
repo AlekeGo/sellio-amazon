@@ -83,6 +83,49 @@ export interface CompetitorAnalysisLite {
   do_not_copy_warning: string
 }
 
+export interface CompactScoreSnapshot {
+  overall_score: number
+  status: string
+  main_problem: string
+  quick_win: string
+  sub_scores: {
+    seo: number
+    copy: number
+    images: number
+    trust: number
+    competitor_position: number
+  }
+}
+
+export interface CompactFixFirstRow {
+  problem: string
+  why_it_matters: string
+  fix: string
+}
+
+export interface CompactBuyerAndCompetitorInsights {
+  buyer_objections: Array<{ buyer_concern: string; fix: string }>
+  competitor_actions: Array<{ competitor_wins_in: string; your_action: string }>
+}
+
+export interface CompactNextAction {
+  step: number
+  action: string
+  priority: string
+}
+
+export interface CompactReport {
+  score_snapshot: CompactScoreSnapshot
+  fix_first_table: CompactFixFirstRow[]
+  buyer_and_competitor_insights: CompactBuyerAndCompetitorInsights
+  next_actions: CompactNextAction[]
+  advanced_details: {
+    keywords: string[]
+    a_plus_content_plan: string[]
+    detailed_notes: string[]
+  }
+}
+
 export interface ConciseReport {
   score: number
   score_label: string
@@ -107,6 +150,7 @@ export interface ConciseReport {
   buyer_objection_radar?: BuyerObjectionRadarItem[]
   competitor_analysis_lite?: CompetitorAnalysisLite
   details?: Record<string, unknown>
+  compact_report?: CompactReport
 }
 
 export type AuditStatus = 'draft' | 'ready_for_analysis' | 'pending_analysis' | 'completed' | 'failed'
