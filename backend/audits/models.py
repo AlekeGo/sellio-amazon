@@ -22,6 +22,7 @@ class AuditResult(models.Model):
     image_pack_plan = models.JSONField(default=list)
     priority_checklist = models.JSONField(default=list)
     concise_report = models.JSONField(null=True, blank=True)
+    pro_upgrade_pack = models.JSONField(null=True, blank=True)
     report_version = models.CharField(max_length=10, default='v1')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -42,6 +43,15 @@ class Audit(models.Model):
         ('completed', 'Completed'),
         ('failed', 'Failed'),
     ]
+    SELLER_PERSONA_CHOICES = [
+        ('premium', 'Premium'),
+        ('budget_friendly', 'Budget Friendly'),
+        ('gift_ready', 'Gift Ready'),
+        ('expert_professional', 'Expert / Professional'),
+        ('luxury', 'Luxury'),
+        ('problem_solver', 'Problem Solver'),
+        ('minimal_clean', 'Minimal / Clean'),
+    ]
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='audits')
     entry_type = models.CharField(max_length=20, choices=ENTRY_TYPE_CHOICES)
@@ -61,6 +71,7 @@ class Audit(models.Model):
     target_audience = models.TextField(blank=True)
     seller_goal = models.TextField(blank=True)
     notes = models.TextField(blank=True)
+    seller_persona = models.CharField(max_length=30, choices=SELLER_PERSONA_CHOICES, blank=True)
 
     about_this_item = models.TextField(blank=True)
     product_details = models.TextField(blank=True)

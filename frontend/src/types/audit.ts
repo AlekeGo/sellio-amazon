@@ -1,5 +1,38 @@
 export type EntryType = 'amazon_url' | 'product_photos'
 
+export type SellerPersona =
+  | 'premium'
+  | 'budget_friendly'
+  | 'gift_ready'
+  | 'expert_professional'
+  | 'luxury'
+  | 'problem_solver'
+  | 'minimal_clean'
+  | ''
+
+export interface ProUpgradePack {
+  persona_used: string
+  copy_ready_title: string
+  copy_ready_bullets: string[]
+  copy_ready_description: string
+  product_details_fixes: Array<{
+    field: string
+    recommended_value: string
+    reason: string
+  }>
+  image_briefs: Array<{
+    image_type: string
+    headline: string
+    visual_direction: string
+    text_elements?: string[]
+  }>
+  priority_checklist: Array<{
+    priority: string
+    task: string
+    reason: string
+  }>
+}
+
 export interface ImagePackPlanItem {
   image_type: string
   goal: string
@@ -68,6 +101,7 @@ export interface AuditResult {
   image_pack_plan: ImagePackPlanItem[]
   priority_checklist: Array<{ priority: string; task: string; reason: string }>
   concise_report: ConciseReport | null
+  pro_upgrade_pack: ProUpgradePack | null
   report_version: string
   created_at: string
   updated_at: string
@@ -114,6 +148,7 @@ export interface AuditDetail {
   videos_notes: string
   reviews_qna: string
   buyer_complaints: string
+  seller_persona: string
   created_at: string
   updated_at: string
   submitted_at: string | null
@@ -144,4 +179,5 @@ export interface CreateAuditPayload {
   a_plus_content?: string
   product_images_notes?: string
   reviews_qna?: string
+  seller_persona?: string
 }

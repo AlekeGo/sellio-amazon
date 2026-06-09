@@ -3,11 +3,11 @@ import { useParams, Link } from 'react-router-dom'
 import {
   ArrowLeft, Zap, ExternalLink, Copy, Check,
   RefreshCw, AlertTriangle, Layers, ChevronDown,
-  Eye, Shield, Target, TrendingUp,
+  Eye, Shield, Target, TrendingUp, Crown,
 } from 'lucide-react'
 import { getAudit, submitAudit, regenerateAudit } from '../lib/auditsApi'
 import StatusBadge from '../components/ui/StatusBadge'
-import type { AuditDetail, AuditResult, ConciseReport } from '../types/audit'
+import type { AuditDetail, AuditResult, ConciseReport, ProUpgradePack } from '../types/audit'
 
 function extractError(err: unknown): string {
   if (err && typeof err === 'object' && 'response' in err) {
@@ -162,8 +162,323 @@ function SeverityBadge({ index }: { index: number }) {
   )
 }
 
+const PERSONA_LABELS: Record<string, string> = {
+  premium: 'Premium',
+  budget_friendly: 'Budget Friendly',
+  gift_ready: 'Gift Ready',
+  expert_professional: 'Expert / Professional',
+  luxury: 'Luxury',
+  problem_solver: 'Problem Solver',
+  minimal_clean: 'Minimal / Clean',
+}
+
 function formatImageBrief(img: { image_type: string; goal: string; headline: string; visual_direction: string }) {
   return `${img.image_type}\nGoal: ${img.goal}\nHeadline: "${img.headline}"\nVisual: ${img.visual_direction}`
+}
+
+function SubLabel({ children }: { children: React.ReactNode }) {
+  return (
+    <span style={{
+      fontSize: '0.6875rem', fontWeight: 800, color: '#64748b',
+      textTransform: 'uppercase', letterSpacing: '0.07em',
+    }}>
+      {children}
+    </span>
+  )
+}
+
+function ProUpgradePackBlock({
+  pack,
+  auditId,
+  persona,
+}: {
+  pack: ProUpgradePack
+  auditId: number
+  persona: string
+}) {
+  const personaLabel = persona ? (PERSONA_LABELS[persona] || '') : ''
+
+  const fullPackText = [
+    `TITLE:\n${pack.copy_ready_title}`,
+    Array.isArray(pack.copy_ready_bullets) && pack.copy_ready_bullets.length > 0
+      ? `\n\nBULLETS:\n${pack.copy_ready_bullets.join('\n')}`
+      : '',
+    `\n\nDESCRIPTION:\n${pack.copy_ready_description}`,
+    Array.isArray(pack.product_details_fixes) && pack.product_details_fixes.length > 0
+      ? `\n\nPRODUCT DETAILS FIXES:\n${pack.product_details_fixes.map(f => `${f.field}: ${f.recommended_value}`).join('\n')}`
+      : '',
+    Array.isArray(pack.image_briefs) && pack.image_briefs.length > 0
+      ? `\n\nIMAGE BRIEFS:\n${pack.image_briefs.map((b, i) => `${i + 1}. ${b.image_type}\n   Headline: "${b.headline}"\n   Visual: ${b.visual_direction}`).join('\n\n')}`
+      : '',
+    Array.isArray(pack.priority_checklist) && pack.priority_checklist.length > 0
+      ? `\n\nPRIORITY CHECKLIST:\n${pack.priority_checklist.map((c, i) => `${i + 1}. [${c.priority}] ${c.task} — ${c.reason}`).join('\n')}`
+      : '',
+  ].join('')
+
+  return (
+    <div style={{
+      borderRadius: '1rem',
+      border: '1px solid rgba(163,230,53,0.28)',
+      background: 'rgba(163,230,53,0.025)',
+      overflow: 'hidden',
+    }}>
+
+      <div style={{
+        padding: '1.375rem 1.5rem',
+        borderBottom: '1px solid rgba(163,230,53,0.12)',
+        background: 'linear-gradient(135deg, rgba(163,230,53,0.07), rgba(52,211,153,0.035))',
+      }}>
+        <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem', flexWrap: 'wrap' }}>
+          <div style={{ flex: 1, minWidth: 200 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5625rem', flexWrap: 'wrap', marginBottom: '0.3125rem' }}>
+              <Crown size={16} color="#a3e635" strokeWidth={2.5} />
+              <h3 style={{
+                fontSize: '1.0625rem', fontWeight: 900, color: '#f1f5f9',
+                margin: 0, letterSpacing: '-0.025em',
+              }}>
+                One-click Pro Upgrade
+              </h3>
+              {personaLabel && (
+                <span style={{
+                  fontSize: '0.5875rem', fontWeight: 700, color: '#a3e635',
+                  background: 'rgba(163,230,53,0.1)', border: '1px solid rgba(163,230,53,0.22)',
+                  padding: '0.125rem 0.5rem', borderRadius: '99px',
+                  textTransform: 'uppercase', letterSpacing: '0.05em', whiteSpace: 'nowrap',
+                }}>
+                  {personaLabel}
+                </span>
+              )}
+            </div>
+            <p style={{ fontSize: '0.8125rem', color: '#64748b', margin: 0, lineHeight: 1.5 }}>
+              Copy the upgraded listing assets and apply them directly to your Amazon page.
+            </p>
+          </div>
+          <CopyButton text={fullPackText} label="Copy Full Pack" />
+        </div>
+      </div>
+
+      <div style={{ padding: '1.375rem 1.5rem', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+
+        {pack.copy_ready_title && (
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.75rem', marginBottom: '0.5rem', flexWrap: 'wrap' }}>
+              <SubLabel>Copy-ready Title</SubLabel>
+              <CopyButton text={pack.copy_ready_title} label="Copy Title" />
+            </div>
+            <div style={{ padding: '0.875rem 1rem', borderRadius: '0.625rem', background: 'rgba(163,230,53,0.05)', border: '1px solid rgba(163,230,53,0.14)' }}>
+              <p style={{ fontSize: '0.9375rem', color: '#f1f5f9', fontWeight: 600, lineHeight: 1.6, margin: 0, wordBreak: 'break-word' }}>
+                {pack.copy_ready_title}
+              </p>
+            </div>
+          </div>
+        )}
+
+        {Array.isArray(pack.copy_ready_bullets) && pack.copy_ready_bullets.length > 0 && (
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.75rem', marginBottom: '0.5rem', flexWrap: 'wrap' }}>
+              <SubLabel>Copy-ready Bullets</SubLabel>
+              <CopyButton text={pack.copy_ready_bullets.join('\n')} label="Copy All Bullets" />
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.375rem' }}>
+              {pack.copy_ready_bullets.map((bullet, i) => (
+                <div key={i} style={{
+                  display: 'flex', alignItems: 'flex-start', gap: '0.625rem',
+                  padding: '0.625rem 0.875rem', borderRadius: '0.5rem',
+                  background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)',
+                }}>
+                  <span style={{
+                    width: 20, height: 20, borderRadius: '50%',
+                    background: 'rgba(163,230,53,0.1)', border: '1px solid rgba(163,230,53,0.2)',
+                    color: '#a3e635', fontSize: '0.625rem', fontWeight: 800,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    flexShrink: 0, marginTop: 2,
+                  }}>
+                    {i + 1}
+                  </span>
+                  <p style={{ fontSize: '0.875rem', color: '#cbd5e1', lineHeight: 1.55, margin: 0, flex: 1, minWidth: 0, wordBreak: 'break-word' }}>
+                    {bullet}
+                  </p>
+                  <CopyButton text={bullet} />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {pack.copy_ready_description && (
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.75rem', marginBottom: '0.5rem', flexWrap: 'wrap' }}>
+              <SubLabel>Copy-ready Description</SubLabel>
+              <CopyButton text={pack.copy_ready_description} label="Copy Description" />
+            </div>
+            <div style={{ padding: '0.875rem 1rem', borderRadius: '0.625rem', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)' }}>
+              <p style={{ fontSize: '0.875rem', color: '#cbd5e1', lineHeight: 1.75, margin: 0, whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
+                {pack.copy_ready_description}
+              </p>
+            </div>
+          </div>
+        )}
+
+        {Array.isArray(pack.product_details_fixes) && pack.product_details_fixes.length > 0 && (
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.75rem', marginBottom: '0.5rem', flexWrap: 'wrap' }}>
+              <SubLabel>Product Details Fixes</SubLabel>
+              <CopyButton
+                text={pack.product_details_fixes.map(f => `${f.field}: ${f.recommended_value}`).join('\n')}
+                label="Copy All Fixes"
+              />
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.375rem' }}>
+              {pack.product_details_fixes.map((fix, i) => (
+                <div key={i} style={{
+                  display: 'flex', alignItems: 'flex-start', gap: '0.75rem',
+                  padding: '0.625rem 0.875rem', borderRadius: '0.5rem',
+                  background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)',
+                  flexWrap: 'wrap',
+                }}>
+                  <div style={{ flex: 1, minWidth: 0, display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: '0.25rem 1rem' }}>
+                    <div>
+                      <div style={{ fontSize: '0.5625rem', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.125rem' }}>Field</div>
+                      <p style={{ fontSize: '0.8125rem', fontWeight: 600, color: '#f1f5f9', margin: 0 }}>{fix.field}</p>
+                    </div>
+                    {fix.recommended_value && (
+                      <div>
+                        <div style={{ fontSize: '0.5625rem', fontWeight: 700, color: '#a3e635', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.125rem' }}>Value</div>
+                        <p style={{ fontSize: '0.8125rem', color: '#a3e635', margin: 0, lineHeight: 1.5 }}>{fix.recommended_value}</p>
+                      </div>
+                    )}
+                  </div>
+                  {fix.recommended_value && <CopyButton text={fix.recommended_value} label="Copy" />}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {Array.isArray(pack.image_briefs) && pack.image_briefs.length > 0 && (
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', marginBottom: '0.5rem', flexWrap: 'wrap' }}>
+              <SubLabel>Image Briefs</SubLabel>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
+                <CopyButton
+                  text={pack.image_briefs.map((b, i) => `${i + 1}. ${b.image_type}\n   Headline: "${b.headline}"\n   Visual: ${b.visual_direction}`).join('\n\n')}
+                  label="Copy Image Briefs"
+                />
+                <Link
+                  to={`/dashboard/audits/${auditId}/image-studio`}
+                  className="btn-primary glow-button"
+                  style={{ padding: '0.4375rem 0.875rem', fontSize: '0.8125rem', flexShrink: 0 }}
+                >
+                  <Layers size={13} />
+                  Open Image Studio
+                </Link>
+              </div>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4375rem' }}>
+              {pack.image_briefs.map((brief, i) => (
+                <div key={i} style={{
+                  borderRadius: '0.625rem', background: 'rgba(255,255,255,0.02)',
+                  border: '1px solid rgba(52,211,153,0.1)', overflow: 'hidden',
+                }}>
+                  <div style={{
+                    display: 'flex', alignItems: 'center', gap: '0.5rem',
+                    padding: '0.4375rem 0.875rem', background: 'rgba(52,211,153,0.05)',
+                    borderBottom: '1px solid rgba(52,211,153,0.08)', flexWrap: 'wrap',
+                  }}>
+                    <span style={{
+                      width: 20, height: 20, borderRadius: '50%',
+                      background: 'rgba(52,211,153,0.15)', border: '1px solid rgba(52,211,153,0.28)',
+                      color: '#34d399', fontSize: '0.625rem', fontWeight: 800,
+                      display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+                    }}>
+                      {i + 1}
+                    </span>
+                    <span style={{ fontSize: '0.875rem', fontWeight: 700, color: '#f1f5f9', flex: 1 }}>
+                      {brief.image_type}
+                    </span>
+                    <CopyButton
+                      text={`${brief.image_type}\nHeadline: "${brief.headline}"\nVisual: ${brief.visual_direction}`}
+                      label="Copy Brief"
+                    />
+                  </div>
+                  <div style={{
+                    padding: '0.625rem 0.875rem',
+                    display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '0.4375rem 1rem',
+                  }}>
+                    {brief.headline && (
+                      <div>
+                        <div style={{ fontSize: '0.5625rem', fontWeight: 700, color: '#a3e635', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.1875rem', opacity: 0.7 }}>Headline</div>
+                        <p style={{ fontSize: '0.875rem', color: '#a3e635', margin: 0, fontWeight: 700 }}>"{brief.headline}"</p>
+                      </div>
+                    )}
+                    {brief.visual_direction && (
+                      <div>
+                        <div style={{ fontSize: '0.5625rem', fontWeight: 700, color: '#34d399', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.1875rem', opacity: 0.7 }}>Visual Direction</div>
+                        <p style={{ fontSize: '0.8125rem', color: '#94a3b8', margin: 0, lineHeight: 1.5 }}>{brief.visual_direction}</p>
+                      </div>
+                    )}
+                    {Array.isArray(brief.text_elements) && brief.text_elements.length > 0 && (
+                      <div>
+                        <div style={{ fontSize: '0.5625rem', fontWeight: 700, color: '#34d399', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.375rem', opacity: 0.7 }}>Text Elements</div>
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.25rem' }}>
+                          {brief.text_elements.map((el, j) => (
+                            <span key={j} style={{
+                              padding: '0.1875rem 0.5rem', borderRadius: '0.3125rem',
+                              background: 'rgba(52,211,153,0.06)', border: '1px solid rgba(52,211,153,0.14)',
+                              fontSize: '0.75rem', color: '#6b7280',
+                            }}>{el}</span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {Array.isArray(pack.priority_checklist) && pack.priority_checklist.length > 0 && (
+          <div>
+            <div style={{ marginBottom: '0.5rem' }}>
+              <SubLabel>Priority Checklist</SubLabel>
+            </div>
+            <div>
+              {pack.priority_checklist.map((item, i) => (
+                <div key={i} style={{
+                  display: 'flex', alignItems: 'flex-start', gap: '0.75rem',
+                  padding: '0.75rem 0',
+                  borderBottom: i < pack.priority_checklist.length - 1 ? '1px solid rgba(255,255,255,0.04)' : 'none',
+                }}>
+                  <span style={{
+                    width: 22, height: 22, borderRadius: '50%',
+                    background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.09)',
+                    color: '#475569', fontSize: '0.625rem', fontWeight: 800,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    flexShrink: 0, marginTop: 1,
+                  }}>
+                    {i + 1}
+                  </span>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem', marginBottom: '0.1875rem', flexWrap: 'wrap' }}>
+                      <p style={{ fontSize: '0.875rem', fontWeight: 600, color: '#f1f5f9', margin: 0, lineHeight: 1.45, wordBreak: 'break-word' }}>
+                        {item.task}
+                      </p>
+                      <PriorityBadge priority={item.priority} />
+                    </div>
+                    {item.reason && (
+                      <p style={{ fontSize: '0.8125rem', color: '#64748b', margin: 0, lineHeight: 1.5 }}>{item.reason}</p>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+      </div>
+    </div>
+  )
 }
 
 const DIAG = [
@@ -215,6 +530,17 @@ function ReportHeader({ audit, result }: { audit: AuditDetail; result: AuditResu
             }}>
               {audit.entry_type === 'amazon_url' ? 'Amazon URL' : 'Product Photos'}
             </span>
+            {audit.seller_persona && PERSONA_LABELS[audit.seller_persona] && (
+              <span style={{
+                padding: '0.1875rem 0.5625rem', borderRadius: '99px',
+                background: 'rgba(163,230,53,0.07)', border: '1px solid rgba(163,230,53,0.2)',
+                fontSize: '0.6875rem', fontWeight: 700, color: '#a3e635',
+                display: 'inline-flex', alignItems: 'center', gap: '0.3rem',
+              }}>
+                <Crown size={10} />
+                {PERSONA_LABELS[audit.seller_persona]}
+              </span>
+            )}
             <span style={{ fontSize: '0.6875rem', color: '#334155' }}>
               {formatDate(audit.created_at)}
             </span>
@@ -294,12 +620,14 @@ function ReportHeader({ audit, result }: { audit: AuditDetail; result: AuditResu
 function ConciseAuditReport({
   report,
   audit,
+  proUpgradePack,
   onRegenerate,
   regenerating,
   regenError,
 }: {
   report: ConciseReport
   audit: AuditDetail
+  proUpgradePack: ProUpgradePack | null | undefined
   onRegenerate: () => void
   regenerating: boolean
   regenError: string | null
@@ -439,6 +767,15 @@ function ConciseAuditReport({
         </Card>
       )}
 
+      {/* One-click Pro Upgrade Pack */}
+      {proUpgradePack && (
+        <ProUpgradePackBlock
+          pack={proUpgradePack}
+          auditId={audit.id}
+          persona={audit.seller_persona ?? ''}
+        />
+      )}
+
       {/* Ready-to-Copy Listing Upgrade */}
       {(report.title_upgrade?.improved_title || (report.about_this_item_upgrade?.improved_bullets?.length ?? 0) > 0 || report.description_upgrade?.improved_description) && (
         <Card>
@@ -480,7 +817,7 @@ function ConciseAuditReport({
                     }}>
                       {i + 1}
                     </span>
-                    <p style={{ fontSize: '0.875rem', color: '#cbd5e1', lineHeight: 1.55, margin: 0, flex: 1, minWidth: 0 }}>
+                    <p style={{ fontSize: '0.875rem', color: '#cbd5e1', lineHeight: 1.55, margin: 0, flex: 1, minWidth: 0, wordBreak: 'break-word' }}>
                       {bullet}
                     </p>
                     <CopyButton text={bullet} />
@@ -497,7 +834,7 @@ function ConciseAuditReport({
                 <CopyButton text={report.description_upgrade.improved_description} label="Copy Description" />
               </div>
               <div style={{ padding: '0.875rem 1rem', borderRadius: '0.625rem', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)' }}>
-                <p style={{ fontSize: '0.875rem', color: '#cbd5e1', lineHeight: 1.75, margin: 0, whiteSpace: 'pre-wrap' }}>
+                <p style={{ fontSize: '0.875rem', color: '#cbd5e1', lineHeight: 1.75, margin: 0, whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
                   {report.description_upgrade.improved_description}
                 </p>
               </div>
@@ -1578,6 +1915,7 @@ export default function AuditDetailPage() {
         <ConciseAuditReport
           report={audit.result.concise_report}
           audit={audit}
+          proUpgradePack={audit.result.pro_upgrade_pack}
           onRegenerate={handleRegenerate}
           regenerating={regenerating}
           regenError={regenError}

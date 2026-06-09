@@ -15,6 +15,7 @@ REQUIRED_FIELDS_V2 = [
     'keyword_opportunities', 'buyer_objections',
     'image_gallery_plan', 'a_plus_brand_plan',
     'priority_checklist', 'details',
+    'pro_upgrade_pack',
 ]
 
 _TEMPORARY_SIGNALS = (
@@ -32,13 +33,66 @@ def _is_temporary_error(exc: Exception) -> bool:
     return any(sig in msg for sig in _TEMPORARY_SIGNALS)
 
 
+_PERSONA_INSTRUCTIONS = {
+    'premium': (
+        "SELLER PERSONA: Premium. "
+        "Use language that emphasizes trust, quality materials, superior craftsmanship, and value perception. "
+        "Every copy element should reinforce that this product is worth paying more for."
+    ),
+    'budget_friendly': (
+        "SELLER PERSONA: Budget Friendly. "
+        "Lead with value, practicality, and affordability. "
+        "Highlight everyday usefulness and cost-effectiveness without sounding cheap."
+    ),
+    'gift_ready': (
+        "SELLER PERSONA: Gift Ready. "
+        "Emphasize emotional value, gifting occasions (birthdays, holidays, anniversaries), "
+        "and the benefit for the recipient. Make the buyer feel this is the perfect gift."
+    ),
+    'expert_professional': (
+        "SELLER PERSONA: Expert / Professional. "
+        "Use precise, technical, specification-driven language. "
+        "Buyers are knowledgeable; give them specs, compatibility details, and professional-grade claims."
+    ),
+    'luxury': (
+        "SELLER PERSONA: Luxury. "
+        "Use refined, elegant, aspirational positioning. "
+        "Every word should evoke exclusivity, prestige, and superior experience."
+    ),
+    'problem_solver': (
+        "SELLER PERSONA: Problem Solver. "
+        "Lead with the buyer's pain point, then deliver the clear solution this product provides. "
+        "Be direct: here is the problem, here is how this product fixes it."
+    ),
+    'minimal_clean': (
+        "SELLER PERSONA: Minimal / Clean. "
+        "Use simple, clear, direct wording with no hype, no filler, no buzzwords. "
+        "Every sentence must earn its place. Less is more."
+    ),
+}
+
+
+def _persona_block(persona: str) -> str:
+    instruction = _PERSONA_INSTRUCTIONS.get(persona, '')
+    if not instruction:
+        return "SELLER PERSONA: Not set. Use balanced, professional Amazon copywriting."
+    return instruction
+
+
 def _build_prompt(audit) -> str:
     about_bullets = audit.about_this_item or audit.bullet_points or 'Not provided'
     brand_aplus = audit.brand_content or audit.a_plus_content or 'Not provided'
+    persona = audit.seller_persona or ''
+    persona_block = _persona_block(persona)
+    persona_display = dict(audit.SELLER_PERSONA_CHOICES).get(persona, 'Not set') if persona else 'Not set'
 
     return f"""You are a senior Amazon listing conversion auditor and SEO copywriter.
 
 Analyze this Amazon product listing and return a concise, actionable audit report.
+
+{persona_block}
+
+Apply this persona consistently across ALL copy outputs: title, bullets, description, pro_upgrade_pack, image briefs, and checklist.
 
 PRODUCT DATA:
 - Product Name: {audit.product_name or 'Not provided'}
@@ -63,6 +117,7 @@ PRODUCT DATA:
 - Target Audience: {audit.target_audience or 'Not provided'}
 - Seller Goal: {audit.seller_goal or 'Not provided'}
 - Additional Notes: {audit.notes or 'Not provided'}
+- Seller Persona: {persona_display}
 
 Rules:
 - Return ONLY valid JSON. No markdown fences, no explanation, no extra text.
@@ -79,6 +134,12 @@ Rules:
 - image_gallery_plan: max 6 items.
 - a_plus_brand_plan: max 3 items.
 - priority_checklist: max 5 items.
+- pro_upgrade_pack: required. See structure below. All copy must reflect the seller persona.
+- pro_upgrade_pack.copy_ready_bullets: exactly 5 bullets, ready to paste.
+- pro_upgrade_pack.copy_ready_description: max 3 sentences, ready to paste.
+- pro_upgrade_pack.product_details_fixes: max 5 items.
+- pro_upgrade_pack.image_briefs: max 6 items.
+- pro_upgrade_pack.priority_checklist: max 5 items.
 
 Return this exact JSON structure:
 
@@ -159,6 +220,40 @@ Return this exact JSON structure:
     "bullets": "<optional deeper note max 3 sentences>",
     "images": "<optional deeper note max 3 sentences>",
     "product_details": "<optional deeper note max 3 sentences>"
+  }},
+  "pro_upgrade_pack": {{
+    "persona_used": "{persona_display}",
+    "copy_ready_title": "<ready-to-use Amazon title under 200 chars, persona-aligned>",
+    "copy_ready_bullets": [
+      "<bullet 1 — persona-aligned, ready to paste>",
+      "<bullet 2 — persona-aligned, ready to paste>",
+      "<bullet 3 — persona-aligned, ready to paste>",
+      "<bullet 4 — persona-aligned, ready to paste>",
+      "<bullet 5 — persona-aligned, ready to paste>"
+    ],
+    "copy_ready_description": "<max 3 sentences, persona-aligned, ready to paste>",
+    "product_details_fixes": [
+      {{
+        "field": "<spec field name>",
+        "recommended_value": "<ready-to-use value>",
+        "reason": "<1 sentence>"
+      }}
+    ],
+    "image_briefs": [
+      {{
+        "image_type": "<e.g. Hero Shot, Benefit Infographic, Lifestyle>",
+        "headline": "<short headline text>",
+        "visual_direction": "<1 sentence>",
+        "text_elements": ["<short text>", "<short text>"]
+      }}
+    ],
+    "priority_checklist": [
+      {{
+        "priority": "<High|Medium|Low>",
+        "task": "<short task>",
+        "reason": "<1 sentence>"
+      }}
+    ]
   }}
 }}"""
 

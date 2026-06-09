@@ -99,6 +99,7 @@ def _run_gemini_and_save(audit):
             'image_pack_plan': result_data.get('image_gallery_plan', []),
             'priority_checklist': result_data.get('priority_checklist', []),
             'concise_report': result_data,
+            'pro_upgrade_pack': result_data.get('pro_upgrade_pack'),
             'report_version': 'v2',
         },
     )

@@ -10,6 +10,16 @@ import PaywallBlock from '../components/ui/PaywallBlock'
 const AMAZON_URL_RE =
   /amazon\.(com|co\.(uk|jp)|de|fr|es|it|ca|com\.(au|br|mx|tr)|in|nl|sg|ae|sa|pl|se)/i
 
+const PERSONA_OPTIONS = [
+  { value: 'premium', label: 'Premium', description: 'Build trust and higher perceived value.' },
+  { value: 'budget_friendly', label: 'Budget-friendly', description: 'Emphasize value, practicality, and everyday usefulness.' },
+  { value: 'gift_ready', label: 'Gift-ready', description: 'Position the product as a strong gift choice.' },
+  { value: 'expert_professional', label: 'Expert / Professional', description: 'Use precise, specification-driven language.' },
+  { value: 'luxury', label: 'Luxury', description: 'Create refined, elegant, premium positioning.' },
+  { value: 'problem_solver', label: 'Problem-solver', description: 'Lead with the buyer pain point and solution.' },
+  { value: 'minimal_clean', label: 'Minimal / Clean', description: 'Keep the listing simple, clear, and direct.' },
+]
+
 const initialForm = {
   amazonUrl: '',
   productName: '',
@@ -31,6 +41,7 @@ const initialForm = {
   aPlusContent: '',
   productImagesNotes: '',
   reviewsQna: '',
+  sellerPersona: '',
 }
 
 type FormState = typeof initialForm
@@ -55,6 +66,7 @@ function buildPayload(entryType: 'amazon_url' | 'product_photos', form: FormStat
     target_audience: form.targetAudience || undefined,
     seller_goal: form.sellerGoal || undefined,
     notes: form.notes || undefined,
+    seller_persona: form.sellerPersona || undefined,
   }
   if (entryType === 'amazon_url') {
     return {
@@ -439,6 +451,65 @@ function CollapsibleSection({
           {children}
         </div>
       )}
+    </div>
+  )
+}
+
+function SellerPersonaPicker({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  return (
+    <div>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem', marginBottom: '0.4375rem' }}>
+        <span style={{ fontSize: '0.875rem', fontWeight: 700, color: '#f1f5f9' }}>Seller Persona Mode</span>
+        <span style={{
+          fontSize: '0.5625rem', fontWeight: 700, color: '#a3e635',
+          background: 'rgba(163,230,53,0.08)', border: '1px solid rgba(163,230,53,0.2)',
+          padding: '0.125rem 0.4375rem', borderRadius: '99px',
+          textTransform: 'uppercase', letterSpacing: '0.06em',
+        }}>
+          AI Powered
+        </span>
+      </div>
+      <p style={{ fontSize: '0.75rem', color: '#64748b', margin: '0 0 0.875rem', lineHeight: 1.55 }}>
+        Choose how Sellio should position and rewrite your listing.
+      </p>
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fill, minmax(175px, 1fr))',
+        gap: '0.4375rem',
+      }}>
+        {PERSONA_OPTIONS.map(opt => {
+          const selected = value === opt.value
+          return (
+            <button
+              key={opt.value}
+              type="button"
+              onClick={() => onChange(selected ? '' : opt.value)}
+              style={{
+                borderRadius: '0.625rem',
+                padding: '0.625rem 0.75rem',
+                background: selected ? 'rgba(163,230,53,0.07)' : 'rgba(255,255,255,0.025)',
+                border: `1px solid ${selected ? 'rgba(163,230,53,0.35)' : 'rgba(255,255,255,0.08)'}`,
+                cursor: 'pointer',
+                textAlign: 'left',
+                fontFamily: 'inherit',
+                transition: 'all 0.15s',
+                outline: 'none',
+              }}
+            >
+              <div style={{
+                fontSize: '0.8125rem', fontWeight: 700,
+                color: selected ? '#a3e635' : '#cbd5e1',
+                marginBottom: '0.1875rem',
+              }}>
+                {opt.label}
+              </div>
+              <div style={{ fontSize: '0.6875rem', color: selected ? '#64748b' : '#475569', lineHeight: 1.45 }}>
+                {opt.description}
+              </div>
+            </button>
+          )
+        })}
+      </div>
     </div>
   )
 }
@@ -922,6 +993,17 @@ export default function NewAuditPage() {
             </InfoNote>
           </div>
 
+          {/* Seller Persona Mode */}
+          <div style={{
+            borderRadius: '0.875rem', padding: '1.25rem 1.375rem',
+            background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(255,255,255,0.08)',
+          }}>
+            <SellerPersonaPicker
+              value={form.sellerPersona}
+              onChange={v => setForm(f => ({ ...f, sellerPersona: v }))}
+            />
+          </div>
+
           {/* Section 1: Listing Basics */}
           <CollapsibleSection title="Listing Basics" badge="Required" defaultOpen={true}>
             {fld('Amazon Product URL', 'amazonUrl', 'https://www.amazon.com/dp/...')}
@@ -1155,6 +1237,15 @@ export default function NewAuditPage() {
               'Helps Sellio generate more accurate image prompts.'
             )}
             {tfld('Seller Goal', 'sellerGoal', 'What are you trying to achieve with this listing?', true, 2)}
+            <div style={{
+              borderRadius: '0.75rem', padding: '1rem 1.125rem',
+              background: 'rgba(163,230,53,0.02)', border: '1px solid rgba(255,255,255,0.07)',
+            }}>
+              <SellerPersonaPicker
+                value={form.sellerPersona}
+                onChange={v => setForm(f => ({ ...f, sellerPersona: v }))}
+              />
+            </div>
           </div>
 
           {showPaywall && (
