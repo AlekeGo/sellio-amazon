@@ -72,6 +72,8 @@ class Audit(models.Model):
     seller_goal = models.TextField(blank=True)
     notes = models.TextField(blank=True)
     seller_persona = models.CharField(max_length=30, choices=SELLER_PERSONA_CHOICES, blank=True)
+    competitors = models.JSONField(null=True, blank=True)
+    competitor_notes = models.TextField(blank=True)
 
     about_this_item = models.TextField(blank=True)
     product_details = models.TextField(blank=True)

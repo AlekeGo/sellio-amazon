@@ -7,7 +7,7 @@ import {
 } from 'lucide-react'
 import { getAudit, submitAudit, regenerateAudit } from '../lib/auditsApi'
 import StatusBadge from '../components/ui/StatusBadge'
-import type { AuditDetail, AuditResult, ConciseReport, ProUpgradePack } from '../types/audit'
+import type { AuditDetail, AuditResult, ConciseReport, ProUpgradePack, BuyerObjectionRadarItem, CompetitorAnalysisLite } from '../types/audit'
 
 function extractError(err: unknown): string {
   if (err && typeof err === 'object' && 'response' in err) {
@@ -617,6 +617,268 @@ function ReportHeader({ audit, result }: { audit: AuditDetail; result: AuditResu
   )
 }
 
+function BuyerObjectionRadarBlock({ items }: { items?: BuyerObjectionRadarItem[] }) {
+  const hasItems = Array.isArray(items) && items.length > 0
+  const copyText = hasItems
+    ? items!.slice(0, 5).map(it =>
+        `OBJECTION: ${it.objection}\nFIX: ${it.listing_fix}\nIMAGE IDEA: ${it.image_fix}`
+      ).join('\n\n')
+    : ''
+
+  return (
+    <Card>
+      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '1rem', marginBottom: '0.875rem', flexWrap: 'wrap' }}>
+        <div>
+          <SL>Buyer Objection Radar</SL>
+          <p style={{ fontSize: '0.8125rem', color: '#64748b', margin: 0, lineHeight: 1.5 }}>
+            What may stop buyers from purchasing — and how to fix it.
+          </p>
+        </div>
+        {hasItems && <CopyButton text={copyText} label="Copy Objection Fixes" />}
+      </div>
+
+      {!hasItems ? (
+        <div style={{
+          padding: '1rem', borderRadius: '0.625rem',
+          background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)',
+          fontSize: '0.8125rem', color: '#475569', lineHeight: 1.6, textAlign: 'center',
+        }}>
+          Add reviews or Q&A in your next audit to detect stronger buyer objections.
+        </div>
+      ) : (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4375rem' }}>
+          {items!.slice(0, 5).map((item, i) => (
+            <div key={i} style={{
+              borderRadius: '0.625rem', border: '1px solid rgba(249,115,22,0.14)',
+              background: 'rgba(249,115,22,0.03)', overflow: 'hidden',
+            }}>
+              <div style={{
+                display: 'flex', alignItems: 'flex-start', gap: '0.625rem',
+                padding: '0.5rem 0.875rem',
+                background: 'rgba(249,115,22,0.06)', borderBottom: '1px solid rgba(249,115,22,0.09)',
+                flexWrap: 'wrap',
+              }}>
+                <span style={{
+                  display: 'inline-flex', alignItems: 'center',
+                  padding: '0.125rem 0.5rem', borderRadius: '99px',
+                  background: 'rgba(249,115,22,0.12)', border: '1px solid rgba(249,115,22,0.22)',
+                  fontSize: '0.5625rem', fontWeight: 700, color: '#f97316',
+                  textTransform: 'uppercase', letterSpacing: '0.06em', flexShrink: 0,
+                }}>
+                  Concern
+                </span>
+                <span style={{ fontSize: '0.875rem', fontWeight: 700, color: '#f1f5f9', flex: 1, lineHeight: 1.4 }}>
+                  {item.objection}
+                </span>
+              </div>
+              {item.source_signal && (
+                <div style={{ padding: '0.375rem 0.875rem', borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
+                  <span style={{ fontSize: '0.6875rem', color: '#475569', fontStyle: 'italic' }}>
+                    Source: {item.source_signal}
+                  </span>
+                </div>
+              )}
+              <div style={{
+                padding: '0.5rem 0.875rem',
+                display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '0.375rem 1rem',
+              }}>
+                {item.why_it_hurts_conversion && (
+                  <div>
+                    <span style={{
+                      display: 'inline-flex', alignItems: 'center',
+                      padding: '0.1rem 0.4rem', borderRadius: '99px',
+                      background: 'rgba(251,191,36,0.1)', border: '1px solid rgba(251,191,36,0.2)',
+                      fontSize: '0.5rem', fontWeight: 700, color: '#fbbf24',
+                      textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '0.25rem',
+                    }}>
+                      Why it hurts
+                    </span>
+                    <p style={{ fontSize: '0.8125rem', color: '#94a3b8', margin: 0, lineHeight: 1.5 }}>
+                      {item.why_it_hurts_conversion}
+                    </p>
+                  </div>
+                )}
+                {item.listing_fix && (
+                  <div>
+                    <span style={{
+                      display: 'inline-flex', alignItems: 'center',
+                      padding: '0.1rem 0.4rem', borderRadius: '99px',
+                      background: 'rgba(163,230,53,0.1)', border: '1px solid rgba(163,230,53,0.2)',
+                      fontSize: '0.5rem', fontWeight: 700, color: '#a3e635',
+                      textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '0.25rem',
+                    }}>
+                      Fix
+                    </span>
+                    <p style={{ fontSize: '0.8125rem', color: '#a3e635', margin: 0, lineHeight: 1.5 }}>
+                      {item.listing_fix}
+                    </p>
+                  </div>
+                )}
+                {item.image_fix && (
+                  <div>
+                    <span style={{
+                      display: 'inline-flex', alignItems: 'center',
+                      padding: '0.1rem 0.4rem', borderRadius: '99px',
+                      background: 'rgba(52,211,153,0.1)', border: '1px solid rgba(52,211,153,0.2)',
+                      fontSize: '0.5rem', fontWeight: 700, color: '#34d399',
+                      textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '0.25rem',
+                    }}>
+                      Image idea
+                    </span>
+                    <p style={{ fontSize: '0.8125rem', color: '#34d399', margin: 0, lineHeight: 1.5 }}>
+                      {item.image_fix}
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </Card>
+  )
+}
+
+function CompetitorAnalysisLiteBlock({ data }: { data?: CompetitorAnalysisLite }) {
+  const isEmpty = !data || (
+    (!Array.isArray(data.competitor_advantages) || data.competitor_advantages.length === 0) &&
+    (!Array.isArray(data.where_we_can_win) || data.where_we_can_win.length === 0)
+  )
+
+  const copyText = data && !isEmpty ? [
+    data.summary,
+    Array.isArray(data.competitor_advantages) && data.competitor_advantages.length > 0
+      ? `COMPETITOR ADVANTAGES:\n${data.competitor_advantages.map(a => `- ${a.competitor}: ${a.advantage}. ${a.why_it_matters}`).join('\n')}`
+      : '',
+    Array.isArray(data.where_we_can_win) && data.where_we_can_win.length > 0
+      ? `WHERE WE CAN WIN:\n${data.where_we_can_win.map(w => `- ${w.area}: ${w.opportunity} → ${w.recommended_action}`).join('\n')}`
+      : '',
+  ].filter(Boolean).join('\n\n') : ''
+
+  return (
+    <Card>
+      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '1rem', marginBottom: '0.875rem', flexWrap: 'wrap' }}>
+        <div>
+          <SL>Competitor Analysis Lite</SL>
+          <p style={{ fontSize: '0.8125rem', color: '#64748b', margin: 0, lineHeight: 1.5 }}>
+            See where competitors look stronger and where your listing can win.
+          </p>
+        </div>
+        {!isEmpty && copyText && <CopyButton text={copyText} label="Copy Competitor Action Plan" />}
+      </div>
+
+      {isEmpty ? (
+        <div style={{
+          padding: '1rem', borderRadius: '0.625rem',
+          background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)',
+          fontSize: '0.8125rem', color: '#475569', lineHeight: 1.6, textAlign: 'center',
+        }}>
+          No competitor data was provided for this audit.
+        </div>
+      ) : (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.875rem' }}>
+          {data!.summary && data!.summary !== 'No competitor data was provided.' && (
+            <p style={{ fontSize: '0.875rem', color: '#cbd5e1', lineHeight: 1.65, margin: 0 }}>
+              {data!.summary}
+            </p>
+          )}
+
+          {Array.isArray(data!.competitor_advantages) && data!.competitor_advantages.length > 0 && (
+            <div>
+              <div style={{ fontSize: '0.6875rem', fontWeight: 700, color: '#f87171', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.5rem' }}>
+                Competitor Advantages
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3125rem' }}>
+                {data!.competitor_advantages.map((adv, i) => (
+                  <div key={i} style={{
+                    display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
+                    gap: '0.25rem 1rem', padding: '0.625rem 0.875rem', borderRadius: '0.5rem',
+                    background: 'rgba(248,113,113,0.04)', border: '1px solid rgba(248,113,113,0.1)',
+                  }}>
+                    {adv.competitor && (
+                      <div>
+                        <div style={{ fontSize: '0.5rem', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.125rem' }}>
+                          Competitor
+                        </div>
+                        <p style={{ fontSize: '0.8125rem', fontWeight: 600, color: '#f1f5f9', margin: 0 }}>{adv.competitor}</p>
+                      </div>
+                    )}
+                    <div>
+                      <div style={{ fontSize: '0.5rem', fontWeight: 700, color: '#f87171', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.125rem' }}>
+                        Advantage
+                      </div>
+                      <p style={{ fontSize: '0.8125rem', color: '#f87171', margin: 0, lineHeight: 1.5 }}>{adv.advantage}</p>
+                    </div>
+                    {adv.why_it_matters && (
+                      <div>
+                        <div style={{ fontSize: '0.5rem', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.125rem' }}>
+                          Why it matters
+                        </div>
+                        <p style={{ fontSize: '0.8125rem', color: '#94a3b8', margin: 0, lineHeight: 1.5 }}>{adv.why_it_matters}</p>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {Array.isArray(data!.where_we_can_win) && data!.where_we_can_win.length > 0 && (
+            <div>
+              <div style={{ fontSize: '0.6875rem', fontWeight: 700, color: '#a3e635', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.5rem' }}>
+                Where We Can Win
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3125rem' }}>
+                {data!.where_we_can_win.map((win, i) => (
+                  <div key={i} style={{
+                    display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
+                    gap: '0.25rem 1rem', padding: '0.625rem 0.875rem', borderRadius: '0.5rem',
+                    background: 'rgba(163,230,53,0.04)', border: '1px solid rgba(163,230,53,0.1)',
+                  }}>
+                    {win.area && (
+                      <div>
+                        <div style={{ fontSize: '0.5rem', fontWeight: 700, color: '#a3e635', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.125rem' }}>
+                          Area
+                        </div>
+                        <p style={{ fontSize: '0.8125rem', fontWeight: 700, color: '#a3e635', margin: 0 }}>{win.area}</p>
+                      </div>
+                    )}
+                    <div>
+                      <div style={{ fontSize: '0.5rem', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.125rem' }}>
+                        Opportunity
+                      </div>
+                      <p style={{ fontSize: '0.8125rem', color: '#cbd5e1', margin: 0, lineHeight: 1.5 }}>{win.opportunity}</p>
+                    </div>
+                    {win.recommended_action && (
+                      <div>
+                        <div style={{ fontSize: '0.5rem', fontWeight: 700, color: '#34d399', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.125rem' }}>
+                          Action
+                        </div>
+                        <p style={{ fontSize: '0.8125rem', color: '#34d399', margin: 0, lineHeight: 1.5 }}>{win.recommended_action}</p>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {data!.do_not_copy_warning && (
+            <div style={{
+              padding: '0.625rem 0.875rem', borderRadius: '0.5rem',
+              background: 'rgba(251,191,36,0.05)', border: '1px solid rgba(251,191,36,0.15)',
+              fontSize: '0.75rem', color: '#92400e', lineHeight: 1.55,
+            }}>
+              <span style={{ fontWeight: 700, color: '#fbbf24' }}>Note: </span>
+              <span style={{ color: '#78716c' }}>{data!.do_not_copy_warning}</span>
+            </div>
+          )}
+        </div>
+      )}
+    </Card>
+  )
+}
+
 function ConciseAuditReport({
   report,
   audit,
@@ -775,6 +1037,12 @@ function ConciseAuditReport({
           persona={audit.seller_persona ?? ''}
         />
       )}
+
+      {/* Buyer Objection Radar */}
+      <BuyerObjectionRadarBlock items={report.buyer_objection_radar} />
+
+      {/* Competitor Analysis Lite */}
+      <CompetitorAnalysisLiteBlock data={report.competitor_analysis_lite} />
 
       {/* Ready-to-Copy Listing Upgrade */}
       {(report.title_upgrade?.improved_title || (report.about_this_item_upgrade?.improved_bullets?.length ?? 0) > 0 || report.description_upgrade?.improved_description) && (

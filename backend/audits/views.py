@@ -1,3 +1,4 @@
+import json
 import os
 
 from django.utils import timezone
@@ -171,6 +172,20 @@ class AuditSubmitView(APIView):
 
         try:
             _run_gemini_and_save(audit)
+        except json.JSONDecodeError:
+            audit.status = 'failed'
+            audit.save(update_fields=['status', 'updated_at'])
+            if credit_consumed:
+                try:
+                    refund_credit(request.user, 'audit', 1,
+                                  reason=f"Refund: analysis failed for audit {audit.id}",
+                                  metadata={'audit_id': audit.id})
+                except Exception:
+                    pass
+            return Response(
+                {'detail': 'AI response was incomplete. Please try again or reduce input length.'},
+                status=status.HTTP_502_BAD_GATEWAY,
+            )
         except ValueError as exc:
             audit.status = 'failed'
             audit.save(update_fields=['status', 'updated_at'])
@@ -226,6 +241,13 @@ class AuditRegenerateView(APIView):
 
         try:
             _run_gemini_and_save(audit)
+        except json.JSONDecodeError:
+            audit.status = 'failed'
+            audit.save(update_fields=['status', 'updated_at'])
+            return Response(
+                {'detail': 'AI response was incomplete. Please try again or reduce input length.'},
+                status=status.HTTP_502_BAD_GATEWAY,
+            )
         except ValueError as exc:
             audit.status = 'failed'
             audit.save(update_fields=['status', 'updated_at'])

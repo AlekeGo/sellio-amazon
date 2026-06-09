@@ -67,6 +67,7 @@ class AuditDetailSerializer(serializers.ModelSerializer):
             'about_this_item', 'product_details', 'product_specifications',
             'brand_content', 'a_plus_content', 'variations', 'size_guide',
             'product_images_notes', 'videos_notes', 'reviews_qna', 'buyer_complaints',
+            'competitors', 'competitor_notes',
             'created_at', 'updated_at', 'submitted_at',
             'images', 'result',
         )
@@ -91,6 +92,7 @@ class AuditCreateSerializer(serializers.ModelSerializer):
             'about_this_item', 'product_details', 'product_specifications',
             'brand_content', 'a_plus_content', 'variations', 'size_guide',
             'product_images_notes', 'videos_notes', 'reviews_qna', 'buyer_complaints',
+            'competitors', 'competitor_notes',
         )
 
     def validate(self, data):
@@ -119,4 +121,5 @@ class AuditUpdateSerializer(serializers.ModelSerializer):
             'about_this_item', 'product_details', 'product_specifications',
             'brand_content', 'a_plus_content', 'variations', 'size_guide',
             'product_images_notes', 'videos_notes', 'reviews_qna', 'buyer_complaints',
+            'competitors', 'competitor_notes',
         )

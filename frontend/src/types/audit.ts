@@ -43,6 +43,46 @@ export interface ImagePackPlanItem {
   suggested_layout?: string
 }
 
+export interface Competitor {
+  name?: string
+  url?: string
+  title?: string
+  price?: string
+  rating?: string
+  review_count?: string
+  bullets?: string
+  image_notes?: string
+  strengths?: string
+  notes?: string
+}
+
+export interface BuyerObjectionRadarItem {
+  objection: string
+  source_signal: string
+  why_it_hurts_conversion: string
+  listing_fix: string
+  image_fix: string
+}
+
+export interface CompetitorAdvantage {
+  competitor: string
+  advantage: string
+  why_it_matters: string
+}
+
+export interface CompetitorWinArea {
+  area: string
+  opportunity: string
+  recommended_action: string
+}
+
+export interface CompetitorAnalysisLite {
+  summary: string
+  competitor_advantages: CompetitorAdvantage[]
+  where_we_can_win: CompetitorWinArea[]
+  do_not_copy_warning: string
+}
+
 export interface ConciseReport {
   score: number
   score_label: string
@@ -64,6 +104,8 @@ export interface ConciseReport {
   }>
   a_plus_brand_plan: Array<{ section: string; purpose: string; content_idea: string }>
   priority_checklist: Array<{ priority: string; task: string; reason: string }>
+  buyer_objection_radar?: BuyerObjectionRadarItem[]
+  competitor_analysis_lite?: CompetitorAnalysisLite
   details?: Record<string, unknown>
 }
 
@@ -149,6 +191,8 @@ export interface AuditDetail {
   reviews_qna: string
   buyer_complaints: string
   seller_persona: string
+  competitors: Competitor[] | null
+  competitor_notes: string
   created_at: string
   updated_at: string
   submitted_at: string | null
@@ -180,4 +224,6 @@ export interface CreateAuditPayload {
   product_images_notes?: string
   reviews_qna?: string
   seller_persona?: string
+  competitors?: Competitor[]
+  competitor_notes?: string
 }

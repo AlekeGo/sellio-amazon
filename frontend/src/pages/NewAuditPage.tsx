@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, Fragment } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Link2, Upload, ArrowLeft, ChevronRight, ChevronDown, X, AlertCircle, Zap } from 'lucide-react'
+import { Link2, Upload, ArrowLeft, ChevronRight, ChevronDown, X, AlertCircle, Zap, Plus } from 'lucide-react'
 import { createAudit, submitAudit, uploadAuditImages } from '../lib/auditsApi'
 import { getMyBilling } from '../lib/billingApi'
 import type { CreateAuditPayload } from '../types/audit'
@@ -19,6 +19,23 @@ const PERSONA_OPTIONS = [
   { value: 'problem_solver', label: 'Problem-solver', description: 'Lead with the buyer pain point and solution.' },
   { value: 'minimal_clean', label: 'Minimal / Clean', description: 'Keep the listing simple, clear, and direct.' },
 ]
+
+type CompetitorField = {
+  name: string
+  url: string
+  title: string
+  price: string
+  rating: string
+  review_count: string
+  bullets: string
+  image_notes: string
+  strengths: string
+}
+
+const emptyCompetitor = (): CompetitorField => ({
+  name: '', url: '', title: '', price: '', rating: '',
+  review_count: '', bullets: '', image_notes: '', strengths: '',
+})
 
 const initialForm = {
   amazonUrl: '',
@@ -90,6 +107,7 @@ function buildPayload(entryType: 'amazon_url' | 'product_photos', form: FormStat
   return {
     ...base,
     product_specifications: form.productSpecifications || undefined,
+    reviews_qna: form.reviewsQna || undefined,
   }
 }
 
@@ -514,6 +532,203 @@ function SellerPersonaPicker({ value, onChange }: { value: string; onChange: (v:
   )
 }
 
+function CompetitorSection({
+  competitors,
+  competitorNotes,
+  onAdd,
+  onRemove,
+  onUpdate,
+  onNotesChange,
+}: {
+  competitors: CompetitorField[]
+  competitorNotes: string
+  onAdd: () => void
+  onRemove: (i: number) => void
+  onUpdate: (i: number, field: keyof CompetitorField, value: string) => void
+  onNotesChange: (v: string) => void
+}) {
+  const [open, setOpen] = useState(false)
+
+  const compInp = (i: number, field: keyof CompetitorField, placeholder?: string) => (
+    <input
+      type="text"
+      value={competitors[i][field]}
+      onChange={e => onUpdate(i, field, e.target.value)}
+      placeholder={placeholder}
+      style={inputStyle}
+      onFocus={e => (e.currentTarget.style.border = '1px solid rgba(163,230,53,0.4)')}
+      onBlur={e => (e.currentTarget.style.border = '1px solid rgba(255,255,255,0.1)')}
+    />
+  )
+
+  const compTxta = (i: number, field: keyof CompetitorField, placeholder?: string, rows = 3) => (
+    <textarea
+      value={competitors[i][field]}
+      onChange={e => onUpdate(i, field, e.target.value)}
+      placeholder={placeholder}
+      rows={rows}
+      style={textareaStyle}
+      onFocus={e => (e.currentTarget.style.border = '1px solid rgba(163,230,53,0.4)')}
+      onBlur={e => (e.currentTarget.style.border = '1px solid rgba(255,255,255,0.1)')}
+    />
+  )
+
+  return (
+    <div style={{ borderRadius: '0.75rem', border: '1px solid rgba(255,255,255,0.07)', overflow: 'hidden' }}>
+      <button
+        type="button"
+        onClick={() => setOpen(o => !o)}
+        style={{
+          width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          padding: '0.875rem 1rem',
+          background: open ? 'rgba(255,255,255,0.04)' : 'rgba(255,255,255,0.02)',
+          border: 'none', cursor: 'pointer', textAlign: 'left', gap: '0.75rem',
+          fontFamily: 'inherit', transition: 'background 0.15s',
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem' }}>
+          <span style={{ fontSize: '0.875rem', fontWeight: 600, color: open ? '#f1f5f9' : '#94a3b8' }}>
+            Competitor Analysis Lite
+          </span>
+          <span style={{
+            fontSize: '0.5875rem', fontWeight: 700, color: '#a3e635',
+            background: 'rgba(163,230,53,0.08)', border: '1px solid rgba(163,230,53,0.18)',
+            padding: '0.125rem 0.4375rem', borderRadius: '99px',
+            textTransform: 'uppercase', letterSpacing: '0.05em',
+          }}>
+            Optional
+          </span>
+          {competitors.length > 0 && (
+            <span style={{
+              fontSize: '0.5875rem', fontWeight: 700, color: '#34d399',
+              background: 'rgba(52,211,153,0.1)', border: '1px solid rgba(52,211,153,0.2)',
+              padding: '0.125rem 0.4375rem', borderRadius: '99px',
+            }}>
+              {competitors.length} added
+            </span>
+          )}
+        </div>
+        <ChevronDown
+          size={14} color="#475569"
+          style={{ transform: open ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s ease', flexShrink: 0 }}
+        />
+      </button>
+
+      {open && (
+        <div style={{ padding: '1rem', borderTop: '1px solid rgba(255,255,255,0.05)', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          <p style={helperStyle}>
+            Paste 1–3 competitor listings manually. Sellio will compare positioning, copy, trust signals, and image strategy.
+            No scraping is used.
+          </p>
+
+          {competitors.map((_comp, i) => (
+            <div key={i} style={{
+              borderRadius: '0.625rem', border: '1px solid rgba(255,255,255,0.08)',
+              overflow: 'hidden', background: 'rgba(255,255,255,0.02)',
+            }}>
+              <div style={{
+                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                padding: '0.5rem 0.875rem',
+                background: 'rgba(52,211,153,0.05)', borderBottom: '1px solid rgba(255,255,255,0.06)',
+              }}>
+                <span style={{ fontSize: '0.8125rem', fontWeight: 700, color: '#34d399' }}>
+                  Competitor {i + 1}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => onRemove(i)}
+                  style={{
+                    background: 'none', border: 'none', cursor: 'pointer',
+                    color: '#475569', padding: '0.125rem', display: 'flex', alignItems: 'center',
+                  }}
+                >
+                  <X size={14} />
+                </button>
+              </div>
+              <div style={{ padding: '0.75rem', display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '0.625rem' }}>
+                  <div>
+                    <label style={labelStyle}>Name <span style={{ color: '#334155', fontWeight: 400 }}>(optional)</span></label>
+                    {compInp(i, 'name', 'e.g. BrandX Premium Bamboo Board')}
+                  </div>
+                  <div>
+                    <label style={labelStyle}>Amazon URL <span style={{ color: '#334155', fontWeight: 400 }}>(optional)</span></label>
+                    {compInp(i, 'url', 'https://amazon.com/dp/...')}
+                  </div>
+                </div>
+                <div>
+                  <label style={labelStyle}>Listing Title <span style={{ color: '#334155', fontWeight: 400 }}>(optional)</span></label>
+                  {compInp(i, 'title', 'Their product title...')}
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(90px, 1fr))', gap: '0.625rem' }}>
+                  <div>
+                    <label style={labelStyle}>Price</label>
+                    {compInp(i, 'price', '$29.99')}
+                  </div>
+                  <div>
+                    <label style={labelStyle}>Rating</label>
+                    {compInp(i, 'rating', '4.5')}
+                  </div>
+                  <div>
+                    <label style={labelStyle}>Reviews</label>
+                    {compInp(i, 'review_count', '1,200')}
+                  </div>
+                </div>
+                <div>
+                  <label style={labelStyle}>Bullets / About This Item <span style={{ color: '#334155', fontWeight: 400 }}>(optional)</span></label>
+                  {compTxta(i, 'bullets', 'Paste their key bullet points...', 3)}
+                </div>
+                <div>
+                  <label style={labelStyle}>Image Notes <span style={{ color: '#334155', fontWeight: 400 }}>(optional)</span></label>
+                  {compTxta(i, 'image_notes', 'What do their main images show?', 2)}
+                </div>
+                <div>
+                  <label style={labelStyle}>Strengths / Notes <span style={{ color: '#334155', fontWeight: 400 }}>(optional)</span></label>
+                  {compTxta(i, 'strengths', 'What do they do well? What stands out?', 2)}
+                </div>
+              </div>
+            </div>
+          ))}
+
+          {competitors.length < 3 && (
+            <button
+              type="button"
+              onClick={onAdd}
+              style={{
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
+                padding: '0.625rem 1rem', borderRadius: '0.5rem',
+                background: 'rgba(52,211,153,0.04)', border: '1px dashed rgba(52,211,153,0.25)',
+                color: '#34d399', fontSize: '0.8125rem', fontWeight: 600,
+                cursor: 'pointer', fontFamily: 'inherit', transition: 'all 0.15s',
+              }}
+              onMouseEnter={e => { e.currentTarget.style.background = 'rgba(52,211,153,0.08)'; e.currentTarget.style.borderColor = 'rgba(52,211,153,0.4)' }}
+              onMouseLeave={e => { e.currentTarget.style.background = 'rgba(52,211,153,0.04)'; e.currentTarget.style.borderColor = 'rgba(52,211,153,0.25)' }}
+            >
+              <Plus size={14} />
+              Add Competitor {competitors.length + 1} of 3
+            </button>
+          )}
+
+          {competitors.length > 0 && (
+            <div>
+              <label style={labelStyle}>General Competitor Notes <span style={{ color: '#334155', fontWeight: 400 }}>(optional)</span></label>
+              <textarea
+                value={competitorNotes}
+                onChange={e => onNotesChange(e.target.value)}
+                placeholder="Any additional observations about the competitive landscape..."
+                rows={2}
+                style={textareaStyle}
+                onFocus={e => (e.currentTarget.style.border = '1px solid rgba(163,230,53,0.4)')}
+                onBlur={e => (e.currentTarget.style.border = '1px solid rgba(255,255,255,0.1)')}
+              />
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  )
+}
+
 export default function NewAuditPage() {
   const navigate = useNavigate()
   const [step, setStep] = useState<1 | 2 | 3>(1)
@@ -525,6 +740,16 @@ export default function NewAuditPage() {
   const [submitError, setSubmitError] = useState<string | null>(null)
   const [creditExhausted, setCreditExhausted] = useState(false)
   const [billing, setBilling] = useState<BillingMeResponse | null>(null)
+  const [competitors, setCompetitors] = useState<CompetitorField[]>([])
+  const [competitorNotes, setCompetitorNotes] = useState('')
+
+  const addCompetitor = () => {
+    if (competitors.length >= 3) return
+    setCompetitors(c => [...c, emptyCompetitor()])
+  }
+  const removeCompetitor = (i: number) => setCompetitors(c => c.filter((_, idx) => idx !== i))
+  const updateCompetitor = (i: number, field: keyof CompetitorField, value: string) =>
+    setCompetitors(c => c.map((comp, idx) => idx === i ? { ...comp, [field]: value } : comp))
 
   const fileUrlsRef = useRef(new Map<File, string>())
   const getFileUrl = (file: File) => {
@@ -653,6 +878,21 @@ export default function NewAuditPage() {
     setCreditExhausted(false)
     try {
       const payload = buildPayload(entryType!, form)
+      const filteredCompetitors = competitors.filter(c => c.url.trim() || c.title.trim() || c.name.trim())
+      if (filteredCompetitors.length > 0) {
+        payload.competitors = filteredCompetitors.map(c => ({
+          ...(c.name && { name: c.name }),
+          ...(c.url && { url: c.url }),
+          ...(c.title && { title: c.title }),
+          ...(c.price && { price: c.price }),
+          ...(c.rating && { rating: c.rating }),
+          ...(c.review_count && { review_count: c.review_count }),
+          ...(c.bullets && { bullets: c.bullets }),
+          ...(c.image_notes && { image_notes: c.image_notes }),
+          ...(c.strengths && { strengths: c.strengths }),
+        }))
+      }
+      if (competitorNotes.trim()) payload.competitor_notes = competitorNotes
       const { data: audit } = await createAudit(payload)
       if (entryType === 'product_photos' && files.length > 0) {
         await uploadAuditImages(audit.id, files)
@@ -1091,21 +1331,14 @@ export default function NewAuditPage() {
             )}
           </CollapsibleSection>
 
-          {/* Section 6: Images & Customer Signals */}
-          <CollapsibleSection title="Images & Customer Signals" defaultOpen={false}>
+          {/* Section 6: Images & Seller Context */}
+          <CollapsibleSection title="Images & Seller Context" defaultOpen={false}>
             {tfld(
               'Product Images / Gallery Notes',
               'productImagesNotes',
               'Describe what images are currently in the gallery (main image, lifestyle, infographic, etc.)...',
               true,
               3
-            )}
-            {tfld(
-              'Reviews / Q&A / Customer Complaints',
-              'reviewsQna',
-              'Paste notable customer reviews, Q&A highlights, or recurring complaints...',
-              true,
-              4
             )}
             {tfld(
               'Seller Goal',
@@ -1115,6 +1348,28 @@ export default function NewAuditPage() {
               2
             )}
           </CollapsibleSection>
+
+          {/* Section 7: Reviews, Q&A & Buyer Complaints */}
+          <CollapsibleSection title="Reviews, Q&A & Buyer Complaints" badge="Boosts AI" defaultOpen={false}>
+            {tfld(
+              'Reviews, Q&A & Buyer Complaints',
+              'reviewsQna',
+              'Paste customer reviews, Q&A, complaints, repeated concerns, or feedback...',
+              true,
+              5,
+              'Paste customer reviews, Q&A, complaints, repeated concerns, or feedback. Sellio will detect buyer objections and suggest what to fix.'
+            )}
+          </CollapsibleSection>
+
+          {/* Section 8: Competitor Analysis Lite */}
+          <CompetitorSection
+            competitors={competitors}
+            competitorNotes={competitorNotes}
+            onAdd={addCompetitor}
+            onRemove={removeCompetitor}
+            onUpdate={updateCompetitor}
+            onNotesChange={setCompetitorNotes}
+          />
 
           {showPaywall && (
             <PaywallBlock
@@ -1246,6 +1501,24 @@ export default function NewAuditPage() {
                 onChange={v => setForm(f => ({ ...f, sellerPersona: v }))}
               />
             </div>
+            <CollapsibleSection title="Reviews, Q&A & Buyer Complaints" badge="Boosts AI" defaultOpen={false}>
+              {tfld(
+                'Reviews, Q&A & Buyer Complaints',
+                'reviewsQna',
+                'Paste customer reviews, Q&A, complaints, repeated concerns, or feedback...',
+                true,
+                4,
+                'Paste customer reviews, Q&A, complaints, repeated concerns, or feedback. Sellio will detect buyer objections and suggest what to fix.'
+              )}
+            </CollapsibleSection>
+            <CompetitorSection
+              competitors={competitors}
+              competitorNotes={competitorNotes}
+              onAdd={addCompetitor}
+              onRemove={removeCompetitor}
+              onUpdate={updateCompetitor}
+              onNotesChange={setCompetitorNotes}
+            />
           </div>
 
           {showPaywall && (
