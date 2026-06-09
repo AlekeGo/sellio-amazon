@@ -5,6 +5,7 @@ from .models import ImageGeneration
 
 class ImageGenerationListSerializer(serializers.ModelSerializer):
     audit_id = serializers.IntegerField(read_only=True, allow_null=True)
+    warning = serializers.SerializerMethodField()
 
     class Meta:
         model = ImageGeneration
@@ -12,12 +13,19 @@ class ImageGenerationListSerializer(serializers.ModelSerializer):
             'id', 'audit_id', 'image_type', 'prompt', 'status', 'provider', 'model_name',
             'image_url', 'error_message', 'brief',
             'product_visual_details', 'style_direction', 'background_preference', 'text_intensity',
+            'generation_mode', 'reference_image_url', 'product_locked', 'warning',
             'created_at', 'completed_at',
         ]
+
+    def get_warning(self, obj):
+        if obj.generation_mode == 'text_fallback':
+            return 'No product reference photo found. Result may be approximate.'
+        return None
 
 
 class ImageGenerationDetailSerializer(serializers.ModelSerializer):
     audit_id = serializers.IntegerField(read_only=True, allow_null=True)
+    warning = serializers.SerializerMethodField()
 
     class Meta:
         model = ImageGeneration
@@ -25,8 +33,14 @@ class ImageGenerationDetailSerializer(serializers.ModelSerializer):
             'id', 'audit_id', 'image_type', 'prompt', 'status', 'provider',
             'model_name', 'image_url', 'error_message', 'brief',
             'product_visual_details', 'style_direction', 'background_preference', 'text_intensity',
+            'generation_mode', 'reference_image_url', 'product_locked', 'warning',
             'created_at', 'updated_at', 'completed_at',
         ]
+
+    def get_warning(self, obj):
+        if obj.generation_mode == 'text_fallback':
+            return 'No product reference photo found. Result may be approximate.'
+        return None
 
 
 class ImageGenerationCreateSerializer(serializers.Serializer):

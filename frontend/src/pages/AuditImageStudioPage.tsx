@@ -14,11 +14,12 @@ import ImageStudioHeader from '../components/image-studio/ImageStudioHeader'
 import ImagePackCard from '../components/image-studio/ImagePackCard'
 import ImageBriefPanel from '../components/image-studio/ImageBriefPanel'
 import GeneratedImageSlots from '../components/image-studio/GeneratedImageSlots'
+import ProductReferenceStatus from '../components/image-studio/ProductReferenceStatus'
 import PaywallBlock from '../components/ui/PaywallBlock'
 
 const DEFAULT_ITEMS: ImagePackPlanItem[] = [
   {
-    image_type: 'Main Image Refresh',
+    image_type: 'Hero Image',
     goal: 'Drive click-through with a clean, conversion-optimized hero image',
     headline: 'Stand Out on Page 1',
     visual_direction: 'White background, product centered, angles optimized for Amazon main image guidelines',
@@ -32,28 +33,28 @@ const DEFAULT_ITEMS: ImagePackPlanItem[] = [
     text_elements: ['Benefit 1', 'Benefit 2', 'Benefit 3', 'Benefit 4'],
   },
   {
-    image_type: 'Comparison Graphic',
-    goal: 'Disqualify alternatives and position your product as the obvious choice',
-    headline: 'The Clear Difference',
-    visual_direction: 'Side-by-side layout, green and red indicators, clean table format',
-    text_elements: ['Your product', 'Competitor', 'Feature checklist'],
-  },
-  {
-    image_type: 'How It Works Visual',
-    goal: 'Remove confusion and show ease of use in 3–4 steps',
-    headline: 'Simple. Fast. Effective.',
-    visual_direction: 'Step-by-step numbered cards, product shown in use, progress flow',
-    text_elements: ['Step 1', 'Step 2', 'Step 3', 'Result'],
-  },
-  {
-    image_type: 'Lifestyle Visual',
+    image_type: 'Lifestyle',
     goal: 'Build emotional connection and show real-world product value',
     headline: 'Made for Your Life',
     visual_direction: 'Natural setting, product in use by target customer, warm brand tones',
     text_elements: ['Lifestyle context', 'Emotional hook'],
   },
   {
-    image_type: 'A+ Banner Concept',
+    image_type: 'Comparison',
+    goal: 'Disqualify alternatives and position your product as the obvious choice',
+    headline: 'The Clear Difference',
+    visual_direction: 'Side-by-side layout, green and red indicators, clean table format',
+    text_elements: ['Your product', 'Competitor', 'Feature checklist'],
+  },
+  {
+    image_type: 'How-to',
+    goal: 'Remove confusion and show ease of use in 3–4 steps',
+    headline: 'Simple. Fast. Effective.',
+    visual_direction: 'Step-by-step numbered cards, product shown in use, progress flow',
+    text_elements: ['Step 1', 'Step 2', 'Step 3', 'Result'],
+  },
+  {
+    image_type: 'A+ Brand Visual',
     goal: 'Premium A+ module to elevate brand trust and cross-sell',
     headline: 'Premium Quality, Trusted Brand',
     visual_direction: 'Full-width banner, brand colors, lifestyle imagery with feature callouts',
@@ -244,8 +245,11 @@ export default function AuditImageStudioPage() {
   const category = audit.category || 'Amazon Product'
   const selectedItem = selectedIndex !== null ? items[selectedIndex] : null
   const totalCount = items.length
-  const completedCount = generations.filter(g => g.status === 'completed').length
-  const progressPct = totalCount > 0 ? (completedCount / totalCount) * 100 : 0
+  const completedTypeSet = new Set(
+    generations.filter(g => g.status === 'completed').map(g => normalizeType(g.image_type)),
+  )
+  const completedCount = completedTypeSet.size
+  const progressPct = totalCount > 0 ? Math.min((completedCount / totalCount) * 100, 100) : 0
 
   const handleCardSelect = (i: number) => {
     setSelectedIndex(prev => (prev === i ? null : i))
@@ -331,52 +335,7 @@ export default function AuditImageStudioPage() {
         </div>
       </div>
 
-      {audit.images && audit.images.length > 0 ? (
-        <div style={{
-          borderRadius: '0.75rem', padding: '1rem 1.25rem',
-          background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)',
-          marginBottom: '1.5rem',
-        }}>
-          <SL>Reference Images — {audit.images.length} uploaded</SL>
-          <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
-            {audit.images.map(img => (
-              <div key={img.id} style={{
-                width: 80, height: 80, borderRadius: '0.5rem',
-                border: '1px solid rgba(255,255,255,0.09)', overflow: 'hidden',
-                background: 'rgba(255,255,255,0.03)', flexShrink: 0,
-              }}>
-                <img
-                  src={img.image}
-                  alt={img.original_filename}
-                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                />
-              </div>
-            ))}
-          </div>
-        </div>
-      ) : (
-        <div style={{
-          borderRadius: '0.75rem', padding: '0.875rem 1.25rem',
-          background: 'rgba(255,255,255,0.015)', border: '1px dashed rgba(255,255,255,0.07)',
-          marginBottom: '1.5rem',
-          display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap',
-        }}>
-          <span style={{ fontSize: '0.8125rem', color: '#64748b' }}>
-            No reference images — upload product photos in the audit report for best results.
-          </span>
-          <Link
-            to={`/dashboard/audits/${audit.id}`}
-            style={{
-              fontSize: '0.8125rem', color: '#64748b', textDecoration: 'none',
-              marginLeft: 'auto', whiteSpace: 'nowrap', transition: 'color 0.15s',
-            }}
-            onMouseEnter={e => (e.currentTarget.style.color = '#94a3b8')}
-            onMouseLeave={e => (e.currentTarget.style.color = '#64748b')}
-          >
-            Upload in report →
-          </Link>
-        </div>
-      )}
+      <ProductReferenceStatus images={audit.images ?? []} auditId={audit.id} />
 
       <div style={{
         borderRadius: '0.75rem', padding: '1.375rem',
@@ -429,6 +388,7 @@ export default function AuditImageStudioPage() {
               index={selectedIndex!}
               generation={getGenForItem(selectedItem.image_type)}
               isGenerating={generatingTypes.has(selectedItem.image_type)}
+              hasReference={(audit.images ?? []).length > 0}
               onGenerate={(quality) => handleGenerate(selectedItem, quality)}
             />
           ) : (

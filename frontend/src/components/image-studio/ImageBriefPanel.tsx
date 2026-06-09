@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Copy, Check, Layers, Zap, Loader2 } from 'lucide-react'
+import { Copy, Check, Layers, Zap, Loader2, Camera, AlertTriangle } from 'lucide-react'
 import type { ImagePackPlanItem } from '../../types/audit'
 import type { ImageGeneration, QualityOptions } from '../../types/imageGeneration'
 
@@ -41,11 +41,22 @@ function buildPrompt(
   productName: string,
   category: string,
   quality: QualityOptions,
+  hasReference: boolean,
 ): string {
   const lines: string[] = []
   if (productName) lines.push(`Product: ${productName}`)
   if (category) lines.push(`Category: ${category}`)
-  if (quality.productVisualDetails) {
+  if (hasReference) {
+    lines.push(
+      'PRODUCT IDENTITY LOCK — REFERENCE IMAGE PROVIDED: ' +
+      'The reference image shows the exact product to use. ' +
+      'Preserve every visible detail from the reference image exactly: ' +
+      'shape, packaging, silhouette, color, proportions, cap, lid, label placement, ' +
+      'material finish, and all visible design details. ' +
+      'Do not replace it with a generic product. ' +
+      'Improve lighting, background, and composition only — keep the product identical.',
+    )
+  } else if (quality.productVisualDetails) {
     lines.push(
       `Product visual details: ${quality.productVisualDetails}. ` +
       'CRITICAL — preserve color, shape, packaging, label position, and materials exactly.',
@@ -106,12 +117,13 @@ interface Props {
   index: number
   generation?: ImageGeneration
   isGenerating: boolean
+  hasReference?: boolean
   onGenerate: (quality: QualityOptions) => void
 }
 
 export default function ImageBriefPanel({
   item, productName, category, index,
-  generation, isGenerating, onGenerate,
+  generation, isGenerating, hasReference = false, onGenerate,
 }: Props) {
   const [copied, setCopied] = useState(false)
   const [quality, setQuality] = useState<QualityOptions>({
@@ -121,7 +133,7 @@ export default function ImageBriefPanel({
     textIntensity: '',
   })
 
-  const prompt = buildPrompt(item, productName, category, quality)
+  const prompt = buildPrompt(item, productName, category, quality, hasReference)
 
   const handleCopy = () => {
     navigator.clipboard.writeText(prompt).then(() => {
@@ -149,7 +161,7 @@ export default function ImageBriefPanel({
         padding: '1.125rem 1.375rem',
         background: 'rgba(163,230,53,0.03)',
         borderBottom: '1px solid rgba(163,230,53,0.11)',
-        display: 'flex', alignItems: 'center', gap: '0.75rem',
+        display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap',
       }}>
         <div style={{
           width: 30, height: 30, borderRadius: '0.5rem',
@@ -158,7 +170,7 @@ export default function ImageBriefPanel({
         }}>
           <Layers size={13} color="white" />
         </div>
-        <div>
+        <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{
             fontSize: '0.5625rem', fontWeight: 700, color: 'rgba(52,211,153,0.7)',
             textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 1,
@@ -169,6 +181,18 @@ export default function ImageBriefPanel({
             {item.image_type}
           </div>
         </div>
+        <span style={{
+          display: 'inline-flex', alignItems: 'center', gap: '0.3125rem',
+          padding: '0.25rem 0.5625rem', borderRadius: '99px', flexShrink: 0,
+          background: hasReference ? 'rgba(52,211,153,0.08)' : 'rgba(255,255,255,0.04)',
+          border: `1px solid ${hasReference ? 'rgba(52,211,153,0.2)' : 'rgba(255,255,255,0.08)'}`,
+          fontSize: '0.5625rem', fontWeight: 700,
+          color: hasReference ? '#34d399' : '#64748b',
+          textTransform: 'uppercase' as const, letterSpacing: '0.07em',
+        }}>
+          <Camera size={9} />
+          Photorealistic ecommerce mode
+        </span>
       </div>
 
       <div style={{ padding: '1.25rem 1.375rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
@@ -246,7 +270,7 @@ export default function ImageBriefPanel({
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-          <FieldRow label="Product visual details">
+          <FieldRow label="Extra visual instruction — optional">
             <textarea
               value={quality.productVisualDetails}
               onChange={e => setQuality(q => ({ ...q, productVisualDetails: e.target.value }))}
@@ -263,6 +287,9 @@ export default function ImageBriefPanel({
               onFocus={e => { e.currentTarget.style.borderColor = 'rgba(163,230,53,0.35)' }}
               onBlur={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)' }}
             />
+            <div style={{ fontSize: '0.6875rem', color: '#475569', marginTop: '0.375rem', lineHeight: 1.5 }}>
+              Sellio already builds the prompt from your product and audit. Use this only for extra style or layout direction.
+            </div>
           </FieldRow>
 
           <FieldRow label="Style direction">
@@ -358,13 +385,42 @@ export default function ImageBriefPanel({
       </div>
 
       <div style={{ padding: '1rem 1.375rem', display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: '0.4375rem',
+          padding: '0.5rem 0.75rem', borderRadius: '0.5rem',
+          background: hasReference ? 'rgba(52,211,153,0.04)' : 'rgba(251,191,36,0.04)',
+          border: `1px solid ${hasReference ? 'rgba(52,211,153,0.14)' : 'rgba(251,191,36,0.16)'}`,
+        }}>
+          {hasReference
+            ? <Camera size={12} color="#34d399" style={{ flexShrink: 0 }} />
+            : <AlertTriangle size={12} color="rgba(251,191,36,0.7)" style={{ flexShrink: 0 }} />
+          }
+          <span style={{ fontSize: '0.75rem', color: hasReference ? '#34d399' : '#fbbf24', lineHeight: 1.5 }}>
+            {hasReference
+              ? 'Your product photo will be used as the visual reference.'
+              : 'No reference photo detected. Result may be less accurate.'
+            }
+          </span>
+        </div>
+
         {generation?.status === 'failed' && (
           <div style={{
             padding: '0.5rem 0.75rem', borderRadius: '0.5rem',
             background: 'rgba(239,68,68,0.06)', border: '1px solid rgba(239,68,68,0.15)',
             fontSize: '0.8125rem', color: '#fca5a5', lineHeight: 1.5,
           }}>
-            Image generation failed. Please try again.
+            {hasReference
+              ? 'Reference image generation failed. Please try again or re-upload a clear product photo.'
+              : 'Image generation failed. Please try again.'
+            }
+            {generation.error_message && (
+              <div style={{ fontSize: '0.6875rem', color: 'rgba(248,113,113,0.65)', marginTop: '0.3125rem' }}>
+                {generation.error_message.length > 120
+                  ? generation.error_message.slice(0, 117) + '…'
+                  : generation.error_message
+                }
+              </div>
+            )}
           </div>
         )}
 

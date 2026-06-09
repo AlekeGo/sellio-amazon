@@ -15,6 +15,10 @@ export interface ImageGeneration {
   style_direction?: string
   background_preference?: string
   text_intensity?: string
+  generation_mode?: string
+  product_locked?: boolean
+  reference_image_url?: string
+  warning?: string | null
   created_at: string
   updated_at?: string
   completed_at: string | null

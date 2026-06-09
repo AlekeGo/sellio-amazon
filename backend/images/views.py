@@ -1,3 +1,4 @@
+import logging
 import os
 
 import requests as http_requests
@@ -20,6 +21,8 @@ from .serializers import (
 )
 from .services.fal_image_service import FalImageError, generate_image
 from .services.prompt_builder import build_image_prompt
+
+logger = logging.getLogger(__name__)
 
 
 def _check_image_credit(user):
@@ -44,6 +47,39 @@ def _consume_image_credit_if_applicable(user, generation_id, has_image_credit):
         )
     except Exception:
         pass
+
+
+def _get_reference_image_path(audit):
+    if audit is None:
+        return None
+    try:
+        img = audit.images.first()
+        if not img or not img.image or not img.image.name:
+            return None
+        try:
+            path = img.image.path
+            if os.path.exists(path):
+                return path
+        except (NotImplementedError, ValueError):
+            pass
+        try:
+            url = img.image.url
+            if url and url.startswith(('http://', 'https://')):
+                return url
+        except Exception:
+            pass
+    except Exception:
+        pass
+    return None
+
+
+def _resolve_model_name(reference_image_path):
+    if reference_image_path:
+        return os.getenv(
+            'FAL_REFERENCE_IMAGE_MODEL',
+            os.getenv('FAL_KONTEXT_MODEL', 'fal-ai/flux-pro/kontext'),
+        )
+    return os.getenv('FAL_TEXT_TO_IMAGE_MODEL', 'fal-ai/flux/schnell')
 
 
 class ImageGenerationListCreateView(APIView):
@@ -87,6 +123,13 @@ class ImageGenerationListCreateView(APIView):
         brief = data.get('brief', {})
         product_name = audit.product_name if audit else ''
         category = audit.category if audit else ''
+        current_title = audit.current_title if audit else ''
+        description = audit.description if audit else ''
+        about_this_item = audit.about_this_item if audit else ''
+
+        reference_image_path = _get_reference_image_path(audit)
+        product_locked = reference_image_path is not None
+        model_name = _resolve_model_name(reference_image_path)
 
         prompt = build_image_prompt(
             product_name=product_name,
@@ -101,9 +144,11 @@ class ImageGenerationListCreateView(APIView):
             background_preference=data.get('background_preference', ''),
             text_intensity=data.get('text_intensity', ''),
             user_prompt=data.get('prompt', ''),
+            current_title=current_title,
+            description=description,
+            about_this_item=about_this_item,
+            reference_image_exists=product_locked,
         )
-
-        model_name = os.getenv('FAL_TEXT_TO_IMAGE_MODEL', 'fal-ai/flux/schnell')
 
         generation = ImageGeneration.objects.create(
             user=request.user,
@@ -118,17 +163,25 @@ class ImageGenerationListCreateView(APIView):
             style_direction=data.get('style_direction', ''),
             background_preference=data.get('background_preference', ''),
             text_intensity=data.get('text_intensity', ''),
+            product_locked=product_locked,
         )
 
         try:
-            result = generate_image(prompt)
+            result = generate_image(prompt, reference_image_path)
             generation.image_url = result['image_url']
             generation.provider_response = result['raw']
+            generation.model_name = result['model_used']
+            generation.generation_mode = result['generation_mode']
+            generation.reference_image_url = result.get('reference_url') or ''
             generation.status = ImageGeneration.STATUS_COMPLETED
             generation.completed_at = timezone.now()
         except FalImageError as exc:
             generation.status = ImageGeneration.STATUS_FAILED
             generation.error_message = str(exc)
+            logger.error(
+                'Image generation failed for user %s (product_locked=%s): %s',
+                request.user.email, product_locked, exc,
+            )
 
         generation.save()
 
@@ -136,9 +189,14 @@ class ImageGenerationListCreateView(APIView):
             _consume_image_credit_if_applicable(request.user, generation.id, has_image_credit)
 
         if generation.status == ImageGeneration.STATUS_FAILED:
+            detail = (
+                'Reference image generation failed. Please try again or re-upload a clear product photo.'
+                if product_locked
+                else 'Image generation failed. Please try again.'
+            )
             return Response(
                 {
-                    'detail': 'Image generation failed. Please try again.',
+                    'detail': detail,
                     'generation': ImageGenerationDetailSerializer(generation).data,
                 },
                 status=status.HTTP_502_BAD_GATEWAY,
@@ -222,7 +280,9 @@ class ImageGenerationRegenerateView(APIView):
         except ImageGeneration.DoesNotExist:
             return Response({'detail': 'Not found.'}, status=status.HTTP_404_NOT_FOUND)
 
-        model_name = os.getenv('FAL_TEXT_TO_IMAGE_MODEL', 'fal-ai/flux/schnell')
+        reference_image_path = _get_reference_image_path(original.audit)
+        product_locked = reference_image_path is not None
+        model_name = _resolve_model_name(reference_image_path)
 
         new_generation = ImageGeneration.objects.create(
             user=request.user,
@@ -237,17 +297,25 @@ class ImageGenerationRegenerateView(APIView):
             style_direction=original.style_direction,
             background_preference=original.background_preference,
             text_intensity=original.text_intensity,
+            product_locked=product_locked,
         )
 
         try:
-            result = generate_image(new_generation.prompt)
+            result = generate_image(new_generation.prompt, reference_image_path)
             new_generation.image_url = result['image_url']
             new_generation.provider_response = result['raw']
+            new_generation.model_name = result['model_used']
+            new_generation.generation_mode = result['generation_mode']
+            new_generation.reference_image_url = result.get('reference_url') or ''
             new_generation.status = ImageGeneration.STATUS_COMPLETED
             new_generation.completed_at = timezone.now()
         except FalImageError as exc:
             new_generation.status = ImageGeneration.STATUS_FAILED
             new_generation.error_message = str(exc)
+            logger.error(
+                'Image regeneration failed for user %s (product_locked=%s): %s',
+                request.user.email, product_locked, exc,
+            )
 
         new_generation.save()
 
@@ -255,9 +323,14 @@ class ImageGenerationRegenerateView(APIView):
             _consume_image_credit_if_applicable(request.user, new_generation.id, has_image_credit)
 
         if new_generation.status == ImageGeneration.STATUS_FAILED:
+            detail = (
+                'Reference image generation failed. Please try again or re-upload a clear product photo.'
+                if product_locked
+                else 'Image regeneration failed. Please try again.'
+            )
             return Response(
                 {
-                    'detail': 'Image regeneration failed. Please try again.',
+                    'detail': detail,
                     'generation': ImageGenerationDetailSerializer(new_generation).data,
                 },
                 status=status.HTTP_502_BAD_GATEWAY,
@@ -296,19 +369,32 @@ class ImageGenerationRetryView(APIView):
                 status=status.HTTP_404_NOT_FOUND,
             )
 
+        reference_image_path = _get_reference_image_path(generation.audit)
+        product_locked = reference_image_path is not None
+        model_name = _resolve_model_name(reference_image_path)
+
         generation.status = ImageGeneration.STATUS_GENERATING
         generation.error_message = ''
+        generation.model_name = model_name
+        generation.product_locked = product_locked
         generation.save()
 
         try:
-            result = generate_image(generation.prompt)
+            result = generate_image(generation.prompt, reference_image_path)
             generation.image_url = result['image_url']
             generation.provider_response = result['raw']
+            generation.model_name = result['model_used']
+            generation.generation_mode = result['generation_mode']
+            generation.reference_image_url = result.get('reference_url') or ''
             generation.status = ImageGeneration.STATUS_COMPLETED
             generation.completed_at = timezone.now()
         except FalImageError as exc:
             generation.status = ImageGeneration.STATUS_FAILED
             generation.error_message = str(exc)
+            logger.error(
+                'Image retry failed for user %s (product_locked=%s): %s',
+                request.user.email, product_locked, exc,
+            )
 
         generation.save()
 
@@ -316,9 +402,14 @@ class ImageGenerationRetryView(APIView):
             _consume_image_credit_if_applicable(request.user, generation.id, has_image_credit)
 
         if generation.status == ImageGeneration.STATUS_FAILED:
+            detail = (
+                'Reference image generation failed. Please try again or re-upload a clear product photo.'
+                if product_locked
+                else 'Image generation failed. Please try again.'
+            )
             return Response(
                 {
-                    'detail': 'Image generation failed. Please try again.',
+                    'detail': detail,
                     'generation': ImageGenerationDetailSerializer(generation).data,
                 },
                 status=status.HTTP_502_BAD_GATEWAY,

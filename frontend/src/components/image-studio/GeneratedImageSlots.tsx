@@ -195,6 +195,53 @@ function GeneratedCard({ gen, isRegenerating, onDelete, onRegenerate, onPreview 
           </div>
         )}
 
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.3125rem' }}>
+          {gen.generation_mode === 'reference_based' && (
+            <span style={{
+              display: 'inline-flex', alignItems: 'center', gap: '0.1875rem',
+              padding: '0.125rem 0.4375rem', borderRadius: '99px',
+              background: 'rgba(52,211,153,0.07)', border: '1px solid rgba(52,211,153,0.18)',
+              fontSize: '0.5625rem', fontWeight: 700, color: '#34d399',
+              textTransform: 'uppercase', letterSpacing: '0.05em',
+            }}>
+              Reference-based
+            </span>
+          )}
+          {gen.generation_mode === 'text_fallback' && (
+            <span style={{
+              display: 'inline-flex', alignItems: 'center', gap: '0.1875rem',
+              padding: '0.125rem 0.4375rem', borderRadius: '99px',
+              background: 'rgba(251,191,36,0.06)', border: '1px solid rgba(251,191,36,0.18)',
+              fontSize: '0.5625rem', fontWeight: 700, color: '#fbbf24',
+              textTransform: 'uppercase', letterSpacing: '0.05em',
+            }}>
+              Text fallback
+            </span>
+          )}
+          <span style={{
+            display: 'inline-flex', alignItems: 'center', gap: '0.1875rem',
+            padding: '0.125rem 0.4375rem', borderRadius: '99px',
+            background: gen.product_locked ? 'rgba(163,230,53,0.06)' : 'rgba(255,255,255,0.03)',
+            border: `1px solid ${gen.product_locked ? 'rgba(163,230,53,0.15)' : 'rgba(255,255,255,0.07)'}`,
+            fontSize: '0.5625rem', fontWeight: 700,
+            color: gen.product_locked ? '#a3e635' : '#475569',
+            textTransform: 'uppercase' as const, letterSpacing: '0.05em',
+          }}>
+            Product locked: {gen.product_locked ? 'Yes' : 'No'}
+          </span>
+        </div>
+
+        {gen.warning && (
+          <div style={{
+            display: 'flex', alignItems: 'flex-start', gap: '0.3125rem',
+            padding: '0.3125rem 0.5rem', borderRadius: '0.375rem',
+            background: 'rgba(251,191,36,0.04)', border: '1px solid rgba(251,191,36,0.14)',
+          }}>
+            <AlertTriangle size={10} color="rgba(251,191,36,0.6)" style={{ flexShrink: 0, marginTop: 1 }} />
+            <span style={{ fontSize: '0.625rem', color: '#fbbf24', lineHeight: 1.5 }}>{gen.warning}</span>
+          </div>
+        )}
+
         <div style={{ display: 'flex', gap: '0.3125rem', flexWrap: 'wrap', marginTop: 'auto', paddingTop: '0.375rem' }}
           onClick={e => e.stopPropagation()}
         >
