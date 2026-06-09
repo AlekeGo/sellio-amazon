@@ -6,6 +6,7 @@ import { getMyBilling } from '../lib/billingApi'
 import type { CreateAuditPayload } from '../types/audit'
 import type { BillingMeResponse } from '../types/billing'
 import PaywallBlock from '../components/ui/PaywallBlock'
+import { useAuth } from '../contexts/AuthContext'
 
 const AMAZON_URL_RE =
   /amazon\.(com|co\.(uk|jp)|de|fr|es|it|ca|com\.(au|br|mx|tr)|in|nl|sg|ae|sa|pl|se)/i
@@ -759,6 +760,7 @@ function CompetitorSection({
 export default function NewAuditPage() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
+  const { isAuthenticated } = useAuth()
   const [step, setStep] = useState<1 | 2 | 3>(1)
   const [entryType, setEntryType] = useState<'amazon_url' | 'product_photos' | null>(null)
   const [form, setForm] = useState<FormState>({ ...initialForm })
@@ -918,6 +920,11 @@ export default function NewAuditPage() {
   const showPaywall = creditExhausted || (billing !== null && !billing.can_run_audit)
 
   const handleSubmit = async () => {
+    if (!isAuthenticated) {
+      saveDraft({ entryType, step, form, competitors, competitorNotes })
+      navigate('/login?next=' + encodeURIComponent('/dashboard/new-audit?resumeDraft=1'))
+      return
+    }
     if (billing && !billing.can_run_audit) {
       setCreditExhausted(true)
       return
@@ -1045,6 +1052,11 @@ export default function NewAuditPage() {
           <p style={{ margin: 0, fontSize: '0.875rem', color: '#a3e635', fontWeight: 600 }}>
             Your audit draft was restored. Continue where you left off.
           </p>
+          {entryType === 'product_photos' && (
+            <p style={{ margin: 0, fontSize: '0.8125rem', color: '#94a3b8' }}>
+              Please re-upload product images after login.
+            </p>
+          )}
           <div style={{ display: 'flex', gap: '0.625rem' }}>
             <button
               type="button"

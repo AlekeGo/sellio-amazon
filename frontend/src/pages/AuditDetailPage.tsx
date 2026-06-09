@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react'
+﻿import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import {
   ArrowLeft, Zap, ExternalLink, Copy, Check,
   RefreshCw, AlertTriangle, Layers, ChevronDown,
-  Eye, Shield, Target, TrendingUp, Crown,
+  Eye, Shield, Target, TrendingUp, Crown, Lock,
 } from 'lucide-react'
 import { getAudit, submitAudit, regenerateAudit } from '../lib/auditsApi'
 import StatusBadge from '../components/ui/StatusBadge'
@@ -153,24 +153,11 @@ const PERSONA_LABELS: Record<string, string> = {
   minimal_clean: 'Minimal / Clean',
 }
 
-type ProTab = 'title' | 'bullets' | 'description' | 'details' | 'image_plan'
-
 function formatImageBrief(img: { image_type: string; goal: string; headline: string; visual_direction: string }) {
   return `${img.image_type}\nGoal: ${img.goal}\nHeadline: "${img.headline}"\nVisual: ${img.visual_direction}`
 }
 
-function SubLabel({ children }: { children: React.ReactNode }) {
-  return (
-    <span style={{
-      fontSize: '0.6875rem', fontWeight: 800, color: '#64748b',
-      textTransform: 'uppercase', letterSpacing: '0.07em',
-    }}>
-      {children}
-    </span>
-  )
-}
-
-function ProUpgradePackBlock({
+function ProUpgradePackCTA({
   pack,
   auditId,
   persona,
@@ -180,31 +167,7 @@ function ProUpgradePackBlock({
   persona: string
 }) {
   const personaLabel = persona ? (PERSONA_LABELS[persona] || '') : ''
-  const [activeTab, setActiveTab] = useState<ProTab>('title')
-
-  const tabDefs: Array<{ id: ProTab; label: string; show: boolean }> = [
-    { id: 'title', label: 'Title', show: !!pack.copy_ready_title },
-    { id: 'bullets', label: 'Bullets', show: Array.isArray(pack.copy_ready_bullets) && pack.copy_ready_bullets.length > 0 },
-    { id: 'description', label: 'Description', show: !!pack.copy_ready_description },
-    { id: 'details', label: 'Details', show: Array.isArray(pack.product_details_fixes) && pack.product_details_fixes.length > 0 },
-    { id: 'image_plan', label: 'Image Plan', show: Array.isArray(pack.image_briefs) && pack.image_briefs.length > 0 },
-  ]
-  const tabs = tabDefs.filter(t => t.show)
-  const safeTab: ProTab = tabs.find(t => t.id === activeTab) ? activeTab : (tabs[0]?.id ?? 'title')
-
-  const fullPackText = [
-    `TITLE:\n${pack.copy_ready_title}`,
-    Array.isArray(pack.copy_ready_bullets) && pack.copy_ready_bullets.length > 0
-      ? `\n\nBULLETS:\n${pack.copy_ready_bullets.join('\n')}`
-      : '',
-    `\n\nDESCRIPTION:\n${pack.copy_ready_description}`,
-    Array.isArray(pack.product_details_fixes) && pack.product_details_fixes.length > 0
-      ? `\n\nPRODUCT DETAILS FIXES:\n${pack.product_details_fixes.map(f => `${f.field}: ${f.recommended_value}`).join('\n')}`
-      : '',
-    Array.isArray(pack.image_briefs) && pack.image_briefs.length > 0
-      ? `\n\nIMAGE BRIEFS:\n${pack.image_briefs.map((b, i) => `${i + 1}. ${b.image_type}\n   Headline: "${b.headline}"\n   Visual: ${b.visual_direction}`).join('\n\n')}`
-      : '',
-  ].join('')
+  const titlePreview = pack.copy_ready_title ? pack.copy_ready_title.slice(0, 80) : ''
 
   return (
     <div style={{
@@ -213,7 +176,6 @@ function ProUpgradePackBlock({
       background: 'rgba(163,230,53,0.025)',
       overflow: 'hidden',
     }}>
-
       <div style={{
         padding: '1.25rem 1.5rem',
         borderBottom: '1px solid rgba(163,230,53,0.12)',
@@ -227,7 +189,7 @@ function ProUpgradePackBlock({
                 fontSize: '1.0625rem', fontWeight: 900, color: '#f1f5f9',
                 margin: 0, letterSpacing: '-0.025em',
               }}>
-                Your Pro Upgrade Pack is ready
+                Pro Upgrade Pack ready
               </h3>
               {personaLabel && (
                 <span style={{
@@ -241,186 +203,73 @@ function ProUpgradePackBlock({
               )}
             </div>
             <p style={{ fontSize: '0.8125rem', color: '#64748b', margin: 0, lineHeight: 1.5 }}>
-              Copy these assets and apply them directly to your Amazon listing.
+              Copy-ready title, 5 bullets, description, product detail fixes, and image briefs.
             </p>
           </div>
-          <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', alignItems: 'center' }}>
-            <CopyButton text={fullPackText} label="Copy Full Pack" />
-            <Link
-              to={`/dashboard/audits/${auditId}/image-studio`}
-              className="btn-primary glow-button"
-              style={{ padding: '0.375rem 0.75rem', fontSize: '0.75rem', flexShrink: 0 }}
-            >
-              <Layers size={12} />
-              Image Studio
-            </Link>
-          </div>
+          <Link
+            to={`/dashboard/audits/${auditId}/image-studio`}
+            className="btn-primary glow-button"
+            style={{ padding: '0.375rem 0.75rem', fontSize: '0.75rem', flexShrink: 0 }}
+          >
+            <Layers size={12} />
+            Image Studio
+          </Link>
         </div>
       </div>
 
-      {tabs.length > 1 && (
-        <div style={{
-          display: 'flex', overflow: 'auto',
-          borderBottom: '1px solid rgba(255,255,255,0.06)',
-          background: 'rgba(0,0,0,0.12)',
-        }}>
-          {tabs.map(tab => (
-            <button
-              key={tab.id}
-              type="button"
-              onClick={() => setActiveTab(tab.id)}
-              style={{
-                padding: '0.5625rem 1rem',
-                background: safeTab === tab.id ? 'rgba(163,230,53,0.07)' : 'none',
-                border: 'none',
-                borderBottom: safeTab === tab.id ? '2px solid #a3e635' : '2px solid transparent',
-                color: safeTab === tab.id ? '#a3e635' : '#64748b',
-                fontSize: '0.75rem',
-                fontWeight: safeTab === tab.id ? 700 : 600,
-                cursor: 'pointer',
-                fontFamily: 'inherit',
-                transition: 'all 0.15s',
-                whiteSpace: 'nowrap',
-                flexShrink: 0,
-              }}
-            >
-              {tab.label}
-            </button>
+      <div style={{ padding: '1.25rem 1.5rem' }}>
+        {titlePreview && (
+          <div style={{
+            position: 'relative', overflow: 'hidden',
+            padding: '0.75rem 1rem', borderRadius: '0.625rem', marginBottom: '1rem',
+            background: 'rgba(163,230,53,0.04)', border: '1px solid rgba(163,230,53,0.12)',
+          }}>
+            <p style={{
+              fontSize: '0.875rem', color: '#f1f5f9', fontWeight: 600,
+              margin: 0, lineHeight: 1.4,
+              filter: 'blur(3px)', userSelect: 'none', pointerEvents: 'none',
+            }}>
+              {titlePreview}{pack.copy_ready_title.length > 80 ? '...' : ''}
+            </p>
+            <div style={{
+              position: 'absolute', inset: 0,
+              background: 'linear-gradient(90deg, transparent 30%, rgba(10,12,16,0.92) 80%)',
+              display: 'flex', alignItems: 'center', justifyContent: 'flex-end',
+              paddingRight: '1rem',
+            }}>
+              <span style={{
+                display: 'inline-flex', alignItems: 'center', gap: '0.3rem',
+                fontSize: '0.6875rem', fontWeight: 700, color: '#a3e635',
+              }}>
+                <Lock size={11} color="#a3e635" />
+                Locked
+              </span>
+            </div>
+          </div>
+        )}
+
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.375rem', marginBottom: '1rem' }}>
+          {['Improved Title', '5 Copy-Ready Bullets', 'Improved Description', 'Product Detail Fixes', 'Image Briefs'].map(item => (
+            <span key={item} style={{
+              display: 'inline-flex', alignItems: 'center', gap: '0.25rem',
+              padding: '0.25rem 0.625rem', borderRadius: '99px',
+              background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.09)',
+              fontSize: '0.6875rem', color: '#64748b', fontWeight: 600,
+            }}>
+              <Lock size={9} color="#475569" />
+              {item}
+            </span>
           ))}
         </div>
-      )}
 
-      <div style={{ padding: '1.25rem 1.5rem' }}>
-
-        {safeTab === 'title' && pack.copy_ready_title && (
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.75rem', marginBottom: '0.5rem', flexWrap: 'wrap' }}>
-              <SubLabel>Copy-ready Title</SubLabel>
-              <CopyButton text={pack.copy_ready_title} label="Copy Title" />
-            </div>
-            <div style={{ padding: '0.875rem 1rem', borderRadius: '0.625rem', background: 'rgba(163,230,53,0.05)', border: '1px solid rgba(163,230,53,0.14)' }}>
-              <p style={{ fontSize: '0.9375rem', color: '#f1f5f9', fontWeight: 600, lineHeight: 1.6, margin: 0, wordBreak: 'break-word' }}>
-                {pack.copy_ready_title}
-              </p>
-            </div>
-          </div>
-        )}
-
-        {safeTab === 'bullets' && Array.isArray(pack.copy_ready_bullets) && pack.copy_ready_bullets.length > 0 && (
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.75rem', marginBottom: '0.5rem', flexWrap: 'wrap' }}>
-              <SubLabel>Copy-ready Bullets</SubLabel>
-              <CopyButton text={pack.copy_ready_bullets.join('\n')} label="Copy All Bullets" />
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.375rem' }}>
-              {pack.copy_ready_bullets.map((bullet, i) => (
-                <div key={i} style={{
-                  display: 'flex', alignItems: 'flex-start', gap: '0.625rem',
-                  padding: '0.625rem 0.875rem', borderRadius: '0.5rem',
-                  background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)',
-                }}>
-                  <span style={{
-                    width: 20, height: 20, borderRadius: '50%',
-                    background: 'rgba(163,230,53,0.1)', border: '1px solid rgba(163,230,53,0.2)',
-                    color: '#a3e635', fontSize: '0.625rem', fontWeight: 800,
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    flexShrink: 0, marginTop: 2,
-                  }}>
-                    {i + 1}
-                  </span>
-                  <p style={{ fontSize: '0.875rem', color: '#cbd5e1', lineHeight: 1.55, margin: 0, flex: 1, minWidth: 0, wordBreak: 'break-word' }}>
-                    {bullet}
-                  </p>
-                  <CopyButton text={bullet} />
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {safeTab === 'description' && pack.copy_ready_description && (
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.75rem', marginBottom: '0.5rem', flexWrap: 'wrap' }}>
-              <SubLabel>Copy-ready Description</SubLabel>
-              <CopyButton text={pack.copy_ready_description} label="Copy Description" />
-            </div>
-            <div style={{ padding: '0.875rem 1rem', borderRadius: '0.625rem', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)' }}>
-              <p style={{ fontSize: '0.875rem', color: '#cbd5e1', lineHeight: 1.75, margin: 0, whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
-                {pack.copy_ready_description}
-              </p>
-            </div>
-          </div>
-        )}
-
-        {safeTab === 'details' && Array.isArray(pack.product_details_fixes) && pack.product_details_fixes.length > 0 && (
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.75rem', marginBottom: '0.5rem', flexWrap: 'wrap' }}>
-              <SubLabel>Product Details Fixes</SubLabel>
-              <CopyButton
-                text={pack.product_details_fixes.map(f => `${f.field}: ${f.recommended_value}`).join('\n')}
-                label="Copy All"
-              />
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.375rem' }}>
-              {pack.product_details_fixes.map((fix, i) => (
-                <div key={i} style={{
-                  display: 'flex', alignItems: 'flex-start', gap: '0.75rem',
-                  padding: '0.625rem 0.875rem', borderRadius: '0.5rem',
-                  background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)',
-                  flexWrap: 'wrap',
-                }}>
-                  <div style={{ flex: 1, minWidth: 0, display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: '0.25rem 1rem' }}>
-                    <div>
-                      <div style={{ fontSize: '0.5625rem', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.125rem' }}>Field</div>
-                      <p style={{ fontSize: '0.8125rem', fontWeight: 600, color: '#f1f5f9', margin: 0 }}>{fix.field}</p>
-                    </div>
-                    {fix.recommended_value && (
-                      <div>
-                        <div style={{ fontSize: '0.5625rem', fontWeight: 700, color: '#a3e635', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.125rem' }}>Value</div>
-                        <p style={{ fontSize: '0.8125rem', color: '#a3e635', margin: 0, lineHeight: 1.5 }}>{fix.recommended_value}</p>
-                      </div>
-                    )}
-                  </div>
-                  {fix.recommended_value && <CopyButton text={fix.recommended_value} />}
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {safeTab === 'image_plan' && Array.isArray(pack.image_briefs) && pack.image_briefs.length > 0 && (
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', marginBottom: '0.75rem', flexWrap: 'wrap' }}>
-              <SubLabel>Image Briefs</SubLabel>
-              <CopyButton
-                text={pack.image_briefs.map((b, i) => `${i + 1}. ${b.image_type}\n   Headline: "${b.headline}"\n   Visual: ${b.visual_direction}`).join('\n\n')}
-                label="Copy All Briefs"
-              />
-            </div>
-            <div style={{ borderRadius: '0.5rem', overflow: 'hidden', border: '1px solid rgba(52,211,153,0.12)' }}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 2fr 1fr', background: 'rgba(52,211,153,0.05)', borderBottom: '1px solid rgba(52,211,153,0.1)' }}>
-                <div style={{ padding: '0.375rem 0.75rem' }}><span style={{ fontSize: '0.5625rem', fontWeight: 700, color: '#34d399', textTransform: 'uppercase', letterSpacing: '0.07em' }}>Image</span></div>
-                <div style={{ padding: '0.375rem 0.75rem', borderLeft: '1px solid rgba(52,211,153,0.08)' }}><span style={{ fontSize: '0.5625rem', fontWeight: 700, color: '#a3e635', textTransform: 'uppercase', letterSpacing: '0.07em' }}>Headline</span></div>
-                <div style={{ padding: '0.375rem 0.75rem', borderLeft: '1px solid rgba(52,211,153,0.08)' }}><span style={{ fontSize: '0.5625rem', fontWeight: 700, color: '#34d399', textTransform: 'uppercase', letterSpacing: '0.07em' }}>Action</span></div>
-              </div>
-              {pack.image_briefs.slice(0, 6).map((brief, i) => (
-                <div key={i} style={{ display: 'grid', gridTemplateColumns: '1.5fr 2fr 1fr', borderTop: '1px solid rgba(52,211,153,0.06)', background: i % 2 === 0 ? 'transparent' : 'rgba(52,211,153,0.02)' }}>
-                  <div style={{ padding: '0.625rem 0.75rem' }}>
-                    <p style={{ fontSize: '0.8125rem', fontWeight: 600, color: '#34d399', margin: 0, lineHeight: 1.4 }}>{brief.image_type}</p>
-                    {brief.visual_direction && <p style={{ fontSize: '0.6875rem', color: '#475569', margin: '0.25rem 0 0', lineHeight: 1.4 }}>{brief.visual_direction}</p>}
-                  </div>
-                  <div style={{ padding: '0.625rem 0.75rem', borderLeft: '1px solid rgba(52,211,153,0.06)' }}>
-                    <p style={{ fontSize: '0.8125rem', color: '#a3e635', margin: 0, lineHeight: 1.4, fontWeight: 600 }}>{brief.headline ? `"${brief.headline}"` : '—'}</p>
-                  </div>
-                  <div style={{ padding: '0.625rem 0.75rem', borderLeft: '1px solid rgba(52,211,153,0.06)', display: 'flex', alignItems: 'flex-start' }}>
-                    <CopyButton text={`${brief.image_type}\nHeadline: "${brief.headline}"\nVisual: ${brief.visual_direction}`} label="Copy" />
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
+        <Link
+          to="/dashboard/billing"
+          className="btn-primary glow-button"
+          style={{ display: 'inline-flex', padding: '0.5625rem 1.125rem', fontSize: '0.8125rem' }}
+        >
+          <Crown size={13} />
+          Unlock Pro Pack
+        </Link>
       </div>
     </div>
   )
@@ -576,7 +425,7 @@ function BuyerObjectionRadarBlock({ items }: { items?: BuyerObjectionRadarItem[]
         <div>
           <SL>Buyer Objection Radar</SL>
           <p style={{ fontSize: '0.8125rem', color: '#64748b', margin: 0, lineHeight: 1.5 }}>
-            What may stop buyers from purchasing — and how to fix it.
+            What may stop buyers from purchasing вЂ” and how to fix it.
           </p>
         </div>
         {hasItems && <CopyButton text={copyText} label="Copy Objection Fixes" />}
@@ -696,7 +545,7 @@ function CompetitorAnalysisLiteBlock({ data }: { data?: CompetitorAnalysisLite }
       ? `COMPETITOR ADVANTAGES:\n${data.competitor_advantages.map(a => `- ${a.competitor}: ${a.advantage}. ${a.why_it_matters}`).join('\n')}`
       : '',
     Array.isArray(data.where_we_can_win) && data.where_we_can_win.length > 0
-      ? `WHERE WE CAN WIN:\n${data.where_we_can_win.map(w => `- ${w.area}: ${w.opportunity} → ${w.recommended_action}`).join('\n')}`
+      ? `WHERE WE CAN WIN:\n${data.where_we_can_win.map(w => `- ${w.area}: ${w.opportunity} в†’ ${w.recommended_action}`).join('\n')}`
       : '',
   ].filter(Boolean).join('\n\n') : ''
 
@@ -885,9 +734,8 @@ function ConciseAuditReport({
         )}
       </Card>
 
-      {/* One-click Pro Upgrade Pack */}
       {proUpgradePack && (
-        <ProUpgradePackBlock
+        <ProUpgradePackCTA
           pack={proUpgradePack}
           auditId={audit.id}
           persona={audit.seller_persona ?? ''}
@@ -900,7 +748,7 @@ function ConciseAuditReport({
       {/* Competitor Analysis Lite */}
       <CompetitorAnalysisLiteBlock data={report.competitor_analysis_lite} />
 
-      {/* Ready-to-Copy Listing Upgrade — only shown when no Pro Upgrade Pack */}
+      {/* Ready-to-Copy Listing Upgrade вЂ” only shown when no Pro Upgrade Pack */}
       {!proUpgradePack && (report.title_upgrade?.improved_title || (report.about_this_item_upgrade?.improved_bullets?.length ?? 0) > 0 || report.description_upgrade?.improved_description) && (
         <Card>
           <SL>Ready-to-Copy Listing Upgrade</SL>
@@ -967,7 +815,7 @@ function ConciseAuditReport({
         </Card>
       )}
 
-      {/* Product Details Fixes — only shown when no Pro Upgrade Pack */}
+      {/* Product Details Fixes вЂ” only shown when no Pro Upgrade Pack */}
       {!proUpgradePack && Array.isArray(report.product_details_fixes) && report.product_details_fixes.length > 0 && (
         <Card>
           <SL>Product Details Fixes</SL>
@@ -1002,7 +850,7 @@ function ConciseAuditReport({
       {Array.isArray(report.image_gallery_plan) && report.image_gallery_plan.length > 0 && (
         <Card style={{ borderColor: 'rgba(52,211,153,0.15)', background: 'rgba(52,211,153,0.018)' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', marginBottom: '0.875rem', flexWrap: 'wrap' }}>
-            <SL>Image Plan — {report.image_gallery_plan.length} images</SL>
+            <SL>Image Plan вЂ” {report.image_gallery_plan.length} images</SL>
             <Link
               to={`/dashboard/audits/${audit.id}/image-studio`}
               className="btn-primary glow-button"
@@ -1104,7 +952,7 @@ function ConciseAuditReport({
         </Card>
       )}
 
-      {/* View Details — keywords, objections, A+, notes */}
+      {/* View Details вЂ” keywords, objections, A+, notes */}
       {hasDetails && (
         <Card>
           <button
@@ -1129,7 +977,7 @@ function ConciseAuditReport({
               {Array.isArray(report.keyword_opportunities) && report.keyword_opportunities.length > 0 && (
                 <div>
                   <div style={{ fontSize: '0.6875rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.5rem', paddingBottom: '0.5rem', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                    Keyword Opportunities — {report.keyword_opportunities.length}
+                    Keyword Opportunities вЂ” {report.keyword_opportunities.length}
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3125rem' }}>
                     {report.keyword_opportunities.map((kw, i) => (
@@ -1456,7 +1304,7 @@ function CompactAuditReport({
       )}
 
       {proUpgradePack && (
-        <ProUpgradePackBlock
+        <ProUpgradePackCTA
           pack={proUpgradePack}
           auditId={audit.id}
           persona={audit.seller_persona ?? ''}
@@ -1523,7 +1371,7 @@ function CompactAuditReport({
       {Array.isArray(imagePlan) && imagePlan.length > 0 && (
         <Card style={{ borderColor: 'rgba(52,211,153,0.15)', background: 'rgba(52,211,153,0.018)' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', marginBottom: '0.875rem', flexWrap: 'wrap' }}>
-            <SL>Image Plan — {Math.min(imagePlan.length, 6)} images</SL>
+            <SL>Image Plan вЂ” {Math.min(imagePlan.length, 6)} images</SL>
             <Link
               to={`/dashboard/audits/${audit.id}/image-studio`}
               className="btn-primary glow-button"
@@ -1550,7 +1398,7 @@ function CompactAuditReport({
                     <p style={{ fontSize: '0.8125rem', color: '#94a3b8', margin: 0, lineHeight: 1.4 }}>{img.goal}</p>
                   </div>
                   <div style={{ padding: '0.625rem 0.75rem', borderLeft: '1px solid rgba(52,211,153,0.06)' }}>
-                    <p style={{ fontSize: '0.8125rem', color: '#a3e635', margin: 0, lineHeight: 1.4, fontWeight: 600 }}>{img.headline ? `"${img.headline}"` : '—'}</p>
+                    <p style={{ fontSize: '0.8125rem', color: '#a3e635', margin: 0, lineHeight: 1.4, fontWeight: 600 }}>{img.headline ? `"${img.headline}"` : 'вЂ”'}</p>
                   </div>
                   <div style={{ padding: '0.625rem 0.75rem', borderLeft: '1px solid rgba(52,211,153,0.06)', display: 'flex', alignItems: 'flex-start' }}>
                     <CopyButton text={`${img.image_type}\nGoal: ${img.goal}\nHeadline: "${img.headline}"\nVisual: ${img.visual_direction}`} label="Copy" />
@@ -1615,7 +1463,7 @@ function CompactAuditReport({
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
                     {advanced_details.a_plus_content_plan.map((item, i) => (
                       <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
-                        <span style={{ color: '#a3e635', fontSize: '0.75rem', fontWeight: 700, flexShrink: 0, marginTop: 2 }}>→</span>
+                        <span style={{ color: '#a3e635', fontSize: '0.75rem', fontWeight: 700, flexShrink: 0, marginTop: 2 }}>в†’</span>
                         <p style={{ fontSize: '0.8125rem', color: '#94a3b8', margin: 0, lineHeight: 1.5 }}>{item}</p>
                       </div>
                     ))}
@@ -1702,12 +1550,12 @@ function AuditReport({
             </span>
             <span style={{ fontSize: '0.9375rem', color: '#475569', fontWeight: 600 }}>/100</span>
             <span style={{ fontSize: '1.0625rem', fontWeight: 700, color, marginLeft: '0.25rem', letterSpacing: '-0.02em' }}>
-              — {result.score_label}
+              вЂ” {result.score_label}
             </span>
           </div>
           <p style={{ fontSize: '0.875rem', color: '#64748b', margin: '0 0 0.875rem', lineHeight: 1.65 }}>
             {result.score >= 80
-              ? 'Your listing is performing well — copy, trust signals, and conversion are in strong shape.'
+              ? 'Your listing is performing well вЂ” copy, trust signals, and conversion are in strong shape.'
               : result.score >= 60
               ? 'Your listing has clear opportunities. A focused optimization pass can meaningfully lift conversion.'
               : 'Your listing needs significant work to compete on Amazon. The report below shows exactly where to focus.'}
@@ -1788,7 +1636,7 @@ function AuditReport({
       {/* Weak Points */}
       {Array.isArray(result.weak_points) && result.weak_points.length > 0 && (
         <Card>
-          <SL>Weak Points — {result.weak_points.length} issues found</SL>
+          <SL>Weak Points вЂ” {result.weak_points.length} issues found</SL>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
             {result.weak_points.map((wp, i) => (
               <div key={i} style={{
@@ -1904,7 +1752,7 @@ function AuditReport({
       {/* Keyword Opportunities */}
       {Array.isArray(result.keyword_opportunities) && result.keyword_opportunities.length > 0 && (
         <Card>
-          <SL>Keyword Opportunities — {result.keyword_opportunities.length} keywords</SL>
+          <SL>Keyword Opportunities вЂ” {result.keyword_opportunities.length} keywords</SL>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
             {result.keyword_opportunities.map((kw, i) => (
               <div key={i} style={{
@@ -1932,7 +1780,7 @@ function AuditReport({
       {/* Review Insights */}
       {Array.isArray(result.review_insights) && result.review_insights.length > 0 && (
         <Card>
-          <SL>Review Insights — what customers are signaling</SL>
+          <SL>Review Insights вЂ” what customers are signaling</SL>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
             {result.review_insights.map((ri, i) => (
               <div key={i} style={{
@@ -1961,7 +1809,7 @@ function AuditReport({
       {/* Buyer Objections */}
       {Array.isArray(result.buyer_objections) && result.buyer_objections.length > 0 && (
         <Card>
-          <SL>Buyer Objections — how to address hesitations</SL>
+          <SL>Buyer Objections вЂ” how to address hesitations</SL>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
             {result.buyer_objections.map((bo, i) => (
               <div key={i} style={{
@@ -1995,7 +1843,7 @@ function AuditReport({
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5625rem', marginBottom: '0.3125rem' }}>
                 <div style={{ width: 3, height: 14, borderRadius: 2, background: 'linear-gradient(180deg, #a3e635, #34d399)', flexShrink: 0 }} />
                 <span style={{ fontSize: '0.6875rem', fontWeight: 700, color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-                  Image Pack Plan — {result.image_pack_plan.length} images
+                  Image Pack Plan вЂ” {result.image_pack_plan.length} images
                 </span>
               </div>
               <p style={{ fontSize: '0.8125rem', color: '#475569', margin: '0 0 0.875rem', lineHeight: 1.5 }}>
@@ -2082,7 +1930,7 @@ function AuditReport({
       {/* A+ Content Ideas */}
       {Array.isArray(result.a_plus_content_ideas) && result.a_plus_content_ideas.length > 0 && (
         <Card>
-          <SL>A+ Content Ideas — {result.a_plus_content_ideas.length} modules</SL>
+          <SL>A+ Content Ideas вЂ” {result.a_plus_content_ideas.length} modules</SL>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '0.75rem' }}>
             {result.a_plus_content_ideas.map((idea, i) => (
               <div key={i} style={{
@@ -2109,7 +1957,7 @@ function AuditReport({
       {/* Priority Checklist */}
       {Array.isArray(result.priority_checklist) && result.priority_checklist.length > 0 && (
         <Card>
-          <SL>Priority Checklist — your action plan</SL>
+          <SL>Priority Checklist вЂ” your action plan</SL>
           <div>
             {result.priority_checklist.map((item, i) => (
               <div key={i} style={{
@@ -2292,7 +2140,7 @@ export default function AuditDetailPage() {
             <StatusBadge status={audit.status} />
             <span style={{ fontSize: '0.75rem', color: '#475569' }}>
               {audit.entry_type === 'amazon_url' ? 'Amazon URL' : 'Product Photos'}
-              {' · '}
+              {' В· '}
               {formatDate(audit.created_at)}
             </span>
           </div>
@@ -2446,7 +2294,7 @@ export default function AuditDetailPage() {
         </div>
       )}
 
-      {/* Full report — compact v2 */}
+      {/* Full report вЂ” compact v2 */}
       {isCompleted && hasCompact && audit.result?.concise_report && (
         <CompactAuditReport
           compact={(audit.result.concise_report as ConciseReport).compact_report!}
@@ -2459,7 +2307,7 @@ export default function AuditDetailPage() {
         />
       )}
 
-      {/* Full report — v2 concise (no compact_report, backward compat) */}
+      {/* Full report вЂ” v2 concise (no compact_report, backward compat) */}
       {isCompleted && isV2 && !hasCompact && audit.result?.concise_report && (
         <ConciseAuditReport
           report={audit.result.concise_report}
@@ -2471,7 +2319,7 @@ export default function AuditDetailPage() {
         />
       )}
 
-      {/* Full report — v1 legacy */}
+      {/* Full report вЂ” v1 legacy */}
       {isCompleted && !isV2 && audit.result && (
         <AuditReport
           result={audit.result}
