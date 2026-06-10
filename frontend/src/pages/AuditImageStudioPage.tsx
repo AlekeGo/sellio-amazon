@@ -67,7 +67,7 @@ function SL({ children }: { children: React.ReactNode }) {
     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5625rem', marginBottom: '1rem' }}>
       <div style={{
         width: 3, height: 14, borderRadius: 2,
-        background: 'linear-gradient(180deg, #a3e635, #34d399)', flexShrink: 0,
+        background: 'linear-gradient(135deg, #6A55FE 0%, #533AFD 100%)', flexShrink: 0,
       }} />
       <span style={{
         fontSize: '0.6875rem', fontWeight: 700, color: '#6b7280',
@@ -298,7 +298,7 @@ export default function AuditImageStudioPage() {
             <span style={{
               display: 'inline-flex', alignItems: 'center', gap: '0.3125rem',
               padding: '0.25rem 0.625rem', borderRadius: '99px',
-              background: 'rgba(163,230,53,0.07)', border: '1px solid rgba(163,230,53,0.18)',
+              background: 'rgba(83,58,253,0.07)', border: '1px solid rgba(83,58,253,0.18)',
               fontSize: '0.6875rem', fontWeight: 700, color: 'var(--dp-primary)',
             }}>
               <Package size={11} />
@@ -309,8 +309,8 @@ export default function AuditImageStudioPage() {
             <span style={{
               display: 'inline-flex', alignItems: 'center', gap: '0.3125rem',
               padding: '0.25rem 0.625rem', borderRadius: '99px',
-              background: 'rgba(52,211,153,0.07)', border: '1px solid rgba(52,211,153,0.18)',
-              fontSize: '0.6875rem', fontWeight: 700, color: '#34d399',
+              background: 'rgba(47,158,111,0.07)', border: '1px solid rgba(47,158,111,0.18)',
+              fontSize: '0.6875rem', fontWeight: 700, color: '#2F9E6F',
             }}>
               <Package size={11} />
               Full Upgrade active
@@ -323,10 +323,10 @@ export default function AuditImageStudioPage() {
           ].map(s => (
             <span key={s.label} style={{
               padding: '0.1875rem 0.5625rem', borderRadius: '99px',
-              background: s.active ? 'rgba(163,230,53,0.07)' : 'rgba(255,255,255,0.03)',
-              border: `1px solid ${s.active ? 'rgba(163,230,53,0.18)' : 'rgba(255,255,255,0.08)'}`,
+              background: s.active ? 'rgba(83,58,253,0.07)' : 'rgba(255,255,255,0.03)',
+              border: `1px solid ${s.active ? 'rgba(83,58,253,0.18)' : 'rgba(255,255,255,0.08)'}`,
               fontSize: '0.5625rem', fontWeight: 700,
-              color: s.active ? '#a3e635' : '#475569',
+              color: s.active ? '#533AFD' : '#475569',
               textTransform: 'uppercase' as const, letterSpacing: '0.05em',
             }}>
               {s.label}
@@ -399,11 +399,11 @@ export default function AuditImageStudioPage() {
             }}>
               <div style={{
                 width: 52, height: 52, borderRadius: '0.875rem',
-                background: 'rgba(163,230,53,0.05)', border: '1px solid rgba(163,230,53,0.1)',
+                background: 'rgba(83,58,253,0.05)', border: '1px solid rgba(83,58,253,0.1)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 margin: '0 auto 1.125rem',
               }}>
-                <Zap size={22} color="#a3e635" style={{ opacity: 0.5 }} />
+                <Zap size={22} color="#533AFD" style={{ opacity: 0.5 }} />
               </div>
               <h3 style={{
                 fontSize: '0.9375rem', fontWeight: 700, color: 'var(--dp-ink)',

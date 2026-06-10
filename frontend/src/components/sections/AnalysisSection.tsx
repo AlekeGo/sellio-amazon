@@ -12,37 +12,37 @@ const analyses = [
     icon: List,
     title: 'Bullet Points',
     body: 'Benefit clarity, pain point alignment, and feature-vs-benefit ratio analysis.',
-    color: '#34d399',
+    color: '#7C6FFF',
   },
   {
     icon: AlignLeft,
     title: 'Description',
     body: 'Storytelling structure, SEO integration, and brand voice consistency.',
-    color: '#4ade80',
+    color: '#533AFD',
   },
   {
     icon: Key,
     title: 'Keywords',
     body: 'Search volume scoring, relevance analysis, and gap discovery vs. competitors.',
-    color: '#86efac',
+    color: '#7C3AED',
   },
   {
     icon: Star,
     title: 'Reviews & Objections',
     body: 'Buyer sentiment analysis, recurring objections, and unmet need identification.',
-    color: '#6ee7b7',
+    color: '#9B8FFF',
   },
   {
     icon: Layout,
     title: 'A+ Content Strategy',
     body: 'Module recommendations, visual hierarchy mapping, and copy framework guidance.',
-    color: '#a7f3d0',
+    color: '#6A55FE',
   },
   {
     icon: ImageIcon,
     title: 'Main Image',
     body: 'Visual impact score, white space usage, and first-impression click-through analysis.',
-    color: '#22c55e',
+    color: '#533AFD',
   },
   {
     icon: BarChart2,
@@ -54,7 +54,7 @@ const analyses = [
     icon: Camera,
     title: 'Lifestyle Visuals',
     body: 'Emotional resonance, audience alignment, and brand consistency assessment.',
-    color: '#34d399',
+    color: '#7C3AED',
   },
 ]
 
@@ -64,7 +64,7 @@ export default function AnalysisSection() {
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          backgroundImage: 'radial-gradient(ellipse 60% 50% at 80% 50%, rgba(52,211,153,0.06) 0%, transparent 60%)',
+          backgroundImage: 'radial-gradient(ellipse 60% 50% at 80% 50%, rgba(83,58,253,0.05) 0%, transparent 60%)',
         }}
       />
 

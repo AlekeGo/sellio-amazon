@@ -30,16 +30,16 @@ const problems = [
     icon: Search,
     title: 'Missed keywords = zero discovery',
     body: "If Amazon's algorithm can't clearly understand what you sell, it won't show your listing to the right buyers.",
-    color: '#34d399',
-    bg: 'rgba(52,211,153,0.08)',
-    border: 'rgba(52,211,153,0.15)',
+    color: '#533AFD',
+    bg: 'rgba(83,58,253,0.07)',
+    border: 'rgba(83,58,253,0.15)',
   },
 ]
 
 const stats = [
   { value: '70%', label: 'of buyers never look past the first page of results', color: 'var(--dp-primary)' },
-  { value: '47%', label: 'of clicks go to the top 3 results — position and presentation are everything', color: '#34d399' },
-  { value: '3 sec', label: 'is all it takes for a buyer to decide your listing is not worth their time', color: '#4ade80' },
+  { value: '47%', label: 'of clicks go to the top 3 results — position and presentation are everything', color: '#7C3AED' },
+  { value: '3 sec', label: 'is all it takes for a buyer to decide your listing is not worth their time', color: '#533AFD' },
 ]
 
 export default function ProblemSection() {
@@ -48,7 +48,7 @@ export default function ProblemSection() {
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          backgroundImage: 'radial-gradient(ellipse 80% 50% at 50% 100%, rgba(52,211,153,0.06) 0%, transparent 60%)',
+          backgroundImage: 'radial-gradient(ellipse 80% 50% at 50% 100%, rgba(83,58,253,0.05) 0%, transparent 60%)',
         }}
       />
 
@@ -76,10 +76,7 @@ export default function ProblemSection() {
               <div
                 className="text-5xl font-black mb-3 leading-none"
                 style={{
-                  background: `linear-gradient(135deg, ${stat.color}, rgba(255,255,255,0.8))`,
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  backgroundClip: 'text',
+                  color: stat.color,
                 }}
               >
                 {stat.value}

@@ -6,43 +6,43 @@ const features = [
     icon: Zap,
     title: 'Listing Audit',
     body: 'Full scan of your title, bullets, description, images, and keyword strategy with actionable scores.',
-    gradient: 'linear-gradient(135deg, #166534, #4ade80)',
-    glow: 'rgba(74,222,128,0.22)',
+    gradient: 'linear-gradient(135deg, #6A55FE 0%, #533AFD 100%)',
+    glow: 'rgba(83,58,253,0.22)',
   },
   {
     icon: FileText,
     title: 'Title & Copy Upgrade',
     body: 'Rewrites using high-converting language, proven Amazon patterns, and keyword integration.',
-    gradient: 'linear-gradient(135deg, #065f46, #34d399)',
-    glow: 'rgba(52,211,153,0.22)',
+    gradient: 'linear-gradient(135deg, #533AFD 0%, #7C6FFF 100%)',
+    glow: 'rgba(83,58,253,0.18)',
   },
   {
     icon: Key,
     title: 'Keyword Intelligence',
     body: 'Discover missed search terms and high-opportunity keywords your competitors are already ranking for.',
-    gradient: 'linear-gradient(135deg, #14532d, #22c55e)',
-    glow: 'rgba(34,197,94,0.2)',
+    gradient: 'linear-gradient(135deg, #7C3AED 0%, #533AFD 100%)',
+    glow: 'rgba(124,58,237,0.20)',
   },
   {
     icon: MessageSquare,
     title: 'Review Signal Extraction',
     body: 'Turn buyer feedback into conversion insights. Resolve hidden objections before they cost you sales.',
-    gradient: 'linear-gradient(135deg, #3f6212, #a3e635)',
+    gradient: 'linear-gradient(135deg, #4B35F0 0%, #6A55FE 100%)',
     glow: 'rgba(83,58,253,0.22)',
   },
   {
     icon: Layout,
     title: 'A+ Content Strategy',
     body: 'Guidance on module layout, copy angles, and visual storytelling for Amazon A+ Content pages.',
-    gradient: 'linear-gradient(135deg, #065f46, #6ee7b7)',
-    glow: 'rgba(110,231,183,0.18)',
+    gradient: 'linear-gradient(135deg, #7C6FFF 0%, #9B8FFF 100%)',
+    glow: 'rgba(122,102,255,0.20)',
   },
   {
     icon: ImageIcon,
     title: 'Premium Image Studio',
     body: 'Generate main images, infographics, comparison charts, and lifestyle visuals for your product.',
-    gradient: 'linear-gradient(135deg, #166534, #86efac)',
-    glow: 'rgba(134,239,172,0.18)',
+    gradient: 'linear-gradient(135deg, #533AFD 0%, #7C3AED 100%)',
+    glow: 'rgba(83,58,253,0.22)',
   },
 ]
 
@@ -52,7 +52,7 @@ export default function SolutionSection() {
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          backgroundImage: 'radial-gradient(ellipse 70% 50% at 20% 50%, rgba(52,211,153,0.06) 0%, transparent 60%)',
+          backgroundImage: 'radial-gradient(ellipse 70% 50% at 20% 50%, rgba(83,58,253,0.05) 0%, transparent 60%)',
         }}
       />
 

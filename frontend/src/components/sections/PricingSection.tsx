@@ -116,9 +116,9 @@ const addons = [
     name: 'Extra Audit Pack',
     price: '$9',
     desc: '1 additional audit added to your current plan billing cycle.',
-    accentColor: '#34d399',
-    accentBg: 'rgba(52,211,153,0.05)',
-    accentBorder: 'rgba(52,211,153,0.18)',
+    accentColor: '#7C3AED',
+    accentBg: 'rgba(124,58,237,0.05)',
+    accentBorder: 'rgba(124,58,237,0.18)',
   },
 ]
 

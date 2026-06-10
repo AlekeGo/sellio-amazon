@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { Menu, X, BarChart2 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAuth } from '../../contexts/AuthContext'
@@ -17,19 +17,32 @@ const authLinks = [
 ]
 
 function SellioLogo() {
+  const navigate = useNavigate()
+  const location = useLocation()
+
+  const handleClick = (e: React.MouseEvent) => {
+    e.preventDefault()
+    if (location.pathname === '/') {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    } else {
+      navigate('/')
+    }
+  }
+
   return (
-    <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', textDecoration: 'none' }}>
+    <a href="/" onClick={handleClick} style={{ display: 'flex', alignItems: 'center', gap: '0.5625rem', textDecoration: 'none' }}>
       <div style={{
-        width: 28, height: 28, borderRadius: 8,
+        width: 34, height: 34, borderRadius: 10,
         background: 'linear-gradient(135deg, #6A55FE 0%, #533AFD 100%)',
         display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+        boxShadow: '0 2px 10px rgba(83,58,253,0.28)',
       }}>
-        <BarChart2 size={15} color="#fff" />
+        <BarChart2 size={17} color="#fff" />
       </div>
-      <span style={{ fontWeight: 700, fontSize: '1rem', color: 'var(--dp-ink)', letterSpacing: '-0.02em' }}>
+      <span style={{ fontWeight: 800, fontSize: '1.125rem', color: 'var(--dp-ink)', letterSpacing: '-0.03em' }}>
         Sellio
       </span>
-    </Link>
+    </a>
   )
 }
 
@@ -73,17 +86,17 @@ export default function Navbar() {
           left: 0,
           right: 0,
           zIndex: 100,
-          background: scrolled ? 'rgba(255,255,255,0.95)' : 'rgba(255,255,255,0.88)',
-          borderBottom: scrolled ? '1px solid rgba(196,188,255,0.55)' : '1px solid rgba(196,188,255,0.38)',
-          boxShadow: scrolled ? '0 4px 24px rgba(83,58,253,0.08)' : 'none',
-          backdropFilter: 'blur(16px)',
-          WebkitBackdropFilter: 'blur(16px)',
-          padding: '0 1.5rem',
-          height: 60,
+          background: scrolled ? 'rgba(255,255,255,0.97)' : 'rgba(255,255,255,0.92)',
+          borderBottom: scrolled ? '1px solid rgba(196,188,255,0.60)' : '1px solid rgba(196,188,255,0.40)',
+          boxShadow: scrolled ? '0 4px 28px rgba(83,58,253,0.08), 0 1px 0 rgba(196,188,255,0.2)' : 'none',
+          backdropFilter: 'blur(20px)',
+          WebkitBackdropFilter: 'blur(20px)',
+          padding: '0 2rem',
+          height: 68,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          transition: 'box-shadow 0.25s ease, border-color 0.25s ease',
+          transition: 'box-shadow 0.25s ease, border-color 0.25s ease, background 0.25s ease',
         }}
       >
         <SellioLogo />
@@ -136,13 +149,16 @@ export default function Navbar() {
           onClick={() => setMobileOpen(!mobileOpen)}
           style={{
             background: 'rgba(83,58,253,0.06)', border: '1px solid rgba(196,188,255,0.5)',
-            borderRadius: 8, width: 36, height: 36,
+            borderRadius: 10, width: 40, height: 40,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             cursor: 'pointer', color: 'var(--dp-primary)',
+            transition: 'background 0.15s, border-color 0.15s',
           }}
+          onMouseEnter={e => { e.currentTarget.style.background = 'rgba(83,58,253,0.1)'; e.currentTarget.style.borderColor = 'rgba(83,58,253,0.3)' }}
+          onMouseLeave={e => { e.currentTarget.style.background = 'rgba(83,58,253,0.06)'; e.currentTarget.style.borderColor = 'rgba(196,188,255,0.5)' }}
           aria-label="Toggle menu"
         >
-          {mobileOpen ? <X size={18} /> : <Menu size={18} />}
+          {mobileOpen ? <X size={19} /> : <Menu size={19} />}
         </button>
       </header>
 
@@ -159,27 +175,43 @@ export default function Navbar() {
               initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }}
               transition={{ type: 'tween', duration: 0.28, ease: [0.32, 0.72, 0, 1] }}
               style={{
-                position: 'fixed', top: 0, right: 0, bottom: 0, zIndex: 50, width: 280,
+                position: 'fixed', top: 0, right: 0, bottom: 0, zIndex: 50, width: 300,
                 background: '#ffffff', borderLeft: '1px solid rgba(196,188,255,0.50)',
                 display: 'flex', flexDirection: 'column',
-                boxShadow: '-8px 0 40px rgba(83,58,253,0.12)',
+                boxShadow: '-12px 0 48px rgba(83,58,253,0.12)',
               }}
             >
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1rem 1.25rem', borderBottom: '1px solid rgba(196,188,255,0.38)' }}>
+              <div style={{
+                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                padding: '1.125rem 1.5rem',
+                borderBottom: '1px solid rgba(196,188,255,0.38)',
+                background: 'rgba(238,240,255,0.35)',
+              }}>
                 <SellioLogo />
-                <button onClick={() => setMobileOpen(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--dp-ink-muted)', padding: 4 }}>
-                  <X size={18} />
+                <button
+                  onClick={() => setMobileOpen(false)}
+                  style={{
+                    background: 'rgba(83,58,253,0.06)', border: '1px solid rgba(196,188,255,0.45)',
+                    borderRadius: 8, width: 34, height: 34,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    cursor: 'pointer', color: 'var(--dp-ink-muted)',
+                    transition: 'background 0.15s',
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.background = 'rgba(83,58,253,0.1)' }}
+                  onMouseLeave={e => { e.currentTarget.style.background = 'rgba(83,58,253,0.06)' }}
+                >
+                  <X size={16} />
                 </button>
               </div>
 
-              <nav style={{ flex: 1, padding: '0.75rem 1rem', display: 'flex', flexDirection: 'column', gap: 2 }}>
+              <nav style={{ flex: 1, padding: '1rem 1rem', display: 'flex', flexDirection: 'column', gap: 4 }}>
                 {navLinks.map((link) =>
                   link.href.startsWith('/#') ? (
                     <button
                       key={link.label}
                       onClick={() => { handleAnchorClick(link.href); setMobileOpen(false) }}
                       className="mobile-nav-item"
-                      style={{ padding: '0.75rem 1rem', borderRadius: 10, border: 'none', background: 'none', cursor: 'pointer', fontSize: '0.9375rem', fontFamily: 'inherit', textAlign: 'left' }}
+                      style={{ padding: '0.875rem 1.125rem', borderRadius: 12, border: 'none', background: 'none', cursor: 'pointer', fontSize: '1rem', fontFamily: 'inherit', textAlign: 'left', fontWeight: 500 }}
                     >
                       {link.label}
                     </button>
@@ -188,7 +220,7 @@ export default function Navbar() {
                       key={link.label}
                       to={link.href}
                       className="mobile-nav-item"
-                      style={{ padding: '0.75rem 1rem', borderRadius: 10, textDecoration: 'none', fontSize: '0.9375rem' }}
+                      style={{ padding: '0.875rem 1.125rem', borderRadius: 12, textDecoration: 'none', fontSize: '1rem', fontWeight: 500 }}
                     >
                       {link.label}
                     </Link>
@@ -196,13 +228,18 @@ export default function Navbar() {
                 )}
               </nav>
 
-              <div style={{ padding: '1rem 1.25rem', borderTop: '1px solid rgba(196,188,255,0.38)', display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
+              <div style={{
+                padding: '1.25rem 1.5rem',
+                borderTop: '1px solid rgba(196,188,255,0.38)',
+                display: 'flex', flexDirection: 'column', gap: '0.75rem',
+                background: 'rgba(248,250,252,0.8)',
+              }}>
                 {!isAuthenticated && (
-                  <Link to="/login" onClick={() => setMobileOpen(false)} className="dp-btn-ghost" style={{ justifyContent: 'center', width: '100%' }}>
+                  <Link to="/login" onClick={() => setMobileOpen(false)} className="dp-btn-ghost" style={{ justifyContent: 'center', width: '100%', fontSize: '0.9375rem' }}>
                     Sign in
                   </Link>
                 )}
-                <Link to={ctaHref} onClick={() => setMobileOpen(false)} className="dp-btn-primary" style={{ justifyContent: 'center', width: '100%' }}>
+                <Link to={ctaHref} onClick={() => setMobileOpen(false)} className="dp-btn-primary" style={{ justifyContent: 'center', width: '100%', fontSize: '0.9375rem', padding: '0.75rem 1.5rem' }}>
                   {ctaLabel}
                 </Link>
               </div>

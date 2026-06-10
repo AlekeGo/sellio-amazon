@@ -22,7 +22,7 @@ function formatDate(iso: string) {
 }
 
 function sc(score: number) {
-  return score >= 80 ? 'var(--dp-score-hi)' : score >= 60 ? 'var(--dp-score-mid)' : 'var(--dp-score-low)'
+  return score >= 80 ? '#2F9E6F' : score >= 60 ? '#B7791F' : '#C2413A'
 }
 
 function CopyButton({ text, label = 'Copy' }: { text: string; label?: string }) {
@@ -277,10 +277,10 @@ function ProUpgradePackCTA({
 }
 
 const DIAG = [
-  { key: 'attention' as const, label: 'Attention', Icon: Eye, color: '#f97316', bg: 'rgba(249,115,22,0.04)', border: 'rgba(249,115,22,0.11)' },
-  { key: 'trust' as const, label: 'Trust', Icon: Shield, color: '#34d399', bg: 'rgba(52,211,153,0.04)', border: 'rgba(52,211,153,0.11)' },
-  { key: 'clarity' as const, label: 'Clarity', Icon: Target, color: '#60a5fa', bg: 'rgba(96,165,250,0.04)', border: 'rgba(96,165,250,0.11)' },
-  { key: 'conversion' as const, label: 'Conversion', Icon: TrendingUp, color: 'var(--dp-primary)', bg: 'rgba(163,230,53,0.04)', border: 'rgba(163,230,53,0.11)' },
+  { key: 'attention' as const, label: 'Attention', Icon: Eye, color: '#B7791F', bg: 'rgba(183,121,31,0.04)', border: 'rgba(183,121,31,0.13)' },
+  { key: 'trust' as const, label: 'Trust', Icon: Shield, color: '#2F9E6F', bg: 'rgba(47,158,111,0.04)', border: 'rgba(47,158,111,0.14)' },
+  { key: 'clarity' as const, label: 'Clarity', Icon: Target, color: '#533AFD', bg: 'rgba(83,58,253,0.04)', border: 'rgba(83,58,253,0.11)' },
+  { key: 'conversion' as const, label: 'Conversion', Icon: TrendingUp, color: 'var(--dp-primary)', bg: 'rgba(83,58,253,0.04)', border: 'rgba(83,58,253,0.11)' },
 ]
 
 function ReportHeader({ audit, result }: { audit: AuditDetail; result: AuditResult }) {
@@ -351,7 +351,7 @@ function ReportHeader({ audit, result }: { audit: AuditDetail; result: AuditResu
                 fontSize: '0.8125rem', color: 'var(--dp-ink-muted)', textDecoration: 'none',
                 marginBottom: '1.375rem', transition: 'color 0.15s',
               }}
-              onMouseEnter={e => (e.currentTarget.style.color = '#a3e635')}
+              onMouseEnter={e => (e.currentTarget.style.color = '#533AFD')}
               onMouseLeave={e => (e.currentTarget.style.color = '#475569')}
             >
               <ExternalLink size={12} />
@@ -454,7 +454,7 @@ function BuyerObjectionRadarBlock({ items }: { items?: BuyerObjectionRadarItem[]
                 </span>
               </div>
               {item.source_signal && (
-                <div style={{ padding: '0.375rem 0.875rem', borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
+                <div style={{ padding: '0.375rem 0.875rem', borderBottom: '1px solid rgba(196,188,255,0.25)' }}>
                   <span style={{ fontSize: '0.6875rem', color: 'var(--dp-ink-muted)', fontStyle: 'italic' }}>
                     Source: {item.source_signal}
                   </span>
@@ -485,7 +485,7 @@ function BuyerObjectionRadarBlock({ items }: { items?: BuyerObjectionRadarItem[]
                     <span style={{
                       display: 'inline-flex', alignItems: 'center',
                       padding: '0.1rem 0.4rem', borderRadius: '99px',
-                      background: 'rgba(163,230,53,0.1)', border: '1px solid rgba(163,230,53,0.2)',
+                      background: 'rgba(83,58,253,0.08)', border: '1px solid rgba(83,58,253,0.2)',
                       fontSize: '0.5rem', fontWeight: 700, color: 'var(--dp-primary)',
                       textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '0.25rem',
                     }}>
@@ -501,13 +501,13 @@ function BuyerObjectionRadarBlock({ items }: { items?: BuyerObjectionRadarItem[]
                     <span style={{
                       display: 'inline-flex', alignItems: 'center',
                       padding: '0.1rem 0.4rem', borderRadius: '99px',
-                      background: 'rgba(52,211,153,0.1)', border: '1px solid rgba(52,211,153,0.2)',
-                      fontSize: '0.5rem', fontWeight: 700, color: '#34d399',
+                      background: 'rgba(47,158,111,0.08)', border: '1px solid rgba(47,158,111,0.18)',
+                      fontSize: '0.5rem', fontWeight: 700, color: '#2F9E6F',
                       textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '0.25rem',
                     }}>
                       Image idea
                     </span>
-                    <p style={{ fontSize: '0.8125rem', color: '#34d399', margin: 0, lineHeight: 1.5 }}>
+                    <p style={{ fontSize: '0.8125rem', color: '#2F9E6F', margin: 0, lineHeight: 1.5 }}>
                       {item.image_fix}
                     </p>
                   </div>
@@ -560,7 +560,7 @@ function CompetitorAnalysisLiteBlock({ data }: { data?: CompetitorAnalysisLite }
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.875rem' }}>
           {data!.summary && data!.summary !== 'No competitor data was provided.' && (
-            <p style={{ fontSize: '0.875rem', color: '#cbd5e1', lineHeight: 1.65, margin: 0 }}>
+            <p style={{ fontSize: '0.875rem', color: 'var(--dp-ink-secondary)', lineHeight: 1.65, margin: 0 }}>
               {data!.summary}
             </p>
           )}
@@ -615,7 +615,7 @@ function CompetitorAnalysisLiteBlock({ data }: { data?: CompetitorAnalysisLite }
                   <div key={i} style={{
                     display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
                     gap: '0.25rem 1rem', padding: '0.625rem 0.875rem', borderRadius: '0.5rem',
-                    background: 'rgba(163,230,53,0.04)', border: '1px solid rgba(163,230,53,0.1)',
+                    background: 'rgba(238,240,255,0.5)', border: '1px solid rgba(196,188,255,0.40)',
                   }}>
                     {win.area && (
                       <div>
@@ -629,14 +629,14 @@ function CompetitorAnalysisLiteBlock({ data }: { data?: CompetitorAnalysisLite }
                       <div style={{ fontSize: '0.5rem', fontWeight: 700, color: 'var(--dp-ink-muted)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.125rem' }}>
                         Opportunity
                       </div>
-                      <p style={{ fontSize: '0.8125rem', color: '#cbd5e1', margin: 0, lineHeight: 1.5 }}>{win.opportunity}</p>
+                      <p style={{ fontSize: '0.8125rem', color: 'var(--dp-ink-secondary)', margin: 0, lineHeight: 1.5 }}>{win.opportunity}</p>
                     </div>
                     {win.recommended_action && (
                       <div>
-                        <div style={{ fontSize: '0.5rem', fontWeight: 700, color: '#34d399', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.125rem' }}>
+                        <div style={{ fontSize: '0.5rem', fontWeight: 700, color: 'var(--dp-primary)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.125rem' }}>
                           Action
                         </div>
-                        <p style={{ fontSize: '0.8125rem', color: '#34d399', margin: 0, lineHeight: 1.5 }}>{win.recommended_action}</p>
+                        <p style={{ fontSize: '0.8125rem', color: 'var(--dp-primary)', margin: 0, lineHeight: 1.5 }}>{win.recommended_action}</p>
                       </div>
                     )}
                   </div>
@@ -698,7 +698,7 @@ function ConciseAuditReport({
             style={{
               display: 'inline-flex', alignItems: 'center', gap: '0.375rem',
               padding: '0.3125rem 0.6875rem', borderRadius: '0.375rem',
-              background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)',
+              background: 'rgba(83,58,253,0.04)', border: '1px solid rgba(196,188,255,0.45)',
               color: 'var(--dp-ink-muted)', fontSize: '0.75rem', fontWeight: 600,
               cursor: regenerating ? 'not-allowed' : 'pointer',
               fontFamily: 'inherit', opacity: regenerating ? 0.6 : 1, transition: 'all 0.15s',
@@ -708,7 +708,7 @@ function ConciseAuditReport({
             {regenerating ? 'Regenerating...' : 'Regenerate'}
           </button>
         </div>
-        <p style={{ fontSize: '0.9375rem', color: '#cbd5e1', lineHeight: 1.65, margin: 0 }}>
+        <p style={{ fontSize: '0.9375rem', color: 'var(--dp-ink-secondary)', lineHeight: 1.65, margin: 0 }}>
           {report.executive_summary}
         </p>
         {regenError && (
@@ -747,7 +747,7 @@ function ConciseAuditReport({
                 <span style={{ fontSize: '0.8125rem', fontWeight: 700, color: 'var(--dp-ink-muted)' }}>Copy-ready Title</span>
                 <CopyButton text={report.title_upgrade.improved_title} label="Copy Title" />
               </div>
-              <div style={{ padding: '0.875rem 1rem', borderRadius: '0.625rem', background: 'rgba(163,230,53,0.04)', border: '1px solid rgba(163,230,53,0.14)' }}>
+              <div style={{ padding: '0.875rem 1rem', borderRadius: '0.625rem', background: 'rgba(238,240,255,0.5)', border: '1px solid rgba(196,188,255,0.40)' }}>
                 <p style={{ fontSize: '0.9375rem', color: 'var(--dp-ink)', lineHeight: 1.6, margin: 0, fontWeight: 600 }}>
                   {report.title_upgrade.improved_title}
                 </p>
@@ -770,14 +770,14 @@ function ConciseAuditReport({
                   }}>
                     <span style={{
                       width: 20, height: 20, borderRadius: '50%',
-                      background: 'rgba(163,230,53,0.1)', border: '1px solid rgba(163,230,53,0.2)',
+                      background: 'rgba(83,58,253,0.08)', border: '1px solid rgba(83,58,253,0.2)',
                       color: 'var(--dp-primary)', fontSize: '0.625rem', fontWeight: 800,
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
                       flexShrink: 0, marginTop: 1,
                     }}>
                       {i + 1}
                     </span>
-                    <p style={{ fontSize: '0.875rem', color: '#cbd5e1', lineHeight: 1.55, margin: 0, flex: 1, minWidth: 0, wordBreak: 'break-word' }}>
+                    <p style={{ fontSize: '0.875rem', color: 'var(--dp-ink-secondary)', lineHeight: 1.55, margin: 0, flex: 1, minWidth: 0, wordBreak: 'break-word' }}>
                       {bullet}
                     </p>
                     <CopyButton text={bullet} />
@@ -794,7 +794,7 @@ function ConciseAuditReport({
                 <CopyButton text={report.description_upgrade.improved_description} label="Copy Description" />
               </div>
               <div style={{ padding: '0.875rem 1rem', borderRadius: '0.625rem', background: 'rgba(83,58,253,0.03)', border: '1px solid rgba(196,188,255,0.35)' }}>
-                <p style={{ fontSize: '0.875rem', color: '#cbd5e1', lineHeight: 1.75, margin: 0, whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
+                <p style={{ fontSize: '0.875rem', color: 'var(--dp-ink-secondary)', lineHeight: 1.75, margin: 0, whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
                   {report.description_upgrade.improved_description}
                 </p>
               </div>
@@ -836,7 +836,7 @@ function ConciseAuditReport({
 
       {/* Image Plan */}
       {Array.isArray(report.image_gallery_plan) && report.image_gallery_plan.length > 0 && (
-        <Card style={{ borderColor: 'rgba(52,211,153,0.15)', background: 'rgba(52,211,153,0.018)' }}>
+        <Card style={{ borderColor: 'rgba(196,188,255,0.45)', background: 'rgba(238,240,255,0.35)' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', marginBottom: '0.875rem', flexWrap: 'wrap' }}>
             <SL>Image Plan вЂ” {report.image_gallery_plan.length} images</SL>
             <Link
@@ -852,17 +852,17 @@ function ConciseAuditReport({
             {report.image_gallery_plan.slice(0, 6).map((img, i) => (
               <div key={i} style={{
                 borderRadius: '0.625rem', background: 'rgba(83,58,253,0.03)',
-                border: '1px solid rgba(52,211,153,0.1)', overflow: 'hidden',
+                border: '1px solid rgba(196,188,255,0.40)', overflow: 'hidden',
               }}>
                 <div style={{
                   display: 'flex', alignItems: 'center', gap: '0.5rem',
-                  padding: '0.4375rem 0.875rem', background: 'rgba(52,211,153,0.05)',
-                  borderBottom: '1px solid rgba(52,211,153,0.08)', flexWrap: 'wrap',
+                  padding: '0.4375rem 0.875rem', background: 'rgba(238,240,255,0.6)',
+                  borderBottom: '1px solid rgba(196,188,255,0.35)', flexWrap: 'wrap',
                 }}>
                   <span style={{
                     width: 20, height: 20, borderRadius: '50%',
-                    background: 'rgba(52,211,153,0.15)', border: '1px solid rgba(52,211,153,0.28)',
-                    color: '#34d399', fontSize: '0.625rem', fontWeight: 800,
+                    background: 'rgba(83,58,253,0.1)', border: '1px solid rgba(83,58,253,0.22)',
+                    color: 'var(--dp-primary)', fontSize: '0.625rem', fontWeight: 800,
                     display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
                   }}>
                     {i + 1}
@@ -878,19 +878,19 @@ function ConciseAuditReport({
                 }}>
                   {img.goal && (
                     <div>
-                      <div style={{ fontSize: '0.5625rem', fontWeight: 700, color: '#34d399', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.1875rem', opacity: 0.7 }}>Goal</div>
+                      <div style={{ fontSize: '0.5625rem', fontWeight: 700, color: 'var(--dp-ink-muted)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.1875rem' }}>Goal</div>
                       <p style={{ fontSize: '0.8125rem', color: 'var(--dp-ink-muted)', margin: 0, lineHeight: 1.5 }}>{img.goal}</p>
                     </div>
                   )}
                   {img.headline && (
                     <div>
-                      <div style={{ fontSize: '0.5625rem', fontWeight: 700, color: 'var(--dp-primary)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.1875rem', opacity: 0.7 }}>Headline</div>
+                      <div style={{ fontSize: '0.5625rem', fontWeight: 700, color: 'var(--dp-primary)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.1875rem' }}>Headline</div>
                       <p style={{ fontSize: '0.875rem', color: 'var(--dp-primary)', margin: 0, fontWeight: 700 }}>"{img.headline}"</p>
                     </div>
                   )}
                   {img.visual_direction && (
                     <div>
-                      <div style={{ fontSize: '0.5625rem', fontWeight: 700, color: '#34d399', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.1875rem', opacity: 0.7 }}>Visual Direction</div>
+                      <div style={{ fontSize: '0.5625rem', fontWeight: 700, color: 'var(--dp-ink-muted)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.1875rem' }}>Visual Direction</div>
                       <p style={{ fontSize: '0.8125rem', color: 'var(--dp-ink-muted)', margin: 0, lineHeight: 1.5 }}>{img.visual_direction}</p>
                     </div>
                   )}
@@ -910,11 +910,11 @@ function ConciseAuditReport({
               <div key={i} style={{
                 display: 'flex', alignItems: 'flex-start', gap: '0.75rem',
                 padding: '0.75rem 0',
-                borderBottom: i < report.priority_checklist.length - 1 ? '1px solid rgba(255,255,255,0.04)' : 'none',
+                borderBottom: i < report.priority_checklist.length - 1 ? '1px solid rgba(196,188,255,0.25)' : 'none',
               }}>
                 <span style={{
                   width: 22, height: 22, borderRadius: '50%',
-                  background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.09)',
+                  background: 'rgba(83,58,253,0.06)', border: '1px solid rgba(196,188,255,0.45)',
                   color: 'var(--dp-ink-muted)', fontSize: '0.625rem', fontWeight: 800,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   flexShrink: 0, marginTop: 1,
@@ -972,12 +972,12 @@ function ConciseAuditReport({
                       <div key={i} style={{
                         display: 'flex', alignItems: 'flex-start', gap: '0.625rem',
                         padding: '0.5rem 0.75rem', borderRadius: '0.5rem',
-                        background: 'rgba(83,58,253,0.03)', border: '1px solid rgba(255,255,255,0.05)',
+                        background: 'rgba(83,58,253,0.03)', border: '1px solid rgba(196,188,255,0.35)',
                         flexWrap: 'wrap',
                       }}>
                         <span style={{
                           padding: '0.1875rem 0.625rem', borderRadius: '99px',
-                          background: 'rgba(163,230,53,0.08)', border: '1px solid rgba(163,230,53,0.15)',
+                          background: 'rgba(83,58,253,0.08)', border: '1px solid rgba(83,58,253,0.18)',
                           color: 'var(--dp-primary)', fontSize: '0.8125rem', fontWeight: 700,
                           flexShrink: 0, whiteSpace: 'nowrap',
                         }}>
@@ -1002,15 +1002,15 @@ function ConciseAuditReport({
                       <div key={i} style={{
                         display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))',
                         gap: '0.375rem 1.25rem', padding: '0.625rem 0.75rem', borderRadius: '0.5rem',
-                        background: 'rgba(83,58,253,0.03)', border: '1px solid rgba(255,255,255,0.05)',
+                        background: 'rgba(83,58,253,0.03)', border: '1px solid rgba(196,188,255,0.35)',
                       }}>
                         <div>
                           <div style={{ fontSize: '0.5625rem', fontWeight: 700, color: '#f97316', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.1875rem' }}>Objection</div>
-                          <p style={{ fontSize: '0.8125rem', color: '#cbd5e1', margin: 0, lineHeight: 1.5 }}>{bo.objection}</p>
+                          <p style={{ fontSize: '0.8125rem', color: 'var(--dp-ink-secondary)', margin: 0, lineHeight: 1.5 }}>{bo.objection}</p>
                         </div>
                         <div>
                           <div style={{ fontSize: '0.5625rem', fontWeight: 700, color: 'var(--dp-primary)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.1875rem' }}>How to Address</div>
-                          <p style={{ fontSize: '0.8125rem', color: '#cbd5e1', margin: 0, lineHeight: 1.5 }}>{bo.how_to_address}</p>
+                          <p style={{ fontSize: '0.8125rem', color: 'var(--dp-ink-secondary)', margin: 0, lineHeight: 1.5 }}>{bo.how_to_address}</p>
                         </div>
                       </div>
                     ))}
@@ -1027,7 +1027,7 @@ function ConciseAuditReport({
                     {report.a_plus_brand_plan.map((item, i) => (
                       <div key={i} style={{
                         padding: '0.625rem 0.75rem', borderRadius: '0.5rem',
-                        background: 'rgba(83,58,253,0.03)', border: '1px solid rgba(255,255,255,0.05)',
+                        background: 'rgba(83,58,253,0.03)', border: '1px solid rgba(196,188,255,0.35)',
                       }}>
                         <div style={{ fontSize: '0.5875rem', fontWeight: 700, color: 'var(--dp-ink-muted)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.25rem' }}>
                           {item.section}
@@ -1074,13 +1074,13 @@ function ConciseAuditReport({
       {/* Image Studio CTA */}
       <div style={{
         borderRadius: '0.875rem', padding: '1.5rem 1.75rem',
-        background: 'linear-gradient(135deg, rgba(163,230,53,0.06), rgba(52,211,153,0.04))',
-        border: '1px solid rgba(163,230,53,0.15)',
+        background: 'rgba(83,58,253,0.04)',
+        border: '1px solid rgba(196,188,255,0.45)',
         display: 'flex', alignItems: 'center', gap: '1.25rem', flexWrap: 'wrap',
       }}>
         <div style={{
           width: 52, height: 52, borderRadius: '0.875rem',
-          background: 'linear-gradient(135deg, #166534, #4ade80)',
+          background: 'linear-gradient(135deg, #6A55FE, #533AFD)',
           display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
         }}>
           <Layers size={24} color="white" />
@@ -1113,7 +1113,7 @@ function SubScoreBar({ label, score }: { label: string; score: number }) {
         </span>
         <span style={{ fontSize: '0.75rem', fontWeight: 800, color }}>{score}</span>
       </div>
-      <div style={{ height: 4, borderRadius: 2, background: 'rgba(255,255,255,0.06)', overflow: 'hidden' }}>
+      <div style={{ height: 4, borderRadius: 2, background: '#E5E7EB', overflow: 'hidden' }}>
         <div style={{ height: '100%', width: `${Math.max(0, Math.min(100, score))}%`, borderRadius: 2, background: color }} />
       </div>
     </div>
@@ -1122,28 +1122,28 @@ function SubScoreBar({ label, score }: { label: string; score: number }) {
 
 function CompactFixTable({ rows }: { rows: CompactFixFirstRow[] }) {
   return (
-    <div style={{ overflowX: 'auto', borderRadius: '0.5rem', border: '1px solid rgba(255,255,255,0.07)' }}>
+    <div style={{ overflowX: 'auto', borderRadius: '0.5rem', border: '1px solid rgba(196,188,255,0.40)' }}>
       <div style={{ minWidth: 380 }}>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.4fr 1.4fr' }}>
-          <div style={{ padding: '0.5rem 0.75rem', background: 'rgba(255,255,255,0.04)', borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
+          <div style={{ padding: '0.5rem 0.75rem', background: 'rgba(238,240,255,0.7)', borderBottom: '1px solid rgba(196,188,255,0.35)' }}>
             <span style={{ fontSize: '0.5625rem', fontWeight: 700, color: 'var(--dp-ink-muted)', textTransform: 'uppercase', letterSpacing: '0.07em' }}>Problem</span>
           </div>
-          <div style={{ padding: '0.5rem 0.75rem', background: 'rgba(255,255,255,0.04)', borderBottom: '1px solid rgba(255,255,255,0.07)', borderLeft: '1px solid rgba(255,255,255,0.05)' }}>
+          <div style={{ padding: '0.5rem 0.75rem', background: 'rgba(238,240,255,0.7)', borderBottom: '1px solid rgba(196,188,255,0.35)', borderLeft: '1px solid rgba(196,188,255,0.30)' }}>
             <span style={{ fontSize: '0.5625rem', fontWeight: 700, color: 'var(--dp-ink-muted)', textTransform: 'uppercase', letterSpacing: '0.07em' }}>Why It Matters</span>
           </div>
-          <div style={{ padding: '0.5rem 0.75rem', background: 'rgba(255,255,255,0.04)', borderBottom: '1px solid rgba(255,255,255,0.07)', borderLeft: '1px solid rgba(255,255,255,0.05)' }}>
+          <div style={{ padding: '0.5rem 0.75rem', background: 'rgba(238,240,255,0.7)', borderBottom: '1px solid rgba(196,188,255,0.35)', borderLeft: '1px solid rgba(196,188,255,0.30)' }}>
             <span style={{ fontSize: '0.5625rem', fontWeight: 700, color: 'var(--dp-primary)', textTransform: 'uppercase', letterSpacing: '0.07em' }}>Fix</span>
           </div>
         </div>
         {rows.slice(0, 3).map((row, i) => (
-          <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr 1.4fr 1.4fr', borderTop: '1px solid rgba(196,188,255,0.25)', background: i % 2 === 0 ? 'transparent' : 'rgba(255,255,255,0.01)' }}>
+          <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr 1.4fr 1.4fr', borderTop: '1px solid rgba(196,188,255,0.25)', background: i % 2 === 0 ? 'transparent' : 'rgba(238,240,255,0.3)' }}>
             <div style={{ padding: '0.625rem 0.75rem' }}>
               <p style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--dp-ink)', margin: 0, lineHeight: 1.4 }}>{row.problem}</p>
             </div>
-            <div style={{ padding: '0.625rem 0.75rem', borderLeft: '1px solid rgba(255,255,255,0.05)' }}>
+            <div style={{ padding: '0.625rem 0.75rem', borderLeft: '1px solid rgba(196,188,255,0.25)' }}>
               <p style={{ fontSize: '0.8125rem', color: 'var(--dp-ink-muted)', margin: 0, lineHeight: 1.4 }}>{row.why_it_matters}</p>
             </div>
-            <div style={{ padding: '0.625rem 0.75rem', borderLeft: '1px solid rgba(255,255,255,0.05)' }}>
+            <div style={{ padding: '0.625rem 0.75rem', borderLeft: '1px solid rgba(196,188,255,0.25)' }}>
               <p style={{ fontSize: '0.8125rem', color: 'var(--dp-primary)', margin: 0, lineHeight: 1.4 }}>{row.fix}</p>
             </div>
           </div>
@@ -1160,11 +1160,11 @@ function CompactNextActionsList({ actions }: { actions: CompactNextAction[] }) {
         <div key={i} style={{
           display: 'flex', alignItems: 'flex-start', gap: '0.75rem',
           padding: '0.75rem 0',
-          borderBottom: i < Math.min(actions.length, 5) - 1 ? '1px solid rgba(255,255,255,0.04)' : 'none',
+          borderBottom: i < Math.min(actions.length, 5) - 1 ? '1px solid rgba(196,188,255,0.25)' : 'none',
         }}>
           <span style={{
             width: 22, height: 22, borderRadius: '50%',
-            background: 'rgba(163,230,53,0.1)', border: '1px solid rgba(163,230,53,0.22)',
+            background: 'rgba(83,58,253,0.08)', border: '1px solid rgba(83,58,253,0.22)',
             color: 'var(--dp-primary)', fontSize: '0.625rem', fontWeight: 800,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             flexShrink: 0, marginTop: 1,
@@ -1225,7 +1225,7 @@ function CompactAuditReport({
             style={{
               display: 'inline-flex', alignItems: 'center', gap: '0.375rem',
               padding: '0.3125rem 0.6875rem', borderRadius: '0.375rem',
-              background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)',
+              background: 'rgba(83,58,253,0.04)', border: '1px solid rgba(196,188,255,0.45)',
               color: 'var(--dp-ink-muted)', fontSize: '0.75rem', fontWeight: 600,
               cursor: regenerating ? 'not-allowed' : 'pointer',
               fontFamily: 'inherit', opacity: regenerating ? 0.6 : 1, transition: 'all 0.15s',
@@ -1242,7 +1242,7 @@ function CompactAuditReport({
               <span style={{
                 display: 'inline-flex', alignItems: 'center',
                 padding: '0.1875rem 0.625rem', borderRadius: '99px',
-                background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)',
+                background: 'rgba(83,58,253,0.04)', border: '1px solid rgba(196,188,255,0.45)',
                 fontSize: '0.6875rem', fontWeight: 700, color: 'var(--dp-ink-muted)',
                 textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.625rem',
               }}>
@@ -1330,20 +1330,20 @@ function CompactAuditReport({
 
             {Array.isArray(buyer_and_competitor_insights.competitor_actions) && buyer_and_competitor_insights.competitor_actions.length > 0 && (
               <div>
-                <div style={{ fontSize: '0.6875rem', fontWeight: 700, color: '#60a5fa', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.5rem' }}>
+                <div style={{ fontSize: '0.6875rem', fontWeight: 700, color: 'var(--dp-primary)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.5rem' }}>
                   Competitor Gaps
                 </div>
-                <div style={{ borderRadius: '0.5rem', overflow: 'hidden', border: '1px solid rgba(96,165,250,0.14)' }}>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', background: 'rgba(96,165,250,0.06)', borderBottom: '1px solid rgba(96,165,250,0.1)' }}>
-                    <div style={{ padding: '0.375rem 0.625rem' }}><span style={{ fontSize: '0.5rem', fontWeight: 700, color: '#60a5fa', textTransform: 'uppercase', letterSpacing: '0.07em' }}>Competitor Wins In</span></div>
-                    <div style={{ padding: '0.375rem 0.625rem', borderLeft: '1px solid rgba(96,165,250,0.09)' }}><span style={{ fontSize: '0.5rem', fontWeight: 700, color: 'var(--dp-primary)', textTransform: 'uppercase', letterSpacing: '0.07em' }}>Your Action</span></div>
+                <div style={{ borderRadius: '0.5rem', overflow: 'hidden', border: '1px solid rgba(196,188,255,0.40)' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', background: 'rgba(238,240,255,0.6)', borderBottom: '1px solid rgba(196,188,255,0.35)' }}>
+                    <div style={{ padding: '0.375rem 0.625rem' }}><span style={{ fontSize: '0.5rem', fontWeight: 700, color: 'var(--dp-primary)', textTransform: 'uppercase', letterSpacing: '0.07em' }}>Competitor Wins In</span></div>
+                    <div style={{ padding: '0.375rem 0.625rem', borderLeft: '1px solid rgba(196,188,255,0.25)' }}><span style={{ fontSize: '0.5rem', fontWeight: 700, color: 'var(--dp-primary)', textTransform: 'uppercase', letterSpacing: '0.07em' }}>Your Action</span></div>
                   </div>
                   {buyer_and_competitor_insights.competitor_actions.slice(0, 3).map((item, i) => (
-                    <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid rgba(96,165,250,0.07)', background: i % 2 === 0 ? 'transparent' : 'rgba(96,165,250,0.02)' }}>
+                    <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid rgba(196,188,255,0.25)', background: i % 2 === 0 ? 'transparent' : 'rgba(238,240,255,0.3)' }}>
                       <div style={{ padding: '0.5rem 0.625rem' }}>
-                        <p style={{ fontSize: '0.8125rem', color: '#60a5fa', margin: 0, lineHeight: 1.4 }}>{item.competitor_wins_in}</p>
+                        <p style={{ fontSize: '0.8125rem', color: 'var(--dp-ink-secondary)', margin: 0, lineHeight: 1.4 }}>{item.competitor_wins_in}</p>
                       </div>
-                      <div style={{ padding: '0.5rem 0.625rem', borderLeft: '1px solid rgba(96,165,250,0.07)' }}>
+                      <div style={{ padding: '0.5rem 0.625rem', borderLeft: '1px solid rgba(196,188,255,0.25)' }}>
                         <p style={{ fontSize: '0.8125rem', color: 'var(--dp-primary)', margin: 0, lineHeight: 1.4 }}>{item.your_action}</p>
                       </div>
                     </div>
@@ -1357,7 +1357,7 @@ function CompactAuditReport({
       )}
 
       {Array.isArray(imagePlan) && imagePlan.length > 0 && (
-        <Card style={{ borderColor: 'rgba(52,211,153,0.15)', background: 'rgba(52,211,153,0.018)' }}>
+        <Card style={{ borderColor: 'rgba(196,188,255,0.45)', background: 'rgba(238,240,255,0.35)' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', marginBottom: '0.875rem', flexWrap: 'wrap' }}>
             <SL>Image Plan вЂ” {Math.min(imagePlan.length, 6)} images</SL>
             <Link
@@ -1369,27 +1369,27 @@ function CompactAuditReport({
               Image Studio
             </Link>
           </div>
-          <div style={{ overflowX: 'auto', borderRadius: '0.5rem', border: '1px solid rgba(52,211,153,0.1)' }}>
+          <div style={{ overflowX: 'auto', borderRadius: '0.5rem', border: '1px solid rgba(196,188,255,0.40)' }}>
             <div style={{ minWidth: 500 }}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.5fr 1.5fr 1fr', background: 'rgba(52,211,153,0.05)', borderBottom: '1px solid rgba(52,211,153,0.1)' }}>
-                <div style={{ padding: '0.5rem 0.75rem' }}><span style={{ fontSize: '0.5625rem', fontWeight: 700, color: '#34d399', textTransform: 'uppercase', letterSpacing: '0.07em' }}>Image</span></div>
-                <div style={{ padding: '0.5rem 0.75rem', borderLeft: '1px solid rgba(52,211,153,0.07)' }}><span style={{ fontSize: '0.5625rem', fontWeight: 700, color: '#34d399', textTransform: 'uppercase', letterSpacing: '0.07em' }}>Goal</span></div>
-                <div style={{ padding: '0.5rem 0.75rem', borderLeft: '1px solid rgba(52,211,153,0.07)' }}><span style={{ fontSize: '0.5625rem', fontWeight: 700, color: 'var(--dp-primary)', textTransform: 'uppercase', letterSpacing: '0.07em' }}>Headline</span></div>
-                <div style={{ padding: '0.5rem 0.75rem', borderLeft: '1px solid rgba(52,211,153,0.07)' }}><span style={{ fontSize: '0.5625rem', fontWeight: 700, color: '#34d399', textTransform: 'uppercase', letterSpacing: '0.07em' }}>Action</span></div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.5fr 1.5fr 1fr', background: 'rgba(238,240,255,0.7)', borderBottom: '1px solid rgba(196,188,255,0.35)' }}>
+                <div style={{ padding: '0.5rem 0.75rem' }}><span style={{ fontSize: '0.5625rem', fontWeight: 700, color: 'var(--dp-ink-muted)', textTransform: 'uppercase', letterSpacing: '0.07em' }}>Image</span></div>
+                <div style={{ padding: '0.5rem 0.75rem', borderLeft: '1px solid rgba(196,188,255,0.30)' }}><span style={{ fontSize: '0.5625rem', fontWeight: 700, color: 'var(--dp-ink-muted)', textTransform: 'uppercase', letterSpacing: '0.07em' }}>Goal</span></div>
+                <div style={{ padding: '0.5rem 0.75rem', borderLeft: '1px solid rgba(196,188,255,0.30)' }}><span style={{ fontSize: '0.5625rem', fontWeight: 700, color: 'var(--dp-primary)', textTransform: 'uppercase', letterSpacing: '0.07em' }}>Headline</span></div>
+                <div style={{ padding: '0.5rem 0.75rem', borderLeft: '1px solid rgba(196,188,255,0.30)' }}><span style={{ fontSize: '0.5625rem', fontWeight: 700, color: 'var(--dp-ink-muted)', textTransform: 'uppercase', letterSpacing: '0.07em' }}>Action</span></div>
               </div>
               {imagePlan.slice(0, 6).map((img, i) => (
-                <div key={i} style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.5fr 1.5fr 1fr', borderTop: '1px solid rgba(52,211,153,0.06)', background: i % 2 === 0 ? 'transparent' : 'rgba(52,211,153,0.02)' }}>
+                <div key={i} style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.5fr 1.5fr 1fr', borderTop: '1px solid rgba(196,188,255,0.25)', background: i % 2 === 0 ? 'transparent' : 'rgba(238,240,255,0.3)' }}>
                   <div style={{ padding: '0.625rem 0.75rem' }}>
-                    <p style={{ fontSize: '0.8125rem', fontWeight: 600, color: '#34d399', margin: 0, lineHeight: 1.4 }}>{img.image_type}</p>
+                    <p style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--dp-primary)', margin: 0, lineHeight: 1.4 }}>{img.image_type}</p>
                   </div>
-                  <div style={{ padding: '0.625rem 0.75rem', borderLeft: '1px solid rgba(52,211,153,0.06)' }}>
+                  <div style={{ padding: '0.625rem 0.75rem', borderLeft: '1px solid rgba(196,188,255,0.25)' }}>
                     <p style={{ fontSize: '0.8125rem', color: 'var(--dp-ink-muted)', margin: 0, lineHeight: 1.4 }}>{img.goal}</p>
                   </div>
-                  <div style={{ padding: '0.625rem 0.75rem', borderLeft: '1px solid rgba(52,211,153,0.06)' }}>
-                    <p style={{ fontSize: '0.8125rem', color: 'var(--dp-primary)', margin: 0, lineHeight: 1.4, fontWeight: 600 }}>{img.headline ? `"${img.headline}"` : 'вЂ”'}</p>
+                  <div style={{ padding: '0.625rem 0.75rem', borderLeft: '1px solid rgba(196,188,255,0.25)' }}>
+                    <p style={{ fontSize: '0.8125rem', color: 'var(--dp-primary)', margin: 0, lineHeight: 1.4, fontWeight: 600 }}>{img.headline ? `”${img.headline}”` : '—'}</p>
                   </div>
-                  <div style={{ padding: '0.625rem 0.75rem', borderLeft: '1px solid rgba(52,211,153,0.06)', display: 'flex', alignItems: 'flex-start' }}>
-                    <CopyButton text={`${img.image_type}\nGoal: ${img.goal}\nHeadline: "${img.headline}"\nVisual: ${img.visual_direction}`} label="Copy" />
+                  <div style={{ padding: '0.625rem 0.75rem', borderLeft: '1px solid rgba(196,188,255,0.25)', display: 'flex', alignItems: 'flex-start' }}>
+                    <CopyButton text={`${img.image_type}\nGoal: ${img.goal}\nHeadline: “${img.headline}”\nVisual: ${img.visual_direction}`} label="Copy" />
                   </div>
                 </div>
               ))}
@@ -1433,7 +1433,7 @@ function CompactAuditReport({
                     {advanced_details.keywords.map((kw, i) => (
                       <span key={i} style={{
                         padding: '0.25rem 0.625rem', borderRadius: '99px',
-                        background: 'rgba(163,230,53,0.08)', border: '1px solid rgba(163,230,53,0.15)',
+                        background: 'rgba(83,58,253,0.08)', border: '1px solid rgba(83,58,253,0.18)',
                         color: 'var(--dp-primary)', fontSize: '0.8125rem', fontWeight: 600,
                       }}>
                         {kw}
@@ -1469,7 +1469,7 @@ function CompactAuditReport({
                       <p key={i} style={{
                         fontSize: '0.8125rem', color: 'var(--dp-ink-muted)', margin: 0, lineHeight: 1.55,
                         paddingBottom: '0.375rem',
-                        borderBottom: i < advanced_details.detailed_notes.length - 1 ? '1px solid rgba(255,255,255,0.04)' : 'none',
+                        borderBottom: i < advanced_details.detailed_notes.length - 1 ? '1px solid rgba(196,188,255,0.25)' : 'none',
                       }}>
                         {note}
                       </p>
@@ -1485,13 +1485,13 @@ function CompactAuditReport({
 
       <div style={{
         borderRadius: '0.875rem', padding: '1.5rem 1.75rem',
-        background: 'linear-gradient(135deg, rgba(163,230,53,0.06), rgba(52,211,153,0.04))',
-        border: '1px solid rgba(163,230,53,0.15)',
+        background: 'rgba(83,58,253,0.04)',
+        border: '1px solid rgba(196,188,255,0.45)',
         display: 'flex', alignItems: 'center', gap: '1.25rem', flexWrap: 'wrap',
       }}>
         <div style={{
           width: 52, height: 52, borderRadius: '0.875rem',
-          background: 'linear-gradient(135deg, #166534, #4ade80)',
+          background: 'linear-gradient(135deg, #6A55FE, #533AFD)',
           display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
         }}>
           <Layers size={24} color="white" />
@@ -1564,7 +1564,7 @@ function AuditReport({
               style={{
                 display: 'inline-flex', alignItems: 'center', gap: '0.375rem',
                 padding: '0.3125rem 0.6875rem', borderRadius: '0.375rem',
-                background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)',
+                background: 'rgba(83,58,253,0.04)', border: '1px solid rgba(196,188,255,0.45)',
                 color: 'var(--dp-ink-muted)', fontSize: '0.75rem', fontWeight: 600,
                 cursor: regenerating ? 'not-allowed' : 'pointer',
                 fontFamily: 'inherit', opacity: regenerating ? 0.6 : 1, transition: 'all 0.15s',
@@ -1615,7 +1615,7 @@ function AuditReport({
       {result.executive_summary && (
         <Card>
           <SL>Executive Summary</SL>
-          <p style={{ fontSize: '0.9375rem', color: '#cbd5e1', lineHeight: 1.85, margin: 0, wordBreak: 'break-word' }}>
+          <p style={{ fontSize: '0.9375rem', color: 'var(--dp-ink-secondary)', lineHeight: 1.85, margin: 0, wordBreak: 'break-word' }}>
             {result.executive_summary}
           </p>
         </Card>
@@ -1671,7 +1671,7 @@ function AuditReport({
                 <span style={{ fontSize: '0.8125rem', fontWeight: 700, color: 'var(--dp-ink-muted)' }}>Improved Title</span>
                 <CopyButton text={result.improved_title} label="Copy Title" />
               </div>
-              <div style={{ padding: '1rem 1.125rem', borderRadius: '0.625rem', background: 'rgba(163,230,53,0.04)', border: '1px solid rgba(163,230,53,0.12)' }}>
+              <div style={{ padding: '1rem 1.125rem', borderRadius: '0.625rem', background: 'rgba(238,240,255,0.5)', border: '1px solid rgba(196,188,255,0.40)' }}>
                 <p style={{ fontSize: '0.9375rem', color: 'var(--dp-ink)', lineHeight: 1.65, margin: 0, fontWeight: 500 }}>
                   {result.improved_title}
                 </p>
@@ -1699,14 +1699,14 @@ function AuditReport({
                   }}>
                     <span style={{
                       width: 22, height: 22, borderRadius: '50%',
-                      background: 'rgba(163,230,53,0.1)', border: '1px solid rgba(163,230,53,0.2)',
+                      background: 'rgba(83,58,253,0.08)', border: '1px solid rgba(83,58,253,0.2)',
                       color: 'var(--dp-primary)', fontSize: '0.6875rem', fontWeight: 800,
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
                       flexShrink: 0, marginTop: 1,
                     }}>
                       {i + 1}
                     </span>
-                    <p style={{ fontSize: '0.875rem', color: '#cbd5e1', lineHeight: 1.6, margin: 0, flex: 1 }}>
+                    <p style={{ fontSize: '0.875rem', color: 'var(--dp-ink-secondary)', lineHeight: 1.6, margin: 0, flex: 1 }}>
                       {bullet}
                     </p>
                     <CopyButton text={bullet} />
@@ -1723,7 +1723,7 @@ function AuditReport({
                 <CopyButton text={result.improved_description} label="Copy Description" />
               </div>
               <div style={{ padding: '1rem 1.125rem', borderRadius: '0.625rem', background: 'rgba(83,58,253,0.03)', border: '1px solid rgba(196,188,255,0.35)' }}>
-                <p style={{ fontSize: '0.875rem', color: '#cbd5e1', lineHeight: 1.8, margin: 0, whiteSpace: 'pre-wrap' }}>
+                <p style={{ fontSize: '0.875rem', color: 'var(--dp-ink-secondary)', lineHeight: 1.8, margin: 0, whiteSpace: 'pre-wrap' }}>
                   {result.improved_description}
                 </p>
               </div>
@@ -1750,7 +1750,7 @@ function AuditReport({
               }}>
                 <span style={{
                   padding: '0.25rem 0.75rem', borderRadius: '99px',
-                  background: 'rgba(163,230,53,0.08)', border: '1px solid rgba(163,230,53,0.18)',
+                  background: 'rgba(83,58,253,0.08)', border: '1px solid rgba(83,58,253,0.18)',
                   color: 'var(--dp-primary)', fontSize: '0.8125rem', fontWeight: 700,
                   flexShrink: 0, whiteSpace: 'nowrap',
                 }}>
@@ -1809,13 +1809,13 @@ function AuditReport({
                   <div style={{ fontSize: '0.5875rem', fontWeight: 700, color: '#f97316', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.3125rem' }}>
                     Objection
                   </div>
-                  <p style={{ fontSize: '0.8125rem', color: '#cbd5e1', margin: 0, lineHeight: 1.55 }}>{bo.objection}</p>
+                  <p style={{ fontSize: '0.8125rem', color: 'var(--dp-ink-secondary)', margin: 0, lineHeight: 1.55 }}>{bo.objection}</p>
                 </div>
                 <div>
                   <div style={{ fontSize: '0.5875rem', fontWeight: 700, color: 'var(--dp-primary)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.3125rem' }}>
                     How to Address
                   </div>
-                  <p style={{ fontSize: '0.8125rem', color: '#cbd5e1', margin: 0, lineHeight: 1.55 }}>{bo.how_to_address}</p>
+                  <p style={{ fontSize: '0.8125rem', color: 'var(--dp-ink-secondary)', margin: 0, lineHeight: 1.55 }}>{bo.how_to_address}</p>
                 </div>
               </div>
             ))}
@@ -1825,11 +1825,11 @@ function AuditReport({
 
       {/* Image Pack Plan */}
       {Array.isArray(result.image_pack_plan) && result.image_pack_plan.length > 0 && (
-        <Card style={{ borderColor: 'rgba(52,211,153,0.15)', background: 'rgba(52,211,153,0.018)' }}>
+        <Card style={{ borderColor: 'rgba(196,188,255,0.45)', background: 'rgba(238,240,255,0.35)' }}>
           <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '1rem', marginBottom: '0.5rem', flexWrap: 'wrap' }}>
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5625rem', marginBottom: '0.3125rem' }}>
-                <div style={{ width: 3, height: 14, borderRadius: 2, background: 'linear-gradient(180deg, #a3e635, #34d399)', flexShrink: 0 }} />
+                <div style={{ width: 3, height: 14, borderRadius: 2, background: 'linear-gradient(180deg, #7A66FF, #533AFD)', flexShrink: 0 }} />
                 <span style={{ fontSize: '0.6875rem', fontWeight: 700, color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
                   Image Pack Plan вЂ” {result.image_pack_plan.length} images
                 </span>
@@ -1851,17 +1851,17 @@ function AuditReport({
             {result.image_pack_plan.map((img, i) => (
               <div key={i} style={{
                 borderRadius: '0.75rem', background: 'rgba(83,58,253,0.03)',
-                border: '1px solid rgba(52,211,153,0.12)', overflow: 'hidden',
+                border: '1px solid rgba(196,188,255,0.40)', overflow: 'hidden',
               }}>
                 <div style={{
                   display: 'flex', alignItems: 'center', gap: '0.75rem',
-                  padding: '0.75rem 1.125rem', background: 'rgba(52,211,153,0.05)',
-                  borderBottom: '1px solid rgba(52,211,153,0.09)',
+                  padding: '0.75rem 1.125rem', background: 'rgba(238,240,255,0.6)',
+                  borderBottom: '1px solid rgba(196,188,255,0.35)',
                 }}>
                   <span style={{
                     width: 28, height: 28, borderRadius: '50%',
-                    background: 'rgba(52,211,153,0.15)', border: '1px solid rgba(52,211,153,0.28)',
-                    color: '#34d399', fontSize: '0.6875rem', fontWeight: 800,
+                    background: 'rgba(83,58,253,0.1)', border: '1px solid rgba(83,58,253,0.22)',
+                    color: 'var(--dp-primary)', fontSize: '0.6875rem', fontWeight: 800,
                     display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
                   }}>
                     {i + 1}
@@ -1876,7 +1876,7 @@ function AuditReport({
                 }}>
                   {img.goal && (
                     <div>
-                      <div style={{ fontSize: '0.5625rem', fontWeight: 700, color: '#34d399', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.375rem', opacity: 0.7 }}>Goal</div>
+                      <div style={{ fontSize: '0.5625rem', fontWeight: 700, color: 'var(--dp-ink-muted)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.375rem' }}>Goal</div>
                       <p style={{ fontSize: '0.875rem', color: 'var(--dp-ink-muted)', margin: 0, lineHeight: 1.6 }}>{img.goal}</p>
                     </div>
                   )}
@@ -1890,18 +1890,18 @@ function AuditReport({
                   )}
                   {img.visual_direction && (
                     <div>
-                      <div style={{ fontSize: '0.5625rem', fontWeight: 700, color: '#34d399', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.375rem', opacity: 0.7 }}>Visual Direction</div>
+                      <div style={{ fontSize: '0.5625rem', fontWeight: 700, color: 'var(--dp-ink-muted)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.375rem' }}>Visual Direction</div>
                       <p style={{ fontSize: '0.8125rem', color: 'var(--dp-ink-muted)', margin: 0, lineHeight: 1.6 }}>{img.visual_direction}</p>
                     </div>
                   )}
                   {Array.isArray(img.text_elements) && img.text_elements.length > 0 && (
                     <div>
-                      <div style={{ fontSize: '0.5625rem', fontWeight: 700, color: '#34d399', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.5rem', opacity: 0.7 }}>Text on Image</div>
+                      <div style={{ fontSize: '0.5625rem', fontWeight: 700, color: 'var(--dp-ink-muted)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.5rem' }}>Text on Image</div>
                       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.3125rem' }}>
                         {img.text_elements.map((el, j) => (
                           <span key={j} style={{
                             padding: '0.25rem 0.5625rem', borderRadius: '0.3125rem',
-                            background: 'rgba(52,211,153,0.06)', border: '1px solid rgba(52,211,153,0.14)',
+                            background: 'rgba(83,58,253,0.05)', border: '1px solid rgba(196,188,255,0.35)',
                             fontSize: '0.75rem', color: '#6b7280',
                           }}>{el}</span>
                         ))}
@@ -1951,11 +1951,11 @@ function AuditReport({
               <div key={i} style={{
                 display: 'flex', alignItems: 'flex-start', gap: '0.75rem',
                 padding: '0.875rem 0',
-                borderBottom: i < result.priority_checklist.length - 1 ? '1px solid rgba(255,255,255,0.04)' : 'none',
+                borderBottom: i < result.priority_checklist.length - 1 ? '1px solid rgba(196,188,255,0.25)' : 'none',
               }}>
                 <span style={{
                   width: 22, height: 22, borderRadius: '50%',
-                  background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.09)',
+                  background: 'rgba(83,58,253,0.06)', border: '1px solid rgba(196,188,255,0.45)',
                   color: 'var(--dp-ink-muted)', fontSize: '0.625rem', fontWeight: 800,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   flexShrink: 0, marginTop: 1,
@@ -1984,13 +1984,13 @@ function AuditReport({
       {/* Image Studio CTA */}
       <div style={{
         borderRadius: '0.875rem', padding: '1.5rem 1.75rem',
-        background: 'linear-gradient(135deg, rgba(163,230,53,0.06), rgba(52,211,153,0.04))',
-        border: '1px solid rgba(163,230,53,0.15)',
+        background: 'rgba(83,58,253,0.04)',
+        border: '1px solid rgba(196,188,255,0.45)',
         display: 'flex', alignItems: 'center', gap: '1.25rem', flexWrap: 'wrap',
       }}>
         <div style={{
           width: 52, height: 52, borderRadius: '0.875rem',
-          background: 'linear-gradient(135deg, #166534, #4ade80)',
+          background: 'linear-gradient(135deg, #6A55FE, #533AFD)',
           display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
         }}>
           <Layers size={24} color="white" />
@@ -2151,7 +2151,7 @@ export default function AuditDetailPage() {
                 fontSize: '0.8125rem', color: 'var(--dp-ink-muted)', textDecoration: 'none',
                 marginTop: '0.375rem', transition: 'color 0.15s',
               }}
-              onMouseEnter={e => (e.currentTarget.style.color = '#a3e635')}
+              onMouseEnter={e => (e.currentTarget.style.color = '#533AFD')}
               onMouseLeave={e => (e.currentTarget.style.color = '#475569')}
             >
               <ExternalLink size={12} />
@@ -2170,13 +2170,13 @@ export default function AuditDetailPage() {
       {audit.status === 'pending_analysis' && (
         <div style={{
           borderRadius: '0.875rem', padding: '3rem 2rem',
-          background: 'rgba(163,230,53,0.03)', border: '1px solid rgba(163,230,53,0.1)',
+          background: 'rgba(83,58,253,0.03)', border: '1px solid rgba(196,188,255,0.40)',
           textAlign: 'center', marginBottom: '1.5rem',
         }}>
           <div style={{
             width: 52, height: 52, borderRadius: '50%',
-            border: '3px solid rgba(163,230,53,0.15)',
-            borderTop: '3px solid #a3e635',
+            border: '3px solid rgba(83,58,253,0.12)',
+            borderTop: '3px solid #533AFD',
             animation: 'spin 1s linear infinite',
             margin: '0 auto 1.5rem',
           }} />
@@ -2242,7 +2242,7 @@ export default function AuditDetailPage() {
       {(audit.status === 'draft' || audit.status === 'ready_for_analysis') && (
         <div style={{
           padding: '1rem 1.25rem', borderRadius: '0.75rem',
-          background: 'rgba(163,230,53,0.04)', border: '1px solid rgba(163,230,53,0.12)',
+          background: 'rgba(83,58,253,0.03)', border: '1px solid rgba(196,188,255,0.40)',
           marginBottom: '1.5rem',
         }}>
           <div style={{ fontSize: '0.8125rem', fontWeight: 700, color: 'var(--dp-primary)', marginBottom: '0.25rem' }}>

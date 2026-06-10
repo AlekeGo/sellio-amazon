@@ -13,20 +13,20 @@ interface Props {
 }
 
 const GRADIENTS = [
-  'linear-gradient(135deg, #166534, #4ade80)',
-  'linear-gradient(135deg, #065f46, #34d399)',
-  'linear-gradient(135deg, #14532d, #22c55e)',
-  'linear-gradient(135deg, #3f6212, #a3e635)',
-  'linear-gradient(135deg, #166534, #4ade80)',
-  'linear-gradient(135deg, #065f46, #34d399)',
+  'linear-gradient(135deg, #6A55FE 0%, #533AFD 100%)',
+  'linear-gradient(135deg, #533AFD 0%, #7C6FFF 100%)',
+  'linear-gradient(135deg, #7C6FFF 0%, #9B8FFF 100%)',
+  'linear-gradient(135deg, #4B35F0 0%, #6A55FE 100%)',
+  'linear-gradient(135deg, #6A55FE 0%, #533AFD 100%)',
+  'linear-gradient(135deg, #533AFD 0%, #7C6FFF 100%)',
 ]
 
 function cardStatusBadge(gen?: ImageGeneration, generating?: boolean) {
-  if (generating) return { label: 'Generating', c: '#fbbf24', bg: 'rgba(251,191,36,0.08)', bd: 'rgba(251,191,36,0.22)' }
-  if (!gen) return { label: 'Planned', c: 'var(--dp-primary)', bg: 'rgba(163,230,53,0.07)', bd: 'rgba(83,58,253,0.18)' }
-  if (gen.status === 'completed') return { label: 'Generated', c: '#34d399', bg: 'rgba(52,211,153,0.08)', bd: 'rgba(52,211,153,0.2)' }
-  if (gen.status === 'failed') return { label: 'Failed', c: '#f87171', bg: 'rgba(248,113,113,0.07)', bd: 'rgba(248,113,113,0.18)' }
-  return { label: 'Planned', c: 'var(--dp-primary)', bg: 'rgba(163,230,53,0.07)', bd: 'rgba(83,58,253,0.18)' }
+  if (generating) return { label: 'Generating', c: '#B7791F', bg: 'rgba(183,121,31,0.08)', bd: 'rgba(183,121,31,0.22)' }
+  if (!gen) return { label: 'Planned', c: 'var(--dp-primary)', bg: 'rgba(83,58,253,0.07)', bd: 'rgba(83,58,253,0.18)' }
+  if (gen.status === 'completed') return { label: 'Generated', c: '#2F9E6F', bg: 'rgba(47,158,111,0.08)', bd: 'rgba(47,158,111,0.22)' }
+  if (gen.status === 'failed') return { label: 'Failed', c: '#C2413A', bg: 'rgba(194,65,58,0.07)', bd: 'rgba(194,65,58,0.18)' }
+  return { label: 'Planned', c: 'var(--dp-primary)', bg: 'rgba(83,58,253,0.07)', bd: 'rgba(83,58,253,0.18)' }
 }
 
 function genButtonLabel(gen?: ImageGeneration, generating?: boolean) {
@@ -47,13 +47,14 @@ export default function ImagePackCard({
       onClick={onSelect}
       style={{
         borderRadius: '0.875rem', padding: '1.25rem',
-        background: selected ? 'rgba(163,230,53,0.035)' : 'rgba(255,255,255,0.02)',
-        border: `1px solid ${selected ? 'rgba(163,230,53,0.3)' : 'rgba(196,188,255,0.40)'}`,
+        background: selected ? 'rgba(83,58,253,0.05)' : '#ffffff',
+        border: `1px solid ${selected ? 'rgba(83,58,253,0.35)' : 'rgba(196,188,255,0.40)'}`,
+        boxShadow: selected ? '0 0 0 3px rgba(83,58,253,0.08)' : '0 2px 8px rgba(83,58,253,0.04)',
         transition: 'all 0.15s',
         cursor: 'pointer',
       }}
-      onMouseEnter={e => { if (!selected) e.currentTarget.style.borderColor = 'rgba(255,255,255,0.13)' }}
-      onMouseLeave={e => { if (!selected) e.currentTarget.style.borderColor = 'rgba(196,188,255,0.40)' }}
+      onMouseEnter={e => { if (!selected) { e.currentTarget.style.borderColor = 'rgba(83,58,253,0.3)'; e.currentTarget.style.boxShadow = '0 4px 16px rgba(83,58,253,0.08)' } }}
+      onMouseLeave={e => { if (!selected) { e.currentTarget.style.borderColor = 'rgba(196,188,255,0.40)'; e.currentTarget.style.boxShadow = '0 2px 8px rgba(83,58,253,0.04)' } }}
     >
       <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem', marginBottom: '0.875rem' }}>
         <div style={{
@@ -94,7 +95,7 @@ export default function ImagePackCard({
       {item.headline && (
         <div style={{
           padding: '0.5625rem 0.875rem', borderRadius: '0.5rem',
-          background: 'rgba(163,230,53,0.04)', border: '1px solid rgba(83,58,253,0.1)',
+          background: 'rgba(238,240,255,0.6)', border: '1px solid rgba(196,188,255,0.4)',
           marginBottom: '0.875rem',
         }}>
           <span style={{
@@ -122,8 +123,8 @@ export default function ImagePackCard({
           {item.text_elements.slice(0, 4).map((el, j) => (
             <span key={j} style={{
               padding: '0.1875rem 0.5625rem', borderRadius: '0.3125rem',
-              background: 'rgba(52,211,153,0.05)', border: '1px solid rgba(52,211,153,0.13)',
-              fontSize: '0.6875rem', color: '#6b7280',
+              background: 'rgba(238,240,255,0.6)', border: '1px solid rgba(196,188,255,0.35)',
+              fontSize: '0.6875rem', color: 'var(--dp-ink-muted)',
             }}>
               {el}
             </span>
@@ -147,9 +148,9 @@ export default function ImagePackCard({
           style={{
             display: 'inline-flex', alignItems: 'center', gap: '0.3125rem',
             padding: '0.4375rem 0.875rem', borderRadius: '0.4375rem',
-            background: selected ? 'var(--dp-primary)' : 'rgba(83,58,253,0.08)',
-            border: `1px solid ${selected ? 'var(--dp-primary)' : 'rgba(163,230,53,0.22)'}`,
-            color: selected ? '#071008' : 'var(--dp-primary)',
+            background: selected ? 'var(--dp-primary)' : 'rgba(83,58,253,0.07)',
+            border: `1px solid ${selected ? 'var(--dp-primary)' : 'rgba(83,58,253,0.22)'}`,
+            color: selected ? '#ffffff' : 'var(--dp-primary)',
             fontSize: '0.8125rem', fontWeight: 700,
             cursor: 'pointer', fontFamily: 'inherit',
             transition: 'all 0.15s',
@@ -167,19 +168,19 @@ export default function ImagePackCard({
             display: 'inline-flex', alignItems: 'center', gap: '0.3125rem',
             padding: '0.4375rem 0.875rem', borderRadius: '0.4375rem',
             background: isGenerating
-              ? 'rgba(163,230,53,0.035)'
+              ? 'rgba(83,58,253,0.03)'
               : generation?.status === 'failed'
-              ? 'rgba(248,113,113,0.07)'
-              : 'rgba(163,230,53,0.09)',
+              ? 'rgba(194,65,58,0.07)'
+              : 'rgba(83,58,253,0.07)',
             border: isGenerating
               ? '1px solid rgba(83,58,253,0.1)'
               : generation?.status === 'failed'
-              ? '1px solid rgba(248,113,113,0.2)'
-              : '1px solid rgba(163,230,53,0.25)',
+              ? '1px solid rgba(194,65,58,0.2)'
+              : '1px solid rgba(83,58,253,0.22)',
             color: isGenerating
-              ? 'rgba(163,230,53,0.45)'
+              ? 'rgba(83,58,253,0.4)'
               : generation?.status === 'failed'
-              ? '#f87171'
+              ? '#C2413A'
               : 'var(--dp-primary)',
             fontSize: '0.8125rem', fontWeight: 600,
             cursor: isGenerating ? 'not-allowed' : 'pointer',

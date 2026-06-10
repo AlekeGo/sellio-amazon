@@ -91,7 +91,7 @@ export default function ImagePreviewModal({
 
   const statusCfg =
     generation.status === 'completed'
-      ? { label: 'Generated', c: '#34d399', bg: 'rgba(52,211,153,0.09)', bd: 'rgba(52,211,153,0.22)' }
+      ? { label: 'Generated', c: '#2F9E6F', bg: 'rgba(47,158,111,0.09)', bd: 'rgba(47,158,111,0.22)' }
       : generation.status === 'generating'
       ? { label: 'Generating', c: '#fbbf24', bg: 'rgba(251,191,36,0.09)', bd: 'rgba(251,191,36,0.22)' }
       : { label: 'Failed', c: '#f87171', bg: 'rgba(248,113,113,0.08)', bd: 'rgba(248,113,113,0.2)' }
@@ -286,11 +286,11 @@ export default function ImagePreviewModal({
                       style={{
                         display: 'inline-flex', alignItems: 'center', gap: '0.375rem',
                         padding: '0.5rem 0.875rem', borderRadius: '0.5rem',
-                        background: 'rgba(83,58,253,0.08)', border: '1px solid rgba(163,230,53,0.22)',
+                        background: 'rgba(83,58,253,0.08)', border: '1px solid rgba(83,58,253,0.22)',
                         color: 'var(--dp-primary)', fontSize: '0.8125rem', fontWeight: 600,
                         textDecoration: 'none', transition: 'background 0.15s',
                       }}
-                      onMouseEnter={e => { e.currentTarget.style.background = 'rgba(163,230,53,0.14)' }}
+                      onMouseEnter={e => { e.currentTarget.style.background = 'rgba(83,58,253,0.14)' }}
                       onMouseLeave={e => { e.currentTarget.style.background = 'rgba(83,58,253,0.08)' }}
                     >
                       <ExternalLink size={13} />
@@ -331,7 +331,7 @@ export default function ImagePreviewModal({
                       padding: '0.5rem 0.875rem', borderRadius: '0.5rem',
                       background: promptCopied ? 'rgba(74,222,128,0.08)' : 'rgba(255,255,255,0.03)',
                       border: `1px solid ${promptCopied ? 'rgba(74,222,128,0.22)' : 'rgba(255,255,255,0.08)'}`,
-                      color: promptCopied ? '#4ade80' : '#64748b',
+                      color: promptCopied ? '#2F9E6F' : '#64748b',
                       fontSize: '0.8125rem', fontWeight: 600,
                       cursor: 'pointer', fontFamily: 'inherit', transition: 'all 0.15s',
                     }}

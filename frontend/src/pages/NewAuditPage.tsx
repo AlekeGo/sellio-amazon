@@ -205,7 +205,7 @@ function StepIndicator({ current }: { current: 1 | 2 | 3 }) {
                   height: 26,
                   borderRadius: '50%',
                   background:
-                    done || active ? 'linear-gradient(135deg, #166534, #4ade80)' : 'rgba(255,255,255,0.06)',
+                    done || active ? 'linear-gradient(135deg, #6A55FE 0%, #533AFD 100%)' : 'rgba(255,255,255,0.06)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -628,8 +628,8 @@ function CompetitorSection({
           </span>
           {competitors.length > 0 && (
             <span style={{
-              fontSize: '0.5875rem', fontWeight: 700, color: '#34d399',
-              background: 'rgba(52,211,153,0.1)', border: '1px solid rgba(52,211,153,0.2)',
+              fontSize: '0.5875rem', fontWeight: 700, color: '#2F9E6F',
+              background: 'rgba(47,158,111,0.1)', border: '1px solid rgba(47,158,111,0.2)',
               padding: '0.125rem 0.4375rem', borderRadius: '99px',
             }}>
               {competitors.length} added
@@ -657,9 +657,9 @@ function CompetitorSection({
               <div style={{
                 display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                 padding: '0.5rem 0.875rem',
-                background: 'rgba(52,211,153,0.05)', borderBottom: '1px solid rgba(255,255,255,0.06)',
+                background: 'rgba(83,58,253,0.05)', borderBottom: '1px solid rgba(255,255,255,0.06)',
               }}>
-                <span style={{ fontSize: '0.8125rem', fontWeight: 700, color: '#34d399' }}>
+                <span style={{ fontSize: '0.8125rem', fontWeight: 700, color: '#2F9E6F' }}>
                   Competitor {i + 1}
                 </span>
                 <button
@@ -725,12 +725,12 @@ function CompetitorSection({
               style={{
                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
                 padding: '0.625rem 1rem', borderRadius: '0.5rem',
-                background: 'rgba(52,211,153,0.04)', border: '1px dashed rgba(52,211,153,0.25)',
-                color: '#34d399', fontSize: '0.8125rem', fontWeight: 600,
+                background: 'rgba(83,58,253,0.04)', border: '1px dashed rgba(83,58,253,0.22)',
+                color: '#2F9E6F', fontSize: '0.8125rem', fontWeight: 600,
                 cursor: 'pointer', fontFamily: 'inherit', transition: 'all 0.15s',
               }}
-              onMouseEnter={e => { e.currentTarget.style.background = 'rgba(52,211,153,0.08)'; e.currentTarget.style.borderColor = 'rgba(52,211,153,0.4)' }}
-              onMouseLeave={e => { e.currentTarget.style.background = 'rgba(52,211,153,0.04)'; e.currentTarget.style.borderColor = 'rgba(52,211,153,0.25)' }}
+              onMouseEnter={e => { e.currentTarget.style.background = 'rgba(83,58,253,0.08)'; e.currentTarget.style.borderColor = 'rgba(83,58,253,0.35)' }}
+              onMouseLeave={e => { e.currentTarget.style.background = 'rgba(83,58,253,0.04)'; e.currentTarget.style.borderColor = 'rgba(83,58,253,0.22)' }}
             >
               <Plus size={14} />
               Add Competitor {competitors.length + 1} of 3
@@ -1065,7 +1065,7 @@ export default function NewAuditPage() {
                 padding: '0.4375rem 0.875rem',
                 borderRadius: '0.5rem',
                 background: 'rgba(83,58,253,0.1)',
-                border: '1px solid rgba(163,230,53,0.3)',
+                border: '1px solid rgba(83,58,253,0.3)',
                 color: 'var(--dp-primary)',
                 fontSize: '0.8125rem',
                 fontWeight: 600,
@@ -1129,7 +1129,7 @@ export default function NewAuditPage() {
                 width: 48,
                 height: 48,
                 borderRadius: '0.75rem',
-                background: 'linear-gradient(135deg, #166534, #4ade80)',
+                background: 'linear-gradient(135deg, #6A55FE 0%, #533AFD 100%)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -1180,7 +1180,7 @@ export default function NewAuditPage() {
                 width: 48,
                 height: 48,
                 borderRadius: '0.75rem',
-                background: 'linear-gradient(135deg, #166534, #4ade80)',
+                background: 'linear-gradient(135deg, #6A55FE 0%, #533AFD 100%)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -1311,15 +1311,15 @@ export default function NewAuditPage() {
           borderRadius: '0.875rem',
           padding: '2.75rem 1.5rem',
           background: '#ffffff',
-          border: '1px solid rgba(163,230,53,0.12)',
+          border: '1px solid rgba(83,58,253,0.12)',
           textAlign: 'center',
         }}>
           <div style={{
             width: 52,
             height: 52,
             borderRadius: '50%',
-            border: '3px solid rgba(163,230,53,0.15)',
-            borderTop: '3px solid #a3e635',
+            border: '3px solid rgba(83,58,253,0.14)',
+            borderTop: '3px solid #533AFD',
             animation: 'spin 1s linear infinite',
             margin: '0 auto 1.5rem',
           }} />
@@ -1624,7 +1624,7 @@ export default function NewAuditPage() {
             {tfld('Seller Goal', 'sellerGoal', 'What are you trying to achieve with this listing?', true, 2)}
             <div style={{
               borderRadius: '0.75rem', padding: '1rem 1.125rem',
-              background: 'rgba(163,230,53,0.02)', border: '1px solid rgba(255,255,255,0.07)',
+              background: 'rgba(83,58,253,0.02)', border: '1px solid rgba(255,255,255,0.07)',
             }}>
               <SellerPersonaPicker
                 value={form.sellerPersona}

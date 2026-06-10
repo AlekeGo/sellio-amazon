@@ -17,7 +17,7 @@ import FinalCtaSection from '../components/sections/FinalCtaSection'
 function AuthWorkspaceBlock() {
   const { user } = useAuth()
   return (
-    <div style={{ maxWidth: 960, margin: '0 auto', padding: '0 1rem', paddingTop: '5.5rem' }}>
+    <div style={{ maxWidth: 960, margin: '0 auto', padding: '0 1rem', paddingTop: '5.75rem' }}>
       <div style={{
         borderRadius: '1rem',
         padding: '1.25rem 1.5rem',

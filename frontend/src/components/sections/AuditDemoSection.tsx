@@ -1,4 +1,4 @@
-﻿import { useState } from 'react'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { TrendingUp, AlertTriangle, CheckCircle, ArrowRight, ChevronDown } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -17,19 +17,25 @@ const issues = [
 ]
 
 const subScores = [
-  { label: 'Title', value: 44, max: 100, color: '#f87171' },
-  { label: 'Keywords', value: 55, max: 100, color: '#fb923c' },
-  { label: 'Bullets', value: 58, max: 100, color: '#fb923c' },
-  { label: 'Images', value: 62, max: 100, color: '#fbbf24' },
-  { label: 'Description', value: 74, max: 100, color: '#4ade80' },
-  { label: 'Reviews', value: 68, max: 100, color: '#fbbf24' },
+  { label: 'Title', value: 44 },
+  { label: 'Keywords', value: 55 },
+  { label: 'Bullets', value: 58 },
+  { label: 'Images', value: 62 },
+  { label: 'Description', value: 74 },
+  { label: 'Reviews', value: 68 },
 ]
 
-const severityColors: Record<string, { color: string; bg: string; border: string }> = {
-  high: { color: '#f87171', bg: 'rgba(248,113,113,0.08)', border: 'rgba(248,113,113,0.2)' },
-  medium: { color: '#fbbf24', bg: 'rgba(251,191,36,0.08)', border: 'rgba(251,191,36,0.2)' },
-  low: { color: 'var(--dp-ink-muted)', bg: 'rgba(148,163,184,0.06)', border: 'rgba(148,163,184,0.15)' },
-  ok: { color: '#4ade80', bg: 'rgba(74,222,128,0.08)', border: 'rgba(74,222,128,0.2)' },
+const severityConfig: Record<string, { icon: string; chipColor: string; chipBg: string; chipBorder: string }> = {
+  high:   { icon: 'alert', chipColor: '#C53030', chipBg: '#FEF2F2', chipBorder: '#FECACA' },
+  medium: { icon: 'alert', chipColor: '#92400E', chipBg: '#FFFBEB', chipBorder: '#FDE68A' },
+  low:    { icon: 'alert', chipColor: '#64748B', chipBg: '#F8FAFC', chipBorder: '#E2E8F0' },
+  ok:     { icon: 'check', chipColor: '#065F46', chipBg: '#F0FDF4', chipBorder: '#A7F3D0' },
+}
+
+function scoreNumColor(v: number) {
+  if (v < 55) return '#C53030'
+  if (v < 70) return '#92400E'
+  return '#065F46'
 }
 
 function ScoreGauge({ score, potential }: { score: number; potential: number }) {
@@ -40,10 +46,13 @@ function ScoreGauge({ score, potential }: { score: number; potential: number }) 
 
   return (
     <div className="flex flex-col items-center">
-      <div className="relative">
+      <div
+        className="flex flex-col items-center p-4 rounded-2xl w-full"
+        style={{ background: '#FFFFFF', border: '1px solid #E2E8F0' }}
+      >
         <svg width="144" height="144" viewBox="0 0 144 144">
-          <circle cx="72" cy="72" r={r} fill="none" stroke="rgba(83,58,253,0.05)" strokeWidth="10" />
-          <circle cx="72" cy="72" r={r} fill="none" stroke="rgba(83,58,253,0.1)" strokeWidth="10"
+          <circle cx="72" cy="72" r={r} fill="none" stroke="#E2E8F0" strokeWidth="10" />
+          <circle cx="72" cy="72" r={r} fill="none" stroke="rgba(83,58,253,0.15)" strokeWidth="10"
             strokeLinecap="round" strokeDasharray={circ} strokeDashoffset={potOffset}
             transform="rotate(-90 72 72)" />
           <circle cx="72" cy="72" r={r} fill="none" stroke="url(#gaugeGrad)" strokeWidth="10"
@@ -51,18 +60,18 @@ function ScoreGauge({ score, potential }: { score: number; potential: number }) 
             transform="rotate(-90 72 72)" />
           <defs>
             <linearGradient id="gaugeGrad" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0%" stopColor="#a3e635" />
-              <stop offset="100%" stopColor="#34d399" />
+              <stop offset="0%" stopColor="#533AFD" />
+              <stop offset="100%" stopColor="#7C3AED" />
             </linearGradient>
           </defs>
-          <text x="72" y="65" textAnchor="middle" fill="#f1f5f9" fontSize="28" fontWeight="800">{score}</text>
-          <text x="72" y="82" textAnchor="middle" fill="#64748b" fontSize="11">/100</text>
+          <text x="72" y="65" textAnchor="middle" fill="#0F172A" fontSize="28" fontWeight="800">{score}</text>
+          <text x="72" y="82" textAnchor="middle" fill="#64748B" fontSize="11">/100</text>
         </svg>
-      </div>
-      <p className="text-xs mt-1" style={{ color: 'var(--dp-ink-muted)' }}>Listing Score</p>
-      <div className="flex items-center gap-1 mt-1">
-        <TrendingUp size={12} style={{ color: 'var(--dp-primary)' }} />
-        <span className="text-xs font-semibold" style={{ color: 'var(--dp-primary)' }}>Potential: {potential}/100</span>
+        <p className="text-xs mt-1" style={{ color: '#64748B' }}>Listing Score</p>
+        <div className="flex items-center gap-1 mt-1">
+          <TrendingUp size={12} style={{ color: '#533AFD' }} />
+          <span className="text-xs font-semibold" style={{ color: '#533AFD' }}>Potential: {potential}/100</span>
+        </div>
       </div>
     </div>
   )
@@ -72,20 +81,29 @@ function TabOverview() {
   return (
     <div className="grid md:grid-cols-2 gap-6">
       <div>
-        <h4 className="text-xs font-semibold uppercase tracking-widest mb-4" style={{ color: 'var(--dp-ink-muted)' }}>Issues Found</h4>
+        <h4 className="text-xs font-semibold uppercase tracking-widest mb-4" style={{ color: '#64748B' }}>Issues Found</h4>
         <div className="space-y-2.5">
           {issues.map((issue) => {
-            const { color, bg, border } = severityColors[issue.severity]
+            const cfg = severityConfig[issue.severity]
             return (
-              <div key={issue.label} className="flex items-center gap-3 p-3 rounded-xl" style={{ background: bg, border: `1px solid ${border}` }}>
+              <div
+                key={issue.label}
+                className="flex items-center gap-3 p-3 rounded-xl"
+                style={{ background: '#FFFFFF', border: '1px solid #E2E8F0' }}
+              >
                 {issue.severity === 'ok'
-                  ? <CheckCircle size={14} style={{ color, flexShrink: 0 }} />
-                  : <AlertTriangle size={14} style={{ color, flexShrink: 0 }} />
+                  ? <CheckCircle size={14} style={{ color: cfg.chipColor, flexShrink: 0 }} />
+                  : <AlertTriangle size={14} style={{ color: cfg.chipColor, flexShrink: 0 }} />
                 }
-                <span className="text-xs flex-1 leading-snug" style={{ color: issue.severity === 'ok' ? '#94a3b8' : '#f1f5f9' }}>
+                <span className="text-xs flex-1 leading-snug" style={{ color: '#0F172A' }}>
                   {issue.label}
                 </span>
-                <span className="text-xs font-bold tabular-nums shrink-0" style={{ color }}>{issue.score}</span>
+                <span
+                  className="text-xs font-bold tabular-nums shrink-0 px-1.5 py-0.5 rounded-md"
+                  style={{ color: cfg.chipColor, background: cfg.chipBg, border: `1px solid ${cfg.chipBorder}` }}
+                >
+                  {issue.score}
+                </span>
               </div>
             )
           })}
@@ -93,18 +111,17 @@ function TabOverview() {
       </div>
 
       <div>
-        <h4 className="text-xs font-semibold uppercase tracking-widest mb-4" style={{ color: 'var(--dp-ink-muted)' }}>Score Breakdown</h4>
+        <h4 className="text-xs font-semibold uppercase tracking-widest mb-4" style={{ color: '#64748B' }}>Score Breakdown</h4>
         <div className="space-y-3.5">
           {subScores.map(s => (
             <div key={s.label}>
               <div className="flex items-center justify-between mb-1.5">
-                <span className="text-xs" style={{ color: 'var(--dp-ink-muted)' }}>{s.label}</span>
-                <span className="text-xs font-bold tabular-nums" style={{ color: s.color }}>{s.value}</span>
+                <span className="text-xs" style={{ color: '#475569' }}>{s.label}</span>
+                <span className="text-xs font-bold tabular-nums" style={{ color: scoreNumColor(s.value) }}>{s.value}</span>
               </div>
-              <div className="score-bar-track">
+              <div style={{ height: 6, background: '#E5E7EB', borderRadius: 3, overflow: 'hidden' }}>
                 <motion.div
-                  className="h-full rounded-full"
-                  style={{ background: s.color }}
+                  style={{ height: '100%', borderRadius: 3, background: 'linear-gradient(90deg, #533AFD, #7C3AED)' }}
                   initial={{ width: 0 }}
                   animate={{ width: `${s.value}%` }}
                   transition={{ duration: 0.8, delay: 0.2, ease: 'easeOut' }}
@@ -121,32 +138,32 @@ function TabOverview() {
 function TabTitle() {
   return (
     <div className="space-y-5">
-      <div className="p-4 rounded-xl" style={{ background: 'rgba(248,113,113,0.06)', border: '1px solid rgba(248,113,113,0.15)' }}>
+      <div className="p-4 rounded-xl" style={{ background: '#FFF5F5', border: '1px solid #FECACA' }}>
         <div className="flex items-center gap-2 mb-2">
-          <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: '#f87171' }}>Current Title</span>
-          <span className="text-xs px-2 py-0.5 rounded-full font-bold" style={{ background: 'rgba(248,113,113,0.12)', color: '#f87171' }}>44/100</span>
+          <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: '#C53030' }}>Current Title</span>
+          <span className="text-xs px-2 py-0.5 rounded-full font-bold" style={{ background: '#FEE2E2', color: '#C53030' }}>44/100</span>
         </div>
-        <p className="text-sm leading-relaxed" style={{ color: 'var(--dp-ink-muted)' }}>
+        <p className="text-sm leading-relaxed" style={{ color: '#475569' }}>
           "Vitamin C Serum for Face - Anti-Aging Serum with Vitamin E"
         </p>
         <div className="mt-3 flex flex-wrap gap-2">
           {['Too short (52 chars)', 'Missing category', 'No size/quantity', 'Weak keyword triggers'].map(tag => (
-            <span key={tag} className="text-xs px-2 py-1 rounded-md" style={{ background: 'rgba(248,113,113,0.1)', color: '#f87171' }}>⚠ {tag}</span>
+            <span key={tag} className="text-xs px-2 py-1 rounded-md" style={{ background: '#FEE2E2', color: '#C53030' }}>⚠ {tag}</span>
           ))}
         </div>
       </div>
 
-      <div className="p-4 rounded-xl" style={{ background: 'rgba(83,58,253,0.05)', border: '1px solid rgba(83,58,253,0.18)' }}>
+      <div className="p-4 rounded-xl" style={{ background: '#EEF0FF', border: '1px solid rgba(83,58,253,0.2)' }}>
         <div className="flex items-center gap-2 mb-2">
-          <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: 'var(--dp-primary)' }}>AI-Upgraded Title</span>
-          <span className="text-xs px-2 py-0.5 rounded-full font-bold" style={{ background: 'rgba(83,58,253,0.1)', color: 'var(--dp-primary)' }}>94/100</span>
+          <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: '#533AFD' }}>AI-Upgraded Title</span>
+          <span className="text-xs px-2 py-0.5 rounded-full font-bold" style={{ background: 'rgba(83,58,253,0.12)', color: '#533AFD' }}>94/100</span>
         </div>
-        <p className="text-sm leading-relaxed font-medium" style={{ color: 'var(--dp-ink)' }}>
+        <p className="text-sm leading-relaxed font-medium" style={{ color: '#0F172A' }}>
           "ProGlow Vitamin C Serum 30ml | 20% L-Ascorbic Acid + Hyaluronic Acid | Brightening Anti-Aging Face Serum for Glowing Skin | Dermatologist-Tested, Fragrance-Free"
         </p>
         <div className="mt-3 flex flex-wrap gap-2">
           {['Category anchor added', 'Size included', '5 high-volume keywords', 'Trust signals'].map(tag => (
-            <span key={tag} className="text-xs px-2 py-1 rounded-md" style={{ background: 'rgba(83,58,253,0.08)', color: 'var(--dp-primary)' }}>✓ {tag}</span>
+            <span key={tag} className="text-xs px-2 py-1 rounded-md" style={{ background: 'rgba(83,58,253,0.1)', color: '#533AFD' }}>✓ {tag}</span>
           ))}
         </div>
       </div>
@@ -170,15 +187,15 @@ function TabBullets() {
   return (
     <div className="space-y-5">
       {bullets.map((b, i) => (
-        <div key={i} className="rounded-xl overflow-hidden" style={{ border: '1px solid rgba(196,188,255,0.40)' }}>
-          <div className="p-4" style={{ background: 'rgba(248,113,113,0.06)' }}>
-            <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: '#f87171' }}>Before</span>
-            <p className="text-sm mt-2 leading-relaxed" style={{ color: 'var(--dp-ink-muted)' }}>• {b.before}</p>
+        <div key={i} className="rounded-xl overflow-hidden" style={{ border: '1px solid #E2E8F0' }}>
+          <div className="p-4" style={{ background: '#FFF5F5', borderBottom: '1px solid #FECACA' }}>
+            <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: '#C53030' }}>Before</span>
+            <p className="text-sm mt-2 leading-relaxed" style={{ color: '#475569' }}>• {b.before}</p>
           </div>
-          <div className="p-4" style={{ background: 'rgba(83,58,253,0.05)' }}>
-            <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: 'var(--dp-primary)' }}>After</span>
-            <p className="text-sm mt-2 leading-relaxed font-medium" style={{ color: 'var(--dp-ink)' }}>• {b.after}</p>
-            <p className="text-xs mt-2" style={{ color: 'var(--dp-ink-muted)' }}>↑ {b.impact}</p>
+          <div className="p-4" style={{ background: '#EEF0FF' }}>
+            <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: '#533AFD' }}>After</span>
+            <p className="text-sm mt-2 leading-relaxed font-medium" style={{ color: '#0F172A' }}>• {b.after}</p>
+            <p className="text-xs mt-2" style={{ color: '#64748B' }}>↑ {b.impact}</p>
           </div>
         </div>
       ))}
@@ -197,20 +214,22 @@ function TabKeywords() {
   ]
   return (
     <div>
-      <p className="text-xs mb-4" style={{ color: 'var(--dp-ink-muted)' }}>
+      <p className="text-xs mb-4" style={{ color: '#64748B' }}>
         12 high-volume buyer search terms currently missing from your listing. Adding these could capture an estimated +9,800 additional searches/month.
       </p>
       <div className="space-y-2">
         {keywords.map(k => (
-          <div key={k.kw} className="flex items-center gap-3 p-3 rounded-xl" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(196,188,255,0.40)' }}>
+          <div key={k.kw} className="flex items-center gap-3 p-3 rounded-xl" style={{ background: '#FFFFFF', border: '1px solid #E2E8F0' }}>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium truncate" style={{ color: 'var(--dp-ink)' }}>{k.kw}</p>
+              <p className="text-sm font-medium truncate" style={{ color: '#0F172A' }}>{k.kw}</p>
             </div>
-            <span className="text-xs shrink-0 font-semibold tabular-nums" style={{ color: 'var(--dp-primary)' }}>{k.volume}</span>
-            <span className="text-xs shrink-0 px-2 py-0.5 rounded-full"
+            <span className="text-xs shrink-0 font-semibold tabular-nums" style={{ color: '#533AFD' }}>{k.volume}</span>
+            <span
+              className="text-xs shrink-0 px-2 py-0.5 rounded-full"
               style={{
-                color: k.opportunity === 'Very High' ? '#4ade80' : '#fbbf24',
-                background: k.opportunity === 'Very High' ? 'rgba(74,222,128,0.1)' : 'rgba(251,191,36,0.1)',
+                color: k.opportunity === 'Very High' ? '#065F46' : '#92400E',
+                background: k.opportunity === 'Very High' ? '#F0FDF4' : '#FFFBEB',
+                border: `1px solid ${k.opportunity === 'Very High' ? '#A7F3D0' : '#FDE68A'}`,
               }}
             >
               {k.opportunity}
@@ -225,26 +244,26 @@ function TabKeywords() {
 function TabReviews() {
   return (
     <div className="space-y-4">
-      <div className="p-4 rounded-xl" style={{ background: 'rgba(251,191,36,0.06)', border: '1px solid rgba(251,191,36,0.15)' }}>
-        <h4 className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: '#fbbf24' }}>Top Buyer Objection Detected</h4>
-        <p className="text-sm font-medium mb-1" style={{ color: 'var(--dp-ink)' }}>"Results took longer than expected"</p>
-        <p className="text-xs leading-relaxed" style={{ color: 'var(--dp-ink-muted)' }}>Found in 23% of 1-3 star reviews. Buyers expected results within a few days — the listing sets no clear timeline.</p>
+      <div className="p-4 rounded-xl" style={{ background: '#FFFBEB', border: '1px solid #FDE68A' }}>
+        <h4 className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: '#92400E' }}>Top Buyer Objection Detected</h4>
+        <p className="text-sm font-medium mb-1" style={{ color: '#0F172A' }}>"Results took longer than expected"</p>
+        <p className="text-xs leading-relaxed" style={{ color: '#475569' }}>Found in 23% of 1-3 star reviews. Buyers expected results within a few days — the listing sets no clear timeline.</p>
       </div>
 
-      <div className="p-4 rounded-xl" style={{ background: 'rgba(83,58,253,0.05)', border: '1px solid rgba(83,58,253,0.18)' }}>
-        <h4 className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: 'var(--dp-primary)' }}>Recommended Fix</h4>
-        <p className="text-sm leading-relaxed" style={{ color: 'var(--dp-ink)' }}>Add "visible results in 14 days" to bullet 2 and "noticeable improvement within 2–4 weeks of daily use" to the description. Set expectations before the objection forms.</p>
+      <div className="p-4 rounded-xl" style={{ background: '#EEF0FF', border: '1px solid rgba(83,58,253,0.2)' }}>
+        <h4 className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: '#533AFD' }}>Recommended Fix</h4>
+        <p className="text-sm leading-relaxed" style={{ color: '#0F172A' }}>Add "visible results in 14 days" to bullet 2 and "noticeable improvement within 2–4 weeks of daily use" to the description. Set expectations before the objection forms.</p>
       </div>
 
       <div className="grid grid-cols-3 gap-3">
         {[
-          { label: 'Positive Signals', value: '73%', color: '#4ade80' },
-          { label: 'Recurring Objections', value: '4', color: '#fbbf24' },
-          { label: 'Unmet Needs', value: '2', color: '#f87171' },
+          { label: 'Positive Signals', value: '73%', color: '#065F46', bg: '#F0FDF4', border: '#A7F3D0' },
+          { label: 'Recurring Objections', value: '4', color: '#92400E', bg: '#FFFBEB', border: '#FDE68A' },
+          { label: 'Unmet Needs', value: '2', color: '#C53030', bg: '#FEF2F2', border: '#FECACA' },
         ].map(s => (
-          <div key={s.label} className="p-3 rounded-xl text-center" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(196,188,255,0.40)' }}>
+          <div key={s.label} className="p-3 rounded-xl text-center" style={{ background: s.bg, border: `1px solid ${s.border}` }}>
             <p className="text-xl font-black mb-1" style={{ color: s.color }}>{s.value}</p>
-            <p className="text-xs" style={{ color: 'var(--dp-ink-muted)' }}>{s.label}</p>
+            <p className="text-xs" style={{ color: '#475569' }}>{s.label}</p>
           </div>
         ))}
       </div>
@@ -268,7 +287,7 @@ export default function AuditDemoSection() {
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          backgroundImage: 'radial-gradient(ellipse 80% 60% at 50% 50%, rgba(52,211,153,0.05) 0%, transparent 70%)',
+          backgroundImage: 'radial-gradient(ellipse 80% 60% at 50% 50%, rgba(83,58,253,0.04) 0%, transparent 70%)',
         }}
       />
 
@@ -282,7 +301,7 @@ export default function AuditDemoSection() {
             See what a real{' '}
             <span className="gradient-text">Sellio audit</span> looks like.
           </h2>
-          <p className="text-lg max-w-2xl mx-auto leading-relaxed" style={{ color: 'var(--dp-ink-muted)' }}>
+          <p className="text-lg max-w-2xl mx-auto leading-relaxed" style={{ color: '#64748B' }}>
             A real sample for a skincare product — the kind of insight your listing could be getting today.
           </p>
         </AnimatedSection>
@@ -291,40 +310,50 @@ export default function AuditDemoSection() {
           <div
             className="rounded-3xl overflow-hidden"
             style={{
-              background: 'rgba(10,21,14,0.94)',
-              border: '1px solid rgba(255,255,255,0.09)',
-              boxShadow: '0 32px 80px rgba(0,0,0,0.5)',
+              background: '#FFFFFF',
+              border: '1px solid #E2E8F0',
+              boxShadow: '0 20px 60px rgba(15,23,42,0.08), 0 4px 16px rgba(83,58,253,0.06)',
             }}
           >
+            {/* Browser chrome header */}
             <div
-              className="px-6 py-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
-              style={{ borderBottom: '1px solid rgba(196,188,255,0.40)', background: '#ffffff' }}
+              className="px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+              style={{ borderBottom: '1px solid #E2E8F0', background: '#F8FAFC' }}
             >
               <div className="flex items-center gap-3">
                 <div className="flex gap-1.5">
-                  <div className="w-3 h-3 rounded-full" style={{ background: '#f87171' }} />
-                  <div className="w-3 h-3 rounded-full" style={{ background: '#fbbf24' }} />
-                  <div className="w-3 h-3 rounded-full" style={{ background: '#4ade80' }} />
+                  <div className="w-3 h-3 rounded-full" style={{ background: '#FECACA' }} />
+                  <div className="w-3 h-3 rounded-full" style={{ background: '#FDE68A' }} />
+                  <div className="w-3 h-3 rounded-full" style={{ background: '#A7F3D0' }} />
                 </div>
-                <span className="text-sm font-medium" style={{ color: 'var(--dp-ink-muted)' }}>Audit Report — ProGlow Vitamin C Serum 30ml</span>
+                <span className="text-sm font-medium" style={{ color: '#475569' }}>Audit Report — ProGlow Vitamin C Serum 30ml</span>
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-xs px-2.5 py-1 rounded-full font-medium"
-                  style={{ background: 'rgba(83,58,253,0.09)', color: 'var(--dp-primary)', border: '1px solid rgba(83,58,253,0.22)' }}>
+                <span
+                  className="text-xs px-2.5 py-1 rounded-full font-medium"
+                  style={{ background: '#EEF0FF', color: '#533AFD', border: '1px solid rgba(83,58,253,0.22)' }}
+                >
                   ● Audit Complete
                 </span>
               </div>
             </div>
 
-            <div className="audit-grid">
+            {/* Main grid */}
+            <div className="audit-grid" style={{ background: '#F8FAFC' }}>
+              {/* Left sidebar */}
               <div
                 className="p-6 flex flex-col items-center justify-start gap-6"
-                style={{ borderRight: '1px solid rgba(83,58,253,0.05)' }}
+                style={{ borderRight: '1px solid #E2E8F0', background: '#FFFFFF' }}
               >
                 <ScoreGauge score={67} potential={94} />
 
                 <div className="w-full">
-                  <p className="text-xs font-semibold uppercase tracking-widest mb-3 text-center" style={{ color: 'var(--dp-ink-muted)' }}>Jump to</p>
+                  <p
+                    className="text-xs font-semibold uppercase tracking-widest mb-3 text-center"
+                    style={{ color: '#64748B' }}
+                  >
+                    Jump to
+                  </p>
                   <div className="space-y-1">
                     {TABS.map(tab => (
                       <button
@@ -332,9 +361,9 @@ export default function AuditDemoSection() {
                         onClick={() => setActiveTab(tab)}
                         className="w-full text-left px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all flex items-center justify-between"
                         style={{
-                          background: activeTab === tab ? 'rgba(83,58,253,0.09)' : 'transparent',
-                          color: activeTab === tab ? 'var(--dp-primary)' : '#64748b',
-                          border: activeTab === tab ? '1px solid rgba(83,58,253,0.22)' : '1px solid transparent',
+                          background: activeTab === tab ? '#EEF0FF' : 'transparent',
+                          color: activeTab === tab ? '#533AFD' : '#64748B',
+                          border: activeTab === tab ? '1px solid rgba(83,58,253,0.2)' : '1px solid transparent',
                           cursor: 'pointer',
                         }}
                       >
@@ -346,7 +375,8 @@ export default function AuditDemoSection() {
                 </div>
               </div>
 
-              <div className="p-6 min-h-\[400px\]" style={{ padding: 'clamp(1.5rem, 2vw, 2rem)' }}>
+              {/* Right content area */}
+              <div style={{ padding: 'clamp(1.5rem, 2vw, 2rem)', background: '#FFFFFF' }}>
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={activeTab}
@@ -355,7 +385,7 @@ export default function AuditDemoSection() {
                     exit={{ opacity: 0, y: -10 }}
                     transition={{ duration: 0.25, ease: 'easeOut' }}
                   >
-                    <h3 className="text-lg font-bold mb-5" style={{ color: 'var(--dp-ink)' }}>{activeTab}</h3>
+                    <h3 className="text-lg font-bold mb-5" style={{ color: '#0F172A' }}>{activeTab}</h3>
                     {tabContent[activeTab]}
                   </motion.div>
                 </AnimatePresence>
@@ -368,7 +398,7 @@ export default function AuditDemoSection() {
           <Link to="/dashboard/new-audit" className="btn-primary">
             Run Your Free Audit <ArrowRight size={16} />
           </Link>
-          <p className="text-xs mt-3" style={{ color: 'var(--dp-ink-muted)' }}>No credit card · No Amazon API needed · Results in seconds</p>
+          <p className="text-xs mt-3" style={{ color: '#64748B' }}>No credit card · No Amazon API needed · Results in seconds</p>
         </AnimatedSection>
       </div>
     </section>

@@ -87,7 +87,7 @@ export default function FaqSection() {
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          backgroundImage: 'radial-gradient(ellipse 60% 40% at 80% 50%, rgba(52,211,153,0.05) 0%, transparent 60%)',
+          backgroundImage: 'radial-gradient(ellipse 60% 40% at 80% 50%, rgba(83,58,253,0.05) 0%, transparent 60%)',
         }}
       />
 

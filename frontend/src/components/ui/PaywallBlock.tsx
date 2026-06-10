@@ -21,8 +21,8 @@ export default function PaywallBlock({
       style={{
         borderRadius: '0.875rem',
         padding: '1.75rem 1.5rem',
-        background: 'rgba(163,230,53,0.03)',
-        border: '1px solid rgba(163,230,53,0.18)',
+        background: 'rgba(83,58,253,0.03)',
+        border: '1px solid rgba(83,58,253,0.18)',
         textAlign: 'center',
       }}
     >
@@ -31,8 +31,8 @@ export default function PaywallBlock({
           width: 48,
           height: 48,
           borderRadius: '0.75rem',
-          background: 'rgba(163,230,53,0.06)',
-          border: '1px solid rgba(163,230,53,0.14)',
+          background: 'rgba(83,58,253,0.06)',
+          border: '1px solid rgba(83,58,253,0.14)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',

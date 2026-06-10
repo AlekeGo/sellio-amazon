@@ -10,9 +10,9 @@ function formatDate(iso: string) {
 }
 
 function ScorePill({ score }: { score: number }) {
-  const color = score >= 80 ? '#a3e635' : score >= 60 ? '#fbbf24' : '#f97316'
-  const bg = score >= 80 ? 'rgba(163,230,53,0.1)' : score >= 60 ? 'rgba(251,191,36,0.1)' : 'rgba(249,115,22,0.1)'
-  const border = score >= 80 ? 'rgba(163,230,53,0.22)' : score >= 60 ? 'rgba(251,191,36,0.22)' : 'rgba(249,115,22,0.22)'
+  const color = score >= 80 ? '#2F9E6F' : score >= 60 ? '#fbbf24' : '#f97316'
+  const bg = score >= 80 ? 'rgba(47,158,111,0.1)' : score >= 60 ? 'rgba(251,191,36,0.1)' : 'rgba(249,115,22,0.1)'
+  const border = score >= 80 ? 'rgba(47,158,111,0.22)' : score >= 60 ? 'rgba(251,191,36,0.22)' : 'rgba(249,115,22,0.22)'
   return (
     <span style={{
       display: 'inline-flex', alignItems: 'center', gap: '0.1875rem',
@@ -31,8 +31,8 @@ function AuditCard({ audit }: { audit: AuditListItem }) {
     <div
       style={{
         borderRadius: '0.875rem',
-        background: hovered ? 'rgba(163,230,53,0.025)' : 'rgba(255,255,255,0.025)',
-        border: `1px solid ${hovered ? 'rgba(163,230,53,0.16)' : 'rgba(255,255,255,0.07)'}`,
+        background: hovered ? 'rgba(83,58,253,0.025)' : 'rgba(255,255,255,0.025)',
+        border: `1px solid ${hovered ? 'rgba(83,58,253,0.14)' : 'rgba(255,255,255,0.07)'}`,
         transition: 'all 0.15s ease',
         overflow: 'hidden',
       }}
@@ -95,9 +95,9 @@ function AuditCard({ audit }: { audit: AuditListItem }) {
             style={{
               display: 'inline-flex', alignItems: 'center', gap: '0.3125rem',
               padding: '0.4375rem 0.875rem', borderRadius: '0.5rem',
-              background: hovered ? 'rgba(163,230,53,0.08)' : 'rgba(255,255,255,0.04)',
-              border: `1px solid ${hovered ? 'rgba(163,230,53,0.2)' : 'rgba(255,255,255,0.08)'}`,
-              color: hovered ? '#a3e635' : '#64748b',
+              background: hovered ? 'rgba(83,58,253,0.08)' : 'rgba(255,255,255,0.04)',
+              border: `1px solid ${hovered ? 'rgba(83,58,253,0.16)' : 'rgba(255,255,255,0.08)'}`,
+              color: hovered ? '#533AFD' : '#64748b',
               fontSize: '0.8125rem', fontWeight: 600, textDecoration: 'none',
               transition: 'all 0.15s', whiteSpace: 'nowrap',
             }}
@@ -169,11 +169,11 @@ export default function AuditsListPage() {
         }}>
           <div style={{
             width: 56, height: 56, borderRadius: '0.875rem',
-            background: 'rgba(163,230,53,0.06)', border: '1px solid rgba(163,230,53,0.12)',
+            background: 'rgba(83,58,253,0.06)', border: '1px solid rgba(83,58,253,0.12)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             margin: '0 auto 1.25rem',
           }}>
-            <FileText size={24} color="#a3e635" />
+            <FileText size={24} color="#533AFD" />
           </div>
           <h2 style={{ fontSize: '1.0625rem', fontWeight: 700, color: '#475569', margin: '0 0 0.5rem', letterSpacing: '-0.02em' }}>
             No audits yet

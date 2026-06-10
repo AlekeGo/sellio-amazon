@@ -1,98 +1,160 @@
-﻿import { Link } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { ArrowRight, Sparkles } from 'lucide-react'
 import AnimatedSection from '../ui/AnimatedSection'
+
+/* ─── per-card mini layout previews ─── */
+
+function PreviewMainImage() {
+  return (
+    <div style={{ background: '#F8FAFC', borderRadius: 10, height: 100, border: '1px solid #E2E8F0', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden' }}>
+      <div style={{ width: 56, height: 56, borderRadius: 10, background: 'white', boxShadow: '0 6px 20px rgba(83,58,253,0.13), 0 1px 4px rgba(0,0,0,0.07)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #EEF0FF' }}>
+        <div style={{ width: 30, height: 36, background: 'linear-gradient(150deg, #C4BEFF 0%, #9B90FF 100%)', borderRadius: 5 }} />
+      </div>
+      <div style={{ position: 'absolute', bottom: 8, left: 8, fontSize: '0.6rem', color: '#94A3B8', fontWeight: 600, letterSpacing: '0.04em' }}>Clean white BG</div>
+      <AspectBadge label="1:1" />
+    </div>
+  )
+}
+
+function PreviewBenefitInfographic() {
+  return (
+    <div style={{ background: '#F8FAFC', borderRadius: 10, height: 100, border: '1px solid #E2E8F0', display: 'flex', alignItems: 'center', gap: 12, padding: '0 14px', position: 'relative', overflow: 'hidden' }}>
+      <div style={{ width: 40, height: 44, borderRadius: 7, background: 'linear-gradient(150deg, #C4BEFF 0%, #9B90FF 100%)', flexShrink: 0 }} />
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 7 }}>
+        {[['✓', '68%', 'Softer hold'], ['✓', 'Natural', 'Ingredients'], ['✓', '4.8★', 'Reviews']].map(([icon, val, _lbl], i) => (
+          <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+            <div style={{ width: 13, height: 13, borderRadius: 3, background: '#EEF0FF', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.5rem', color: '#533AFD', fontWeight: 700, flexShrink: 0 }}>{icon}</div>
+            <div style={{ fontSize: '0.6rem', fontWeight: 700, color: '#533AFD', width: 28, flexShrink: 0 }}>{val}</div>
+            <div style={{ flex: 1, height: 5, borderRadius: 3, background: '#E2E8F0' }}>
+              <div style={{ width: `${[70, 55, 85][i]}%`, height: '100%', borderRadius: 3, background: 'linear-gradient(90deg, #C4BEFF, #9B90FF)' }} />
+            </div>
+          </div>
+        ))}
+      </div>
+      <AspectBadge label="1:1" />
+    </div>
+  )
+}
+
+function PreviewComparisonGraphic() {
+  return (
+    <div style={{ background: '#F8FAFC', borderRadius: 10, height: 100, border: '1px solid #E2E8F0', display: 'flex', alignItems: 'stretch', overflow: 'hidden', position: 'relative' }}>
+      <div style={{ flex: 1, background: '#EEF0FF', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 5, padding: '8px 6px' }}>
+        <div style={{ fontSize: '0.55rem', fontWeight: 800, color: '#533AFD', letterSpacing: '0.05em' }}>YOURS</div>
+        {['✓ Ergonomic', '✓ BPA-free', '✓ 500ml'].map((t, i) => (
+          <div key={i} style={{ fontSize: '0.52rem', color: '#533AFD', fontWeight: 600 }}>{t}</div>
+        ))}
+      </div>
+      <div style={{ width: 1, background: '#C7C2FF', flexShrink: 0 }} />
+      <div style={{ flex: 1, background: 'white', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 5, padding: '8px 6px' }}>
+        <div style={{ fontSize: '0.55rem', fontWeight: 800, color: '#94A3B8', letterSpacing: '0.05em' }}>THEIRS</div>
+        {['✗ Bulky grip', '✗ Plastic lid', '✗ 350ml'].map((t, i) => (
+          <div key={i} style={{ fontSize: '0.52rem', color: '#94A3B8', fontWeight: 600 }}>{t}</div>
+        ))}
+      </div>
+      <AspectBadge label="4:3" />
+    </div>
+  )
+}
+
+function PreviewHowItWorks() {
+  return (
+    <div style={{ background: '#F8FAFC', borderRadius: 10, height: 100, border: '1px solid #E2E8F0', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 0, padding: '0 14px', position: 'relative', overflow: 'hidden' }}>
+      {[['1', 'Apply'], ['2', 'Wait'], ['3', 'Done']].map(([n, lbl], i) => (
+        <>
+          <div key={n} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5 }}>
+            <div style={{ width: 26, height: 26, borderRadius: '50%', background: i === 0 ? 'linear-gradient(135deg, #533AFD, #7C6FFF)' : '#EEF0FF', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.65rem', fontWeight: 800, color: i === 0 ? 'white' : '#533AFD', boxShadow: i === 0 ? '0 3px 10px rgba(83,58,253,0.3)' : 'none' }}>{n}</div>
+            <div style={{ fontSize: '0.55rem', fontWeight: 600, color: '#64748B' }}>{lbl}</div>
+          </div>
+          {i < 2 && <div key={`line-${i}`} style={{ flex: 1, height: 1, background: '#C7C2FF', margin: '0 4px', marginBottom: 14 }} />}
+        </>
+      ))}
+      <AspectBadge label="16:9" />
+    </div>
+  )
+}
+
+function PreviewLifestyleVisual() {
+  return (
+    <div style={{ background: 'linear-gradient(140deg, #F1F0FF 0%, #E8F4FD 100%)', borderRadius: 10, height: 100, border: '1px solid #E2E8F0', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden' }}>
+      <div style={{ position: 'absolute', top: -18, right: -18, width: 70, height: 70, borderRadius: '50%', background: 'rgba(196,190,255,0.25)' }} />
+      <div style={{ position: 'absolute', bottom: -10, left: -10, width: 50, height: 50, borderRadius: '50%', background: 'rgba(155,144,255,0.18)' }} />
+      <div style={{ width: 48, height: 52, borderRadius: 10, background: 'white', boxShadow: '0 8px 24px rgba(83,58,253,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #EEF0FF', position: 'relative' }}>
+        <div style={{ width: 26, height: 32, background: 'linear-gradient(150deg, #C4BEFF 0%, #9B90FF 100%)', borderRadius: 4 }} />
+      </div>
+      <div style={{ position: 'absolute', bottom: 8, left: 10, fontSize: '0.55rem', color: '#7C6FFF', fontWeight: 600, fontStyle: 'italic' }}>In-scene product</div>
+      <AspectBadge label="4:3" />
+    </div>
+  )
+}
+
+function PreviewAplusBanner() {
+  return (
+    <div style={{ background: '#F8FAFC', borderRadius: 10, height: 100, border: '1px solid #E2E8F0', display: 'flex', alignItems: 'center', position: 'relative', overflow: 'hidden' }}>
+      <div style={{ flex: 1, padding: '0 14px', display: 'flex', flexDirection: 'column', gap: 5 }}>
+        <div style={{ height: 7, borderRadius: 4, width: '75%', background: 'linear-gradient(90deg, #9B90FF, #C4BEFF)' }} />
+        <div style={{ height: 5, borderRadius: 3, width: '55%', background: '#E2E8F0' }} />
+        <div style={{ height: 5, borderRadius: 3, width: '45%', background: '#E2E8F0' }} />
+        <div style={{ marginTop: 3, height: 18, width: 48, borderRadius: 5, background: 'linear-gradient(135deg, #533AFD, #7C6FFF)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ fontSize: '0.48rem', color: 'white', fontWeight: 700 }}>Shop now →</div>
+        </div>
+      </div>
+      <div style={{ width: 64, height: '100%', background: 'linear-gradient(160deg, #EEF0FF 0%, #DDD8FF 100%)', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ width: 28, height: 36, background: 'linear-gradient(150deg, #C4BEFF 0%, #9B90FF 100%)', borderRadius: 5, boxShadow: '0 4px 12px rgba(83,58,253,0.2)' }} />
+      </div>
+      <AspectBadge label="16:5" />
+    </div>
+  )
+}
+
+function AspectBadge({ label }: { label: string }) {
+  return (
+    <div style={{ position: 'absolute', bottom: 7, right: 8, background: 'rgba(83,58,253,0.08)', color: '#533AFD', fontSize: '0.57rem', fontWeight: 700, padding: '2px 6px', borderRadius: 99, border: '1px solid rgba(83,58,253,0.15)', letterSpacing: '0.03em' }}>
+      {label}
+    </div>
+  )
+}
+
+/* ─── card data ─── */
 
 const imageTypes = [
   {
     label: 'Main Image Refresh',
     desc: 'High-clarity product shot on clean white, optimized for click-through rate.',
-    gradient: 'linear-gradient(135deg, #166534, #4ade80)',
     tag: 'Always included',
-    tagColor: '#4ade80',
-    tagBg: 'rgba(74,222,128,0.1)',
-    aspectLabel: '1:1',
-    mockColors: ['#0a1f0d', '#166534', '#dcfce7', '#052e16'],
+    Preview: PreviewMainImage,
   },
   {
     label: 'Benefit Infographic',
-    desc: '2-column layout highlighting your top benefits with icons and short copy.',
-    gradient: 'linear-gradient(135deg, #065f46, #34d399)',
+    desc: 'Key benefit callouts with icons and short copy, built around your product claims.',
     tag: 'Most popular',
-    tagColor: '#34d399',
-    tagBg: 'rgba(52,211,153,0.1)',
-    aspectLabel: '1:1',
-    mockColors: ['#0d2018', '#065f46', '#d1fae5', '#022c22'],
+    Preview: PreviewBenefitInfographic,
   },
   {
     label: 'Comparison Graphic',
-    desc: 'Side-by-side positioning vs. competitor to show your advantages clearly.',
-    gradient: 'linear-gradient(135deg, #14532d, #22c55e)',
+    desc: 'Side-by-side positioning vs. a competitor to make your advantages obvious.',
     tag: 'High impact',
-    tagColor: '#22c55e',
-    tagBg: 'rgba(34,197,94,0.1)',
-    aspectLabel: '4:3',
-    mockColors: ['#0e1f10', '#14532d', '#dcfce7', '#083317'],
+    Preview: PreviewComparisonGraphic,
   },
   {
     label: 'How It Works',
-    desc: 'Step-by-step visual showing usage process with numbered callouts.',
-    gradient: 'linear-gradient(135deg, #3f6212, #a3e635)',
+    desc: 'Step-by-step visual showing the usage process with numbered callouts.',
     tag: 'Trust builder',
-    tagColor: 'var(--dp-primary)',
-    tagBg: 'rgba(83,58,253,0.1)',
-    aspectLabel: '16:9',
-    mockColors: ['#111a07', '#3f6212', '#ecfccb', '#1a2e05'],
+    Preview: PreviewHowItWorks,
   },
   {
     label: 'Lifestyle Visual',
     desc: 'Product-in-context imagery with lifestyle appeal and emotional resonance.',
-    gradient: 'linear-gradient(135deg, #166534, #86efac)',
     tag: 'Premium feel',
-    tagColor: '#86efac',
-    tagBg: 'rgba(134,239,172,0.1)',
-    aspectLabel: '4:3',
-    mockColors: ['#0a1a0e', '#15803d', '#dcfce7', '#052e16'],
+    Preview: PreviewLifestyleVisual,
   },
   {
     label: 'A+ Banner Concept',
-    desc: 'Module-ready header for A+ Content pages with brand story visual.',
-    gradient: 'linear-gradient(135deg, #4d7c0f, #d9f99d)',
+    desc: 'Module-ready header for A+ Content pages with brand story visuals.',
     tag: 'A+ Content',
-    tagColor: '#d9f99d',
-    tagBg: 'rgba(217,249,157,0.08)',
-    aspectLabel: '16:5',
-    mockColors: ['#111a07', '#4d7c0f', '#f7fee7', '#1a2e05'],
+    Preview: PreviewAplusBanner,
   },
 ]
-
-function MockImagePreview({ colors, aspect }: { colors: string[]; aspect: string }) {
-  const isWide = aspect === '16:9' || aspect === '16:5'
-  return (
-    <div
-      className="w-full overflow-hidden rounded-lg mb-4"
-      style={{
-        aspectRatio: isWide ? '16/6' : '4/3',
-        background: colors[0],
-        position: 'relative',
-      }}
-    >
-      <div className="absolute inset-0 flex items-center justify-center">
-        <div className="w-1/2 h-2/3 rounded-lg opacity-70" style={{ background: colors[1] }} />
-      </div>
-      <div className="absolute inset-0 flex flex-wrap gap-1 opacity-20 p-2">
-        {[...Array(6)].map((_, i) => (
-          <div key={i} className="h-1.5 rounded-full" style={{ background: colors[3], width: `${30 + i * 8}%` }} />
-        ))}
-      </div>
-      <div
-        className="absolute bottom-2 right-2 text-xs font-mono px-1.5 py-0.5 rounded"
-        style={{ background: 'rgba(0,0,0,0.4)', color: 'rgba(255,255,255,0.55)' }}
-      >
-        {aspect}
-      </div>
-    </div>
-  )
-}
 
 export default function ImageStudioSection() {
   return (
@@ -100,7 +162,7 @@ export default function ImageStudioSection() {
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          backgroundImage: 'radial-gradient(ellipse 80% 50% at 50% 0%, rgba(83,58,253,0.06) 0%, transparent 60%)',
+          backgroundImage: 'radial-gradient(ellipse 80% 50% at 50% 0%, rgba(83,58,253,0.05) 0%, transparent 60%)',
         }}
       />
 
@@ -114,29 +176,45 @@ export default function ImageStudioSection() {
             className="font-black tracking-tight mb-5"
             style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-0.03em' }}
           >
-            Premium visuals.{' '}
-            <span className="gradient-text">Generated for your product.</span>
+            Amazon-ready{' '}
+            <span className="gradient-text">image pack.</span>
           </h2>
           <p className="text-lg max-w-2xl mx-auto leading-relaxed" style={{ color: 'var(--dp-ink-muted)' }}>
-            Upload your product images. Sellio generates a full Amazon-ready visual pack tailored to your listing and brand.
+            Generate the visuals your listing needs — from main image refresh to comparison graphics and A+ banners.
           </p>
         </AnimatedSection>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-12">
           {imageTypes.map((item, i) => (
             <AnimatedSection key={item.label} delay={0.06 * i}>
-              <div className="glass-card glass-card-hover rounded-2xl p-5 h-full">
-                <MockImagePreview colors={item.mockColors} aspect={item.aspectLabel} />
-                <div className="flex items-start justify-between gap-2 mb-2">
-                  <h3 className="text-sm font-bold" style={{ color: 'var(--dp-ink)' }}>{item.label}</h3>
+              <div
+                className="rounded-2xl p-4 h-full flex flex-col"
+                style={{
+                  background: 'white',
+                  border: '1px solid #E2E8F0',
+                  boxShadow: '0 1px 4px rgba(15,23,42,0.04), 0 4px 16px rgba(83,58,253,0.04)',
+                  transition: 'box-shadow 0.2s, transform 0.2s',
+                }}
+                onMouseEnter={e => {
+                  (e.currentTarget as HTMLDivElement).style.boxShadow = '0 4px 20px rgba(83,58,253,0.12), 0 1px 4px rgba(15,23,42,0.06)'
+                  ;(e.currentTarget as HTMLDivElement).style.transform = 'translateY(-2px)'
+                }}
+                onMouseLeave={e => {
+                  (e.currentTarget as HTMLDivElement).style.boxShadow = '0 1px 4px rgba(15,23,42,0.04), 0 4px 16px rgba(83,58,253,0.04)'
+                  ;(e.currentTarget as HTMLDivElement).style.transform = 'translateY(0)'
+                }}
+              >
+                <item.Preview />
+                <div className="flex items-start justify-between gap-2 mt-3 mb-1.5">
+                  <h3 className="text-sm font-bold" style={{ color: '#0F172A' }}>{item.label}</h3>
                   <span
-                    className="text-xs px-2 py-0.5 rounded-full shrink-0"
-                    style={{ background: item.tagBg, color: item.tagColor, border: `1px solid ${item.tagColor}28` }}
+                    className="text-xs px-2 py-0.5 rounded-full shrink-0 font-medium"
+                    style={{ background: '#EEF0FF', color: '#533AFD', border: '1px solid rgba(83,58,253,0.15)' }}
                   >
                     {item.tag}
                   </span>
                 </div>
-                <p className="text-xs leading-relaxed" style={{ color: 'var(--dp-ink-muted)' }}>{item.desc}</p>
+                <p className="text-xs leading-relaxed" style={{ color: '#475569' }}>{item.desc}</p>
               </div>
             </AnimatedSection>
           ))}

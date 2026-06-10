@@ -1,6 +1,6 @@
 ﻿import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { ArrowRight, TrendingUp } from 'lucide-react'
+import { ArrowRight, TrendingUp, Check } from 'lucide-react'
 
 const EASE = [0.21, 0.47, 0.32, 0.98] as const
 
@@ -202,7 +202,7 @@ export default function HeroSection() {
   }
 
   return (
-    <section className="relative min-h-screen flex items-center overflow-hidden" style={{ paddingTop: '5.5rem' }}>
+    <section className="relative min-h-screen flex items-center overflow-hidden" style={{ paddingTop: '6rem' }}>
       <div className="absolute inset-0 pointer-events-none">
         <div
           className="absolute rounded-full"
@@ -300,33 +300,18 @@ export default function HeroSection() {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.44, ease: EASE }}
-              className="hero-stats"
-              style={{ borderTop: '1px solid rgba(196,188,255,0.35)', paddingTop: '1rem' }}
+              style={{ display: 'flex', gap: '0.625rem', flexWrap: 'wrap' }}
             >
-              {[
-                { value: '2,400+', label: 'Listings Audited' },
-                { value: '94%', label: 'Score Improvement' },
-                { value: '< 60s', label: 'To First Insight' },
-              ].map((stat, i) => (
-                <div key={stat.label} className="flex items-center gap-4">
-                  {i > 0 && (
-                    <div style={{ width: '1px', height: '2rem', background: 'rgba(196,188,255,0.40)' }} />
-                  )}
-                  <div>
-                    <div
-                      className="text-2xl font-black leading-none mb-0.5"
-                      style={{
-                        background: 'linear-gradient(135deg, #533AFD, #6A55FE)',
-                        WebkitBackgroundClip: 'text',
-                        WebkitTextFillColor: 'transparent',
-                        backgroundClip: 'text',
-                      }}
-                    >
-                      {stat.value}
-                    </div>
-                    <div className="text-xs" style={{ color: 'var(--dp-ink-muted)' }}>{stat.label}</div>
-                  </div>
-                </div>
+              {['Amazon-ready copy', 'AI image pack', 'Score in 60s'].map(item => (
+                <span key={item} style={{
+                  display: 'inline-flex', alignItems: 'center', gap: '0.375rem',
+                  padding: '0.3125rem 0.75rem', borderRadius: '99px',
+                  background: 'rgba(83,58,253,0.05)', border: '1px solid rgba(196,188,255,0.45)',
+                  fontSize: '0.8125rem', color: 'var(--dp-ink-secondary)', fontWeight: 500,
+                }}>
+                  <Check size={11} color="#2F9E6F" strokeWidth={2.5} />
+                  {item}
+                </span>
               ))}
             </motion.div>
           </div>

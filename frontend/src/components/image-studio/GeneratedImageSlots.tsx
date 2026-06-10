@@ -23,10 +23,10 @@ function formatDate(iso: string) {
 function GenStatusBadge({ status }: { status: ImageGeneration['status'] }) {
   const cfg =
     status === 'completed'
-      ? { label: 'Generated', c: '#34d399', bg: 'rgba(52,211,153,0.08)', bd: 'rgba(52,211,153,0.2)' }
+      ? { label: 'Generated', c: '#2F9E6F', bg: '#ECF8F1', bd: 'rgba(47,158,111,0.25)' }
       : status === 'generating'
-      ? { label: 'Generating', c: '#fbbf24', bg: 'rgba(251,191,36,0.08)', bd: 'rgba(251,191,36,0.22)' }
-      : { label: 'Failed', c: '#f87171', bg: 'rgba(248,113,113,0.07)', bd: 'rgba(248,113,113,0.18)' }
+      ? { label: 'Generating', c: '#B7791F', bg: '#FFF7E6', bd: 'rgba(183,121,31,0.28)' }
+      : { label: 'Failed', c: '#C2413A', bg: '#FFF1F1', bd: 'rgba(194,65,58,0.25)' }
   return (
     <span style={{
       padding: '0.1875rem 0.5rem', borderRadius: '99px',
@@ -111,18 +111,19 @@ function GeneratedCard({ gen, isRegenerating, onDelete, onRegenerate, onPreview 
     <div
       style={{
         borderRadius: '0.875rem', overflow: 'hidden',
-        background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.08)',
+        background: '#ffffff', border: '1px solid rgba(196,188,255,0.40)',
         display: 'flex', flexDirection: 'column',
-        transition: 'border-color 0.15s',
+        transition: 'border-color 0.2s, box-shadow 0.2s',
         cursor: gen.status === 'completed' ? 'pointer' : 'default',
+        boxShadow: '0 2px 8px rgba(83,58,253,0.05)',
       }}
-      onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.14)' }}
-      onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)' }}
+      onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(83,58,253,0.3)'; e.currentTarget.style.boxShadow = '0 4px 16px rgba(83,58,253,0.1)' }}
+      onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(196,188,255,0.40)'; e.currentTarget.style.boxShadow = '0 2px 8px rgba(83,58,253,0.05)' }}
       onClick={() => gen.status === 'completed' && onPreview(gen)}
     >
       {gen.status === 'completed' && gen.image_url && !imgError ? (
         <div style={{
-          background: 'rgba(0,0,0,0.25)', aspectRatio: '1 / 1',
+          background: '#F4F2FF', aspectRatio: '1 / 1',
           overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center',
         }}>
           <img
@@ -137,7 +138,7 @@ function GeneratedCard({ gen, isRegenerating, onDelete, onRegenerate, onPreview 
         <div style={{
           aspectRatio: '1 / 1', display: 'flex', flexDirection: 'column',
           alignItems: 'center', justifyContent: 'center', gap: '0.75rem',
-          background: 'rgba(255,255,255,0.015)', padding: '1.25rem',
+          background: '#F4F2FF', padding: '1.25rem',
         }}>
           <ImageIcon size={26} color="rgba(148,163,184,0.3)" />
           <div style={{ fontSize: '0.6875rem', color: 'var(--dp-ink-muted)', textAlign: 'center' }}>
@@ -162,7 +163,7 @@ function GeneratedCard({ gen, isRegenerating, onDelete, onRegenerate, onPreview 
         <div style={{
           aspectRatio: '1 / 1', display: 'flex', flexDirection: 'column',
           alignItems: 'center', justifyContent: 'center', gap: '0.75rem',
-          background: 'rgba(255,255,255,0.015)', padding: '1.25rem',
+          background: '#F4F2FF', padding: '1.25rem',
         }}>
           <ImageIcon size={26} color="rgba(148,163,184,0.3)" />
           <div style={{ fontSize: '0.6875rem', color: 'var(--dp-ink-muted)', textAlign: 'center' }}>
@@ -200,8 +201,8 @@ function GeneratedCard({ gen, isRegenerating, onDelete, onRegenerate, onPreview 
             <span style={{
               display: 'inline-flex', alignItems: 'center', gap: '0.1875rem',
               padding: '0.125rem 0.4375rem', borderRadius: '99px',
-              background: 'rgba(52,211,153,0.07)', border: '1px solid rgba(52,211,153,0.18)',
-              fontSize: '0.5625rem', fontWeight: 700, color: '#34d399',
+              background: '#ECF8F1', border: '1px solid rgba(47,158,111,0.25)',
+              fontSize: '0.5625rem', fontWeight: 700, color: '#2F9E6F',
               textTransform: 'uppercase', letterSpacing: '0.05em',
             }}>
               Reference-based
@@ -221,10 +222,10 @@ function GeneratedCard({ gen, isRegenerating, onDelete, onRegenerate, onPreview 
           <span style={{
             display: 'inline-flex', alignItems: 'center', gap: '0.1875rem',
             padding: '0.125rem 0.4375rem', borderRadius: '99px',
-            background: gen.product_locked ? 'rgba(163,230,53,0.06)' : 'rgba(255,255,255,0.03)',
-            border: `1px solid ${gen.product_locked ? 'rgba(163,230,53,0.15)' : 'rgba(196,188,255,0.40)'}`,
+            background: gen.product_locked ? '#ECF8F1' : 'rgba(83,58,253,0.03)',
+            border: `1px solid ${gen.product_locked ? 'rgba(47,158,111,0.25)' : 'rgba(196,188,255,0.35)'}`,
             fontSize: '0.5625rem', fontWeight: 700,
-            color: gen.product_locked ? 'var(--dp-primary)' : '#475569',
+            color: gen.product_locked ? '#2F9E6F' : '#475569',
             textTransform: 'uppercase' as const, letterSpacing: '0.05em',
           }}>
             Product locked: {gen.product_locked ? 'Yes' : 'No'}
@@ -251,10 +252,10 @@ function GeneratedCard({ gen, isRegenerating, onDelete, onRegenerate, onPreview 
               onClick={() => onPreview(gen)}
               style={{
                 ...btnBase,
-                background: 'rgba(83,58,253,0.04)', borderColor: 'rgba(255,255,255,0.1)',
+                background: 'rgba(83,58,253,0.04)', borderColor: 'rgba(196,188,255,0.40)',
                 color: 'var(--dp-ink-muted)',
               }}
-              onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.08)' }}
+              onMouseEnter={e => { e.currentTarget.style.background = 'rgba(83,58,253,0.08)' }}
               onMouseLeave={e => { e.currentTarget.style.background = 'rgba(83,58,253,0.04)' }}
             >
               <Eye size={11} />
@@ -269,13 +270,13 @@ function GeneratedCard({ gen, isRegenerating, onDelete, onRegenerate, onPreview 
               disabled={downloading}
               style={{
                 ...btnBase,
-                background: downloading ? 'rgba(163,230,53,0.04)' : 'rgba(83,58,253,0.08)',
+                background: downloading ? 'rgba(83,58,253,0.04)' : 'rgba(83,58,253,0.08)',
                 borderColor: 'rgba(83,58,253,0.2)',
                 color: 'var(--dp-primary)',
                 opacity: downloading ? 0.7 : 1,
               }}
-              onMouseEnter={e => { if (!downloading) e.currentTarget.style.background = 'rgba(163,230,53,0.14)' }}
-              onMouseLeave={e => { e.currentTarget.style.background = downloading ? 'rgba(163,230,53,0.04)' : 'rgba(83,58,253,0.08)' }}
+              onMouseEnter={e => { if (!downloading) e.currentTarget.style.background = 'rgba(83,58,253,0.14)' }}
+              onMouseLeave={e => { e.currentTarget.style.background = downloading ? 'rgba(83,58,253,0.04)' : 'rgba(83,58,253,0.08)' }}
             >
               {downloading
                 ? <Loader2 size={11} style={{ animation: 'spin 1s linear infinite' }} />
@@ -291,12 +292,12 @@ function GeneratedCard({ gen, isRegenerating, onDelete, onRegenerate, onPreview 
             disabled={isRegenerating}
             style={{
               ...btnBase,
-              background: 'rgba(255,255,255,0.03)', borderColor: 'rgba(255,255,255,0.08)',
+              background: 'rgba(83,58,253,0.03)', borderColor: 'rgba(196,188,255,0.40)',
               color: 'var(--dp-ink-muted)',
               opacity: isRegenerating ? 0.5 : 1,
             }}
             onMouseEnter={e => { if (!isRegenerating) e.currentTarget.style.background = 'rgba(196,188,255,0.40)' }}
-            onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.03)' }}
+            onMouseLeave={e => { e.currentTarget.style.background = 'rgba(83,58,253,0.03)' }}
           >
             {isRegenerating
               ? <Loader2 size={11} style={{ animation: 'spin 1s linear infinite' }} />
@@ -311,9 +312,9 @@ function GeneratedCard({ gen, isRegenerating, onDelete, onRegenerate, onPreview 
               onClick={handleCopyPrompt}
               style={{
                 ...btnBase,
-                background: promptCopied ? 'rgba(74,222,128,0.07)' : 'rgba(255,255,255,0.03)',
-                borderColor: promptCopied ? 'rgba(74,222,128,0.2)' : 'rgba(255,255,255,0.08)',
-                color: promptCopied ? '#4ade80' : '#64748b',
+                background: promptCopied ? '#ECF8F1' : 'rgba(83,58,253,0.03)',
+                borderColor: promptCopied ? 'rgba(47,158,111,0.25)' : 'rgba(196,188,255,0.35)',
+                color: promptCopied ? '#2F9E6F' : '#64748b',
               }}
             >
               {promptCopied ? <Check size={11} /> : <Copy size={11} />}
@@ -357,7 +358,7 @@ function GeneratedCard({ gen, isRegenerating, onDelete, onRegenerate, onPreview 
                 onClick={e => { e.stopPropagation(); setConfirmDelete(false) }}
                 style={{
                   ...btnBase,
-                  background: 'rgba(83,58,253,0.04)', borderColor: 'rgba(255,255,255,0.09)',
+                  background: 'rgba(83,58,253,0.04)', borderColor: 'rgba(196,188,255,0.40)',
                   color: 'var(--dp-ink-muted)',
                 }}
               >
@@ -525,14 +526,14 @@ export default function GeneratedImageSlots({
       }}>
         <div style={{
           width: 3, height: 14, borderRadius: 2,
-          background: 'linear-gradient(180deg, #a3e635, #34d399)', flexShrink: 0,
+          background: 'linear-gradient(180deg, #7A66FF, #533AFD)', flexShrink: 0,
         }} />
         <span style={sectionLabelStyle}>Generated Images</span>
         {completed.length > 0 && (
           <span style={{
             padding: '0.125rem 0.5rem', borderRadius: '99px',
-            background: 'rgba(52,211,153,0.07)', border: '1px solid rgba(52,211,153,0.18)',
-            fontSize: '0.5625rem', fontWeight: 700, color: '#34d399',
+            background: '#ECF8F1', border: '1px solid rgba(47,158,111,0.25)',
+            fontSize: '0.5625rem', fontWeight: 700, color: '#2F9E6F',
             textTransform: 'uppercase', letterSpacing: '0.06em',
           }}>
             {completed.length} ready
@@ -543,17 +544,17 @@ export default function GeneratedImageSlots({
       {completed.length === 0 && failed.length === 0 ? (
         <div style={{
           borderRadius: '0.875rem', padding: '2rem 1.5rem',
-          border: '1px dashed rgba(196,188,255,0.40)',
-          background: 'rgba(255,255,255,0.01)',
+          border: '1px dashed rgba(196,188,255,0.45)',
+          background: 'rgba(238,240,255,0.3)',
           display: 'flex', flexDirection: 'column', alignItems: 'center',
           gap: '0.625rem', textAlign: 'center',
         }}>
           <div style={{
             width: 40, height: 40, borderRadius: '0.625rem',
-            background: 'rgba(163,230,53,0.04)', border: '1px solid rgba(83,58,253,0.1)',
+            background: 'rgba(83,58,253,0.06)', border: '1px solid rgba(196,188,255,0.45)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
           }}>
-            <ImageIcon size={18} color="rgba(163,230,53,0.3)" />
+            <ImageIcon size={18} color="rgba(83,58,253,0.35)" />
           </div>
           <div style={{ fontSize: '0.8125rem', color: 'var(--dp-ink-muted)', lineHeight: 1.6 }}>
             No images generated yet.
@@ -565,8 +566,8 @@ export default function GeneratedImageSlots({
           {completed.length === 0 && failed.length > 0 && (
             <div style={{
               borderRadius: '0.875rem', padding: '1.25rem 1.5rem',
-              border: '1px dashed rgba(196,188,255,0.40)',
-              background: 'rgba(255,255,255,0.01)',
+              border: '1px dashed rgba(196,188,255,0.45)',
+              background: 'rgba(238,240,255,0.3)',
               display: 'flex', flexDirection: 'column', alignItems: 'center',
               gap: '0.5rem', textAlign: 'center', marginBottom: '1.25rem',
             }}>

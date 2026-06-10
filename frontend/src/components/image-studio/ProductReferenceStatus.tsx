@@ -15,7 +15,7 @@ export default function ProductReferenceStatus({ images }: Props) {
     return (
       <div style={{
         borderRadius: '0.75rem', padding: '1rem 1.25rem',
-        background: 'rgba(52,211,153,0.04)', border: '1px solid rgba(52,211,153,0.18)',
+        background: 'rgba(47,158,111,0.04)', border: '1px solid rgba(47,158,111,0.18)',
         marginBottom: '1.5rem',
         display: 'flex', alignItems: 'flex-start', gap: '1rem', flexWrap: 'wrap',
       }}>
@@ -23,7 +23,7 @@ export default function ProductReferenceStatus({ images }: Props) {
           {firstImage && (
             <div style={{
               width: 64, height: 64, borderRadius: '0.5rem', flexShrink: 0,
-              border: '1px solid rgba(52,211,153,0.25)', overflow: 'hidden',
+              border: '1px solid rgba(47,158,111,0.25)', overflow: 'hidden',
               background: 'rgba(0,0,0,0.2)',
             }}>
               <img
@@ -35,13 +35,13 @@ export default function ProductReferenceStatus({ images }: Props) {
           )}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3125rem' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.4375rem' }}>
-              <ShieldCheck size={14} color="#34d399" style={{ flexShrink: 0 }} />
+              <ShieldCheck size={14} color="#2F9E6F" style={{ flexShrink: 0 }} />
               <span style={{ fontSize: '0.875rem', fontWeight: 700, color: 'var(--dp-ink)', letterSpacing: '-0.01em' }}>
                 Reference product detected
               </span>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.1875rem' }}>
-              <span style={{ fontSize: '0.75rem', color: '#34d399' }}>
+              <span style={{ fontSize: '0.75rem', color: '#2F9E6F' }}>
                 Using your uploaded product photo
               </span>
               <span style={{ fontSize: '0.75rem', color: 'var(--dp-ink-muted)' }}>
@@ -60,8 +60,8 @@ export default function ProductReferenceStatus({ images }: Props) {
           <span style={{
             display: 'inline-flex', alignItems: 'center', gap: '0.3125rem',
             padding: '0.25rem 0.625rem', borderRadius: '99px',
-            background: 'rgba(52,211,153,0.08)', border: '1px solid rgba(52,211,153,0.22)',
-            fontSize: '0.6875rem', fontWeight: 700, color: '#34d399',
+            background: 'rgba(47,158,111,0.08)', border: '1px solid rgba(47,158,111,0.22)',
+            fontSize: '0.6875rem', fontWeight: 700, color: '#2F9E6F',
             whiteSpace: 'nowrap',
           }}>
             <Camera size={10} />

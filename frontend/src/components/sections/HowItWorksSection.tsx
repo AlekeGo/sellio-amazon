@@ -42,7 +42,7 @@ export default function HowItWorksSection() {
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          backgroundImage: 'radial-gradient(ellipse 70% 50% at 50% 100%, rgba(52,211,153,0.06) 0%, transparent 60%)',
+          backgroundImage: 'radial-gradient(ellipse 70% 50% at 50% 100%, rgba(83,58,253,0.05) 0%, transparent 60%)',
         }}
       />
 

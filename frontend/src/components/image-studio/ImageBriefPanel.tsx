@@ -4,12 +4,12 @@ import type { ImagePackPlanItem } from '../../types/audit'
 import type { ImageGeneration, QualityOptions } from '../../types/imageGeneration'
 
 const GRADIENTS = [
-  'linear-gradient(135deg, #166534, #4ade80)',
-  'linear-gradient(135deg, #065f46, #34d399)',
-  'linear-gradient(135deg, #14532d, #22c55e)',
-  'linear-gradient(135deg, #3f6212, #a3e635)',
-  'linear-gradient(135deg, #166534, #4ade80)',
-  'linear-gradient(135deg, #065f46, #34d399)',
+  'linear-gradient(135deg, #6A55FE 0%, #533AFD 100%)',
+  'linear-gradient(135deg, #533AFD 0%, #7C6FFF 100%)',
+  'linear-gradient(135deg, #7C3AED 0%, #533AFD 100%)',
+  'linear-gradient(135deg, #4B35F0 0%, #6A55FE 100%)',
+  'linear-gradient(135deg, #6A55FE 0%, #533AFD 100%)',
+  'linear-gradient(135deg, #533AFD 0%, #7C6FFF 100%)',
 ]
 
 const STYLE_DIRECTIONS = [
@@ -159,8 +159,8 @@ export default function ImageBriefPanel({
     }}>
       <div style={{
         padding: '1.125rem 1.375rem',
-        background: 'rgba(163,230,53,0.03)',
-        borderBottom: '1px solid rgba(163,230,53,0.11)',
+        background: 'rgba(83,58,253,0.03)',
+        borderBottom: '1px solid rgba(83,58,253,0.12)',
         display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap',
       }}>
         <div style={{
@@ -172,7 +172,7 @@ export default function ImageBriefPanel({
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{
-            fontSize: '0.5625rem', fontWeight: 700, color: 'rgba(52,211,153,0.7)',
+            fontSize: '0.5625rem', fontWeight: 700, color: 'rgba(83,58,253,0.6)',
             textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 1,
           }}>
             Creative Brief
@@ -184,10 +184,10 @@ export default function ImageBriefPanel({
         <span style={{
           display: 'inline-flex', alignItems: 'center', gap: '0.3125rem',
           padding: '0.25rem 0.5625rem', borderRadius: '99px', flexShrink: 0,
-          background: hasReference ? 'rgba(52,211,153,0.08)' : 'rgba(83,58,253,0.04)',
-          border: `1px solid ${hasReference ? 'rgba(52,211,153,0.2)' : 'rgba(255,255,255,0.08)'}`,
+          background: hasReference ? 'rgba(47,158,111,0.08)' : 'rgba(83,58,253,0.04)',
+          border: `1px solid ${hasReference ? 'rgba(47,158,111,0.2)' : 'rgba(255,255,255,0.08)'}`,
           fontSize: '0.5625rem', fontWeight: 700,
-          color: hasReference ? '#34d399' : '#64748b',
+          color: hasReference ? '#2F9E6F' : '#64748b',
           textTransform: 'uppercase' as const, letterSpacing: '0.07em',
         }}>
           <Camera size={9} />
@@ -206,7 +206,7 @@ export default function ImageBriefPanel({
           <FieldRow label="Headline">
             <div style={{
               padding: '0.625rem 0.875rem', borderRadius: '0.5rem',
-              background: 'rgba(163,230,53,0.04)', border: '1px solid rgba(83,58,253,0.12)',
+              background: 'rgba(83,58,253,0.04)', border: '1px solid rgba(83,58,253,0.12)',
               fontSize: '0.9375rem', fontWeight: 700, color: 'var(--dp-primary)',
               letterSpacing: '-0.01em', wordBreak: 'break-word',
             }}>
@@ -227,7 +227,7 @@ export default function ImageBriefPanel({
               {item.text_elements.map((el, i) => (
                 <span key={i} style={{
                   padding: '0.25rem 0.625rem', borderRadius: '0.375rem',
-                  background: 'rgba(52,211,153,0.06)', border: '1px solid rgba(52,211,153,0.14)',
+                  background: 'rgba(47,158,111,0.06)', border: '1px solid rgba(47,158,111,0.14)',
                   fontSize: '0.75rem', color: 'var(--dp-ink-muted)',
                 }}>
                   {el}
@@ -258,12 +258,12 @@ export default function ImageBriefPanel({
         margin: '0 1.375rem',
         padding: '1rem 1.125rem',
         borderRadius: '0.625rem',
-        background: 'rgba(163,230,53,0.025)',
+        background: 'rgba(83,58,253,0.03)',
         border: '1px solid rgba(83,58,253,0.1)',
         marginBottom: '1rem',
       }}>
         <div style={{
-          fontSize: '0.5625rem', fontWeight: 700, color: 'rgba(163,230,53,0.6)',
+          fontSize: '0.5625rem', fontWeight: 700, color: 'rgba(83,58,253,0.5)',
           textTransform: 'uppercase', letterSpacing: '0.09em', marginBottom: '0.875rem',
         }}>
           Quality Controls
@@ -284,7 +284,7 @@ export default function ImageBriefPanel({
                 fontFamily: 'inherit', resize: 'vertical',
                 outline: 'none', transition: 'border-color 0.15s',
               }}
-              onFocus={e => { e.currentTarget.style.borderColor = 'rgba(163,230,53,0.35)' }}
+              onFocus={e => { e.currentTarget.style.borderColor = 'rgba(83,58,253,0.35)' }}
               onBlur={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)' }}
             />
             <div style={{ fontSize: '0.6875rem', color: 'var(--dp-ink-muted)', marginTop: '0.375rem', lineHeight: 1.5 }}>
@@ -297,7 +297,7 @@ export default function ImageBriefPanel({
               value={quality.styleDirection}
               onChange={e => setQuality(q => ({ ...q, styleDirection: e.target.value }))}
               style={selectStyle}
-              onFocus={e => { e.currentTarget.style.borderColor = 'rgba(163,230,53,0.35)' }}
+              onFocus={e => { e.currentTarget.style.borderColor = 'rgba(83,58,253,0.35)' }}
               onBlur={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)' }}
             >
               {STYLE_DIRECTIONS.map(o => (
@@ -313,7 +313,7 @@ export default function ImageBriefPanel({
               value={quality.backgroundPreference}
               onChange={e => setQuality(q => ({ ...q, backgroundPreference: e.target.value }))}
               style={selectStyle}
-              onFocus={e => { e.currentTarget.style.borderColor = 'rgba(163,230,53,0.35)' }}
+              onFocus={e => { e.currentTarget.style.borderColor = 'rgba(83,58,253,0.35)' }}
               onBlur={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)' }}
             >
               {BACKGROUND_PREFS.map(o => (
@@ -329,7 +329,7 @@ export default function ImageBriefPanel({
               value={quality.textIntensity}
               onChange={e => setQuality(q => ({ ...q, textIntensity: e.target.value }))}
               style={selectStyle}
-              onFocus={e => { e.currentTarget.style.borderColor = 'rgba(163,230,53,0.35)' }}
+              onFocus={e => { e.currentTarget.style.borderColor = 'rgba(83,58,253,0.35)' }}
               onBlur={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)' }}
             >
               {TEXT_INTENSITIES.map(o => (
@@ -363,7 +363,7 @@ export default function ImageBriefPanel({
               padding: '0.25rem 0.625rem', borderRadius: '0.375rem',
               background: copied ? 'rgba(74,222,128,0.1)' : 'rgba(255,255,255,0.05)',
               border: `1px solid ${copied ? 'rgba(74,222,128,0.25)' : 'rgba(255,255,255,0.1)'}`,
-              color: copied ? '#4ade80' : '#64748b',
+              color: copied ? '#2F9E6F' : '#64748b',
               fontSize: '0.6875rem', fontWeight: 600,
               cursor: 'pointer', fontFamily: 'inherit',
               transition: 'all 0.15s',
@@ -388,14 +388,14 @@ export default function ImageBriefPanel({
         <div style={{
           display: 'flex', alignItems: 'center', gap: '0.4375rem',
           padding: '0.5rem 0.75rem', borderRadius: '0.5rem',
-          background: hasReference ? 'rgba(52,211,153,0.04)' : 'rgba(251,191,36,0.04)',
-          border: `1px solid ${hasReference ? 'rgba(52,211,153,0.14)' : 'rgba(251,191,36,0.16)'}`,
+          background: hasReference ? 'rgba(47,158,111,0.04)' : 'rgba(251,191,36,0.04)',
+          border: `1px solid ${hasReference ? 'rgba(47,158,111,0.14)' : 'rgba(251,191,36,0.16)'}`,
         }}>
           {hasReference
-            ? <Camera size={12} color="#34d399" style={{ flexShrink: 0 }} />
+            ? <Camera size={12} color="#2F9E6F" style={{ flexShrink: 0 }} />
             : <AlertTriangle size={12} color="rgba(251,191,36,0.7)" style={{ flexShrink: 0 }} />
           }
-          <span style={{ fontSize: '0.75rem', color: hasReference ? '#34d399' : '#fbbf24', lineHeight: 1.5 }}>
+          <span style={{ fontSize: '0.75rem', color: hasReference ? '#2F9E6F' : '#fbbf24', lineHeight: 1.5 }}>
             {hasReference
               ? 'Your product photo will be used as the visual reference.'
               : 'No reference photo detected. Result may be less accurate.'
@@ -431,9 +431,9 @@ export default function ImageBriefPanel({
           style={{
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
             padding: '0.6875rem 1.25rem', borderRadius: '0.5rem', width: '100%',
-            background: isGenerating ? 'rgba(163,230,53,0.06)' : 'var(--dp-primary)',
+            background: isGenerating ? 'rgba(83,58,253,0.06)' : 'var(--dp-primary)',
             border: 'none',
-            color: isGenerating ? 'rgba(163,230,53,0.55)' : '#071008',
+            color: isGenerating ? 'rgba(83,58,253,0.45)' : '#071008',
             fontSize: '0.875rem', fontWeight: 700,
             cursor: isGenerating ? 'not-allowed' : 'pointer',
             fontFamily: 'inherit', transition: 'all 0.15s',
@@ -450,7 +450,7 @@ export default function ImageBriefPanel({
         {generation?.status === 'completed' && generation.image_url && (
           <div style={{
             borderRadius: '0.5rem', overflow: 'hidden',
-            border: '1px solid rgba(52,211,153,0.18)',
+            border: '1px solid rgba(83,58,253,0.18)',
             background: 'rgba(0,0,0,0.2)',
           }}>
             <img

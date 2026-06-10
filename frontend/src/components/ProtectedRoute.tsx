@@ -14,8 +14,8 @@ export default function ProtectedRoute() {
               width: 36,
               height: 36,
               borderRadius: '50%',
-              border: '2px solid rgba(163,230,53,0.12)',
-              borderTopColor: '#a3e635',
+              border: '2px solid rgba(83,58,253,0.12)',
+              borderTopColor: '#533AFD',
               animation: 'spin 0.75s linear infinite',
             }}
           />

@@ -83,7 +83,7 @@ export default function ImageStudioHeader({ audit, result }: Props) {
       <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1.5rem', flexWrap: 'wrap', position: 'relative' }}>
         <div style={{ flex: 1, minWidth: 200 }}>
           <div style={{
-            fontSize: '0.5875rem', fontWeight: 700, color: 'rgba(52,211,153,0.7)',
+            fontSize: '0.5875rem', fontWeight: 700, color: 'rgba(83,58,253,0.6)',
             textTransform: 'uppercase', letterSpacing: '0.12em', marginBottom: '0.5rem',
           }}>
             Image Studio

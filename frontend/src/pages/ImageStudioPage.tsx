@@ -6,37 +6,37 @@ const IMAGE_CATEGORIES = [
     title: 'Main Image Refresh',
     desc: 'Clean, high-converting hero image with white background optimization.',
     goal: 'Drive click-through with a conversion-optimized main image.',
-    gradient: 'linear-gradient(135deg, #166534, #4ade80)',
+    gradient: 'linear-gradient(135deg, #6A55FE 0%, #533AFD 100%)',
   },
   {
     title: 'Benefit Infographic',
     desc: "Visual breakdown of your product's top features and benefits.",
     goal: 'Communicate value without requiring the shopper to read.',
-    gradient: 'linear-gradient(135deg, #065f46, #34d399)',
+    gradient: 'linear-gradient(135deg, #533AFD 0%, #7C6FFF 100%)',
   },
   {
     title: 'Comparison Graphic',
     desc: 'Side-by-side comparison showing why your product wins.',
     goal: 'Disqualify alternatives and position as the obvious choice.',
-    gradient: 'linear-gradient(135deg, #14532d, #22c55e)',
+    gradient: 'linear-gradient(135deg, #7C3AED 0%, #533AFD 100%)',
   },
   {
     title: 'How It Works Visual',
     desc: 'Step-by-step visual walkthrough for complex or multi-use products.',
     goal: 'Remove purchase hesitation by showing simplicity.',
-    gradient: 'linear-gradient(135deg, #3f6212, #a3e635)',
+    gradient: 'linear-gradient(135deg, #4B35F0 0%, #6A55FE 100%)',
   },
   {
     title: 'Lifestyle Visual',
     desc: 'Product in real-world context to build emotional connection.',
     goal: 'Build emotional connection with your target buyer persona.',
-    gradient: 'linear-gradient(135deg, #166534, #4ade80)',
+    gradient: 'linear-gradient(135deg, #6A55FE 0%, #533AFD 100%)',
   },
   {
     title: 'A+ Banner Concept',
     desc: 'Premium Amazon A+ content banner with your brand positioning.',
     goal: 'Elevate brand trust and cross-sell potential at the bottom.',
-    gradient: 'linear-gradient(135deg, #065f46, #34d399)',
+    gradient: 'linear-gradient(135deg, #533AFD 0%, #7C6FFF 100%)',
   },
 ]
 
@@ -68,7 +68,7 @@ function SL({ children }: { children: React.ReactNode }) {
     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5625rem', marginBottom: '1rem' }}>
       <div style={{
         width: 3, height: 14, borderRadius: 2,
-        background: 'linear-gradient(180deg, #a3e635, #34d399)', flexShrink: 0,
+        background: 'linear-gradient(135deg, #6A55FE 0%, #533AFD 100%)', flexShrink: 0,
       }} />
       <span style={{
         fontSize: '0.6875rem', fontWeight: 700, color: '#6b7280',
@@ -138,7 +138,7 @@ export default function ImageStudioPage() {
             <div key={step.num}>
               <div style={{
                 fontSize: '1.625rem', fontWeight: 900,
-                color: 'rgba(163,230,53,0.2)', letterSpacing: '-0.04em',
+                color: 'rgba(83,58,253,0.2)', letterSpacing: '-0.04em',
                 lineHeight: 1, marginBottom: '0.5rem',
               }}>
                 {step.num}
@@ -170,7 +170,7 @@ export default function ImageStudioPage() {
                 transition: 'border-color 0.2s, background 0.2s',
               }}
               onMouseEnter={e => {
-                e.currentTarget.style.borderColor = 'rgba(163,230,53,0.2)'
+                e.currentTarget.style.borderColor = 'rgba(83,58,253,0.2)'
                 e.currentTarget.style.background = 'rgba(255,255,255,0.03)'
               }}
               onMouseLeave={e => {
@@ -198,7 +198,7 @@ export default function ImageStudioPage() {
                   {cat.desc}
                 </div>
                 <div style={{ fontSize: '0.6875rem', color: '#64748b', lineHeight: 1.5 }}>
-                  <span style={{ color: 'rgba(163,230,53,0.7)', fontWeight: 600 }}>Goal: </span>
+                  <span style={{ color: 'rgba(83,58,253,0.6)', fontWeight: 600 }}>Goal: </span>
                   {cat.goal}
                 </div>
               </div>
@@ -209,8 +209,8 @@ export default function ImageStudioPage() {
 
       <div style={{
         borderRadius: '0.875rem', padding: '1.5rem 1.75rem',
-        background: 'linear-gradient(135deg, rgba(163,230,53,0.05), rgba(52,211,153,0.03))',
-        border: '1px solid rgba(163,230,53,0.14)',
+        background: 'linear-gradient(135deg, rgba(83,58,253,0.05), rgba(83,58,253,0.04))',
+        border: '1px solid rgba(83,58,253,0.14)',
         display: 'flex', alignItems: 'center', gap: '1.25rem', flexWrap: 'wrap',
       }}>
         <div style={{ flex: 1, minWidth: 160 }}>
