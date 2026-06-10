@@ -177,7 +177,6 @@ export default function PricingSection() {
 
       <div className="container-xl relative z-10">
         <AnimatedSection className="text-center mb-14">
-          <div className="section-badge mx-auto w-fit mb-5">Pricing</div>
           <h2
             className="font-black tracking-tight mb-5"
             style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-0.03em' }}

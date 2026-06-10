@@ -40,11 +40,6 @@ export default function FinalCtaSection() {
             />
 
             <div className="relative z-10 max-w-2xl mx-auto">
-              <div className="section-badge mx-auto w-fit mb-7">
-                <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: 'var(--dp-primary)' }} />
-                Start Today
-              </div>
-
               <h2
                 className="font-black tracking-tight mb-5"
                 style={{ fontSize: 'clamp(2.25rem, 5vw, 3.5rem)', letterSpacing: '-0.03em', color: 'var(--dp-ink)' }}

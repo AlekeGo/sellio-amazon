@@ -93,13 +93,11 @@ export default function FaqSection() {
 
       <div className="container-xl relative z-10">
         <AnimatedSection className="text-center mb-12">
-          <div className="section-badge mx-auto w-fit mb-5">FAQ</div>
           <h2
             className="font-black tracking-tight mb-5"
             style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-0.03em' }}
           >
-            Common{' '}
-            <span className="gradient-text">questions</span>
+            FAQ
           </h2>
         </AnimatedSection>
 
