@@ -8,18 +8,14 @@ import { getMyBilling, getBillingPlans, createCheckoutSession, mockCompletePayme
 import type { BillingMeResponse, BillingPlan, CreditTransaction, Payment } from '../types/billing'
 
 const SUBSCRIPTION_KEYS = ['launch', 'pro', 'growth', 'agency']
-const ADDON_KEYS = ['extra_upgrade', 'extra_audit_pack']
 const HIGHLIGHTED_KEY = 'pro'
 
 const PLAN_DISPLAY_NAMES: Record<string, string> = {
   free_trial: 'Free Trial',
-  full_upgrade: 'Full Listing Upgrade',
   launch: 'Launch',
   pro: 'Pro',
   growth: 'Growth',
   agency: 'Agency',
-  extra_upgrade: 'Extra Full Upgrade',
-  extra_audit_pack: 'Extra Audit Pack',
 }
 
 function formatCents(cents: number) {
@@ -205,7 +201,6 @@ export default function BillingPage() {
   }
 
   const subscriptionPlans = plans.filter(p => SUBSCRIPTION_KEYS.includes(p.key))
-  const addonPlans = plans.filter(p => ADDON_KEYS.includes(p.key))
   const currentPlanKey = billingData?.profile.current_plan ?? 'free_trial'
   const balance = billingData?.balance
   const profile = billingData?.profile
@@ -497,63 +492,6 @@ export default function BillingPage() {
               })}
             </div>
           </div>
-
-          {addonPlans.length > 0 && (
-            <div style={{ marginBottom: '1.75rem' }}>
-              <SectionLabel>Add-ons</SectionLabel>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '0.75rem' }}>
-                {addonPlans.map(addon => {
-                  const isUpgrade = addon.key === 'extra_upgrade'
-                  const accentColor = 'var(--dp-primary)'
-                  const accentBg = 'rgba(83,58,253,0.05)'
-                  const accentBorder = 'rgba(83,58,253,0.20)'
-                  const Icon = isUpgrade ? Star : Zap
-                  return (
-                    <div key={addon.key} style={{
-                      borderRadius: '0.875rem', padding: '1.125rem 1.25rem',
-                      background: accentBg, border: `1px solid ${accentBorder}`,
-                      display: 'flex', alignItems: 'center', gap: '1rem',
-                    }}>
-                      <div style={{
-                        width: 40, height: 40, borderRadius: '0.625rem',
-                        background: `${accentColor}12`,
-                        border: `1px solid ${accentColor}30`,
-                        display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-                      }}>
-                        <Icon size={16} color={accentColor} />
-                      </div>
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        <p style={{ fontSize: '0.875rem', fontWeight: 700, color: 'var(--dp-ink)', margin: '0 0 0.25rem' }}>
-                          {addon.name}
-                        </p>
-                        <p style={{ fontSize: '0.75rem', color: 'var(--dp-ink-muted)', margin: 0, lineHeight: 1.5 }}>
-                          {addon.features[0]}
-                        </p>
-                      </div>
-                      <div style={{ flexShrink: 0, textAlign: 'right' }}>
-                        <div style={{ fontSize: '1.375rem', fontWeight: 900, color: accentColor, letterSpacing: '-0.04em', lineHeight: 1, marginBottom: '0.25rem' }}>
-                          {addon.price_display}
-                        </div>
-                        <button
-                          onClick={() => openCheckout(addon.key)}
-                          disabled={checkoutLoading}
-                          style={{
-                            padding: '0.3125rem 0.75rem', borderRadius: '0.4375rem',
-                            background: `${accentColor}14`, border: `1px solid ${accentColor}30`,
-                            color: accentColor, fontSize: '0.75rem', fontWeight: 700,
-                            cursor: 'pointer', fontFamily: 'inherit',
-                            opacity: checkoutLoading ? 0.6 : 1,
-                          }}
-                        >
-                          {checkoutLoading ? '…' : 'Buy'}
-                        </button>
-                      </div>
-                    </div>
-                  )
-                })}
-              </div>
-            </div>
-          )}
 
           <div style={{ marginBottom: '1.75rem' }}>
             <SectionLabel>Recent Transactions</SectionLabel>
