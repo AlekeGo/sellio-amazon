@@ -16,6 +16,7 @@ import ResultsPage from './pages/ResultsPage'
 import ImageStudioPage from './pages/ImageStudioPage'
 import BillingPage from './pages/BillingPage'
 import SettingsPage from './pages/SettingsPage'
+import DesignPreviewPage from './pages/DesignPreviewPage'
 
 const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID as string | undefined
 
@@ -25,6 +26,7 @@ function AppRoutes() {
       <AuthProvider>
         <Routes>
           <Route path="/" element={<LandingPage />} />
+          <Route path="/design-preview" element={<DesignPreviewPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/pricing" element={<PricingPage />} />
