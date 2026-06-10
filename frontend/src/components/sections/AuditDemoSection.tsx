@@ -397,7 +397,6 @@ export default function AuditDemoSection() {
           <Link to="/dashboard/new-audit" className="btn-primary">
             Run Your Free Audit <ArrowRight size={16} />
           </Link>
-          <p className="text-xs mt-3" style={{ color: '#64748B' }}>No credit card · No Amazon API needed · Results in seconds</p>
         </AnimatedSection>
       </div>
     </section>

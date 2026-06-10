@@ -9,10 +9,6 @@ const faqs = [
     a: 'Sellio performs a full AI audit across your title, bullet points, description, backend keywords, main image, A+ content strategy, and buyer review signals. Each element receives an individual score with specific, actionable improvement recommendations.',
   },
   {
-    q: 'Do I need Amazon API access to use Sellio?',
-    a: "No. You can paste your listing content directly into Sellio — no API connection or Amazon account linking required. For deeper analysis options, you can optionally provide an ASIN to pull additional context.",
-  },
-  {
     q: 'Does Sellio generate real product images?',
     a: "Yes. Sellio's Image Studio generates Amazon-ready product visuals including main images, benefit infographics, comparison slides, how-it-works visuals, and lifestyle concepts. Image generation is available on all paid plans.",
   },
@@ -32,10 +28,11 @@ function FaqItem({ q, a, index }: { q: string; a: string; index: number }) {
   return (
     <AnimatedSection delay={0.06 * index}>
       <div
-        className="rounded-2xl overflow-hidden transition-all duration-200"
+        className="rounded-xl overflow-hidden transition-all duration-200"
         style={{
-          background: open ? 'rgba(83,58,253,0.04)' : 'var(--glass-bg)',
-          border: open ? '1px solid rgba(83,58,253,0.2)' : '1px solid var(--glass-border)',
+          background: '#ffffff',
+          border: open ? '1px solid rgba(83,58,253,0.22)' : '1px solid #E2E8F0',
+          boxShadow: open ? '0 2px 16px rgba(83,58,253,0.07)' : '0 1px 4px rgba(15,23,42,0.04)',
         }}
       >
         <button
@@ -47,8 +44,8 @@ function FaqItem({ q, a, index }: { q: string; a: string; index: number }) {
           <div
             className="w-7 h-7 rounded-full flex items-center justify-center shrink-0 transition-all duration-200"
             style={{
-              background: open ? 'rgba(83,58,253,0.12)' : 'rgba(255,255,255,0.06)',
-              border: open ? '1px solid rgba(83,58,253,0.28)' : '1px solid rgba(255,255,255,0.1)',
+              background: open ? 'rgba(83,58,253,0.1)' : '#F1F5F9',
+              border: open ? '1px solid rgba(83,58,253,0.25)' : '1px solid #E2E8F0',
             }}
           >
             {open
@@ -83,25 +80,25 @@ function FaqItem({ q, a, index }: { q: string; a: string; index: number }) {
 
 export default function FaqSection() {
   return (
-    <section className="section-padding relative overflow-hidden">
+    <section className="relative overflow-hidden" style={{ padding: '3.5rem 0 5rem' }}>
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          backgroundImage: 'radial-gradient(ellipse 60% 40% at 80% 50%, rgba(83,58,253,0.05) 0%, transparent 60%)',
+          backgroundImage: 'radial-gradient(ellipse 60% 40% at 80% 50%, rgba(83,58,253,0.04) 0%, transparent 60%)',
         }}
       />
 
       <div className="container-xl relative z-10">
-        <AnimatedSection className="text-center mb-12">
+        <AnimatedSection className="text-center mb-8">
           <h2
-            className="font-black tracking-tight mb-5"
-            style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-0.03em' }}
+            className="font-black tracking-tight"
+            style={{ fontSize: 'clamp(1.75rem, 3.5vw, 2.5rem)', letterSpacing: '-0.03em' }}
           >
             FAQ
           </h2>
         </AnimatedSection>
 
-        <div className="max-w-2xl mx-auto space-y-3">
+        <div className="max-w-2xl mx-auto space-y-2.5">
           {faqs.map((faq, i) => (
             <FaqItem key={faq.q} q={faq.q} a={faq.a} index={i} />
           ))}

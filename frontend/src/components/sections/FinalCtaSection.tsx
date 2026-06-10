@@ -49,7 +49,7 @@ export default function FinalCtaSection() {
               </h2>
 
               <p className="text-lg leading-relaxed mb-10" style={{ color: 'var(--dp-ink-muted)' }}>
-                Run your first free audit in under 60 seconds. No credit card. No Amazon account needed.
+                Run your first free audit in under 60 seconds
               </p>
 
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -60,10 +60,6 @@ export default function FinalCtaSection() {
                   View Sample Report
                 </button>
               </div>
-
-              <p className="text-xs mt-6" style={{ color: 'var(--dp-ink-muted)' }}>
-                No credit card required · Results in seconds · Cancel anytime
-              </p>
             </div>
           </div>
         </AnimatedSection>

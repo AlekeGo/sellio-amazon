@@ -134,15 +134,12 @@ export default function PricingSection() {
       <div className="container-xl relative z-10">
         <AnimatedSection className="text-center mb-14">
           <h2
-            className="font-black tracking-tight mb-5"
-            style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-0.03em' }}
+            className="font-black tracking-tight"
+            style={{ fontSize: 'clamp(2.25rem, 4.5vw, 3.25rem)', letterSpacing: '-0.03em' }}
           >
             Built for sellers at{' '}
             <span className="gradient-text">every stage.</span>
           </h2>
-          <p className="text-lg max-w-2xl mx-auto leading-relaxed" style={{ color: 'var(--dp-ink-muted)' }}>
-            Start free. Upgrade when you're ready. Cancel anytime.
-          </p>
         </AnimatedSection>
 
         <AnimatedSection delay={0.05}>
@@ -200,8 +197,31 @@ export default function PricingSection() {
               <div className="flex-shrink-0">
                 <button
                   onClick={() => handlePlanClick('free_trial')}
-                  className="dp-btn-ghost"
-                  style={{ whiteSpace: 'nowrap', fontFamily: 'inherit' }}
+                  style={{
+                    whiteSpace: 'nowrap',
+                    fontFamily: 'inherit',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.5rem',
+                    padding: '0.625rem 1.75rem',
+                    borderRadius: '9999px',
+                    border: 'none',
+                    cursor: 'pointer',
+                    fontWeight: 700,
+                    fontSize: '0.9375rem',
+                    color: '#ffffff',
+                    background: 'linear-gradient(135deg, #533AFD 0%, #7C3AED 100%)',
+                    boxShadow: '0 4px 20px rgba(83,58,253,0.35), 0 1px 4px rgba(83,58,253,0.2)',
+                    transition: 'transform 0.18s ease, box-shadow 0.18s ease',
+                  }}
+                  onMouseEnter={e => {
+                    (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(-2px)'
+                    ;(e.currentTarget as HTMLButtonElement).style.boxShadow = '0 8px 28px rgba(83,58,253,0.45), 0 2px 8px rgba(83,58,253,0.25)'
+                  }}
+                  onMouseLeave={e => {
+                    (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(0)'
+                    ;(e.currentTarget as HTMLButtonElement).style.boxShadow = '0 4px 20px rgba(83,58,253,0.35), 0 1px 4px rgba(83,58,253,0.2)'
+                  }}
                 >
                   Start Free
                 </button>
@@ -296,11 +316,6 @@ export default function PricingSection() {
           </div>
         </AnimatedSection>
 
-        <AnimatedSection delay={0.3} className="text-center mt-8">
-          <p className="text-sm" style={{ color: 'var(--dp-ink-muted)' }}>
-            All plans include a free first audit. No credit card required to start.
-          </p>
-        </AnimatedSection>
       </div>
     </section>
   )
