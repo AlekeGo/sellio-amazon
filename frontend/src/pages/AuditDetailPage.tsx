@@ -6,8 +6,10 @@ import {
   Eye, Shield, Target, TrendingUp, Crown, Lock,
 } from 'lucide-react'
 import { getAudit, submitAudit, regenerateAudit } from '../lib/auditsApi'
+import { getMyBilling } from '../lib/billingApi'
 import StatusBadge from '../components/ui/StatusBadge'
 import type { AuditDetail, AuditResult, ConciseReport, ProUpgradePack, BuyerObjectionRadarItem, CompetitorAnalysisLite, CompactReport, CompactFixFirstRow, CompactNextAction } from '../types/audit'
+import type { BillingMeResponse } from '../types/billing'
 
 function extractError(err: unknown): string {
   if (err && typeof err === 'object' && 'response' in err) {
@@ -158,119 +160,169 @@ function formatImageBrief(img: { image_type: string; goal: string; headline: str
   return `${img.image_type}\nGoal: ${img.goal}\nHeadline: "${img.headline}"\nVisual: ${img.visual_direction}`
 }
 
+const PRO_PACK_ITEMS = ['Improved Title', '5 Copy-Ready Bullets', 'Improved Description', 'Product Detail Fixes', 'Image Briefs']
+
 function ProUpgradePackCTA({
   pack,
   auditId,
   persona,
+  isUnlocked = false,
 }: {
   pack: ProUpgradePack
   auditId: number
   persona: string
+  isUnlocked?: boolean
 }) {
   const personaLabel = persona ? (PERSONA_LABELS[persona] || '') : ''
-  const titlePreview = pack.copy_ready_title ? pack.copy_ready_title.slice(0, 80) : ''
+  const titlePreview = pack.copy_ready_title ? pack.copy_ready_title.slice(0, 90) : ''
 
   return (
     <div style={{
       borderRadius: '1rem',
       border: '1px solid rgba(83,58,253,0.28)',
-      background: 'rgba(83,58,253,0.025)',
+      background: '#ffffff',
       overflow: 'hidden',
+      boxShadow: '0 2px 12px rgba(83,58,253,0.07)',
     }}>
+      {/* Header */}
       <div style={{
-        padding: '1.25rem 1.5rem',
+        padding: '1.125rem 1.5rem',
         borderBottom: '1px solid rgba(83,58,253,0.12)',
-        background: 'linear-gradient(135deg, rgba(83,58,253,0.07), rgba(106,85,254,0.035))',
+        background: 'linear-gradient(135deg, rgba(83,58,253,0.06) 0%, rgba(238,240,255,0.6) 100%)',
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap',
       }}>
-        <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem', flexWrap: 'wrap' }}>
-          <div style={{ flex: 1, minWidth: 200 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5625rem', flexWrap: 'wrap', marginBottom: '0.25rem' }}>
-              <Crown size={16} color="var(--dp-primary)" strokeWidth={2.5} />
-              <h3 style={{
-                fontSize: '1.0625rem', fontWeight: 900, color: 'var(--dp-ink)',
-                margin: 0, letterSpacing: '-0.025em',
-              }}>
-                Pro Upgrade Pack ready
-              </h3>
-              {personaLabel && (
-                <span style={{
-                  fontSize: '0.5875rem', fontWeight: 700, color: 'var(--dp-primary)',
-                  background: 'rgba(83,58,253,0.1)', border: '1px solid rgba(83,58,253,0.22)',
-                  padding: '0.125rem 0.5rem', borderRadius: '99px',
-                  textTransform: 'uppercase', letterSpacing: '0.05em', whiteSpace: 'nowrap',
-                }}>
-                  {personaLabel}
-                </span>
-              )}
-            </div>
-            <p style={{ fontSize: '0.8125rem', color: 'var(--dp-ink-muted)', margin: 0, lineHeight: 1.5 }}>
-              Copy-ready title, 5 bullets, description, product detail fixes, and image briefs.
-            </p>
-          </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5625rem', flexWrap: 'wrap', flex: 1, minWidth: 200 }}>
+          <Crown size={16} color="var(--dp-primary)" strokeWidth={2.5} />
+          <h3 style={{
+            fontSize: '1.0625rem', fontWeight: 900, color: 'var(--dp-ink)',
+            margin: 0, letterSpacing: '-0.025em',
+          }}>
+            Pro Upgrade Pack ready
+          </h3>
+          {personaLabel && (
+            <span style={{
+              fontSize: '0.5875rem', fontWeight: 700, color: 'var(--dp-primary)',
+              background: 'rgba(83,58,253,0.1)', border: '1px solid rgba(83,58,253,0.22)',
+              padding: '0.125rem 0.5rem', borderRadius: '99px',
+              textTransform: 'uppercase', letterSpacing: '0.05em', whiteSpace: 'nowrap',
+            }}>
+              {personaLabel}
+            </span>
+          )}
+          {isUnlocked && (
+            <span style={{
+              fontSize: '0.5875rem', fontWeight: 700, color: '#2F9E6F',
+              background: 'rgba(47,158,111,0.1)', border: '1px solid rgba(47,158,111,0.25)',
+              padding: '0.125rem 0.5rem', borderRadius: '99px',
+              textTransform: 'uppercase', letterSpacing: '0.05em', whiteSpace: 'nowrap',
+            }}>
+              Unlocked
+            </span>
+          )}
+        </div>
+        {isUnlocked ? (
           <Link
             to={`/dashboard/audits/${auditId}/image-studio`}
             className="dp-btn-primary"
-            style={{ padding: '0.375rem 0.75rem', fontSize: '0.75rem', flexShrink: 0 }}
+            style={{ padding: '0.375rem 0.875rem', fontSize: '0.8125rem', flexShrink: 0 }}
           >
-            <Layers size={12} />
+            <Layers size={13} />
             Image Studio
           </Link>
-        </div>
+        ) : (
+          <span style={{
+            display: 'inline-flex', alignItems: 'center', gap: '0.3rem',
+            fontSize: '0.75rem', fontWeight: 700, color: '#64748B',
+          }}>
+            <Lock size={13} color="#64748B" />
+            Locked
+          </span>
+        )}
       </div>
 
+      {/* Body */}
       <div style={{ padding: '1.25rem 1.5rem' }}>
-        {titlePreview && (
-          <div style={{
-            position: 'relative', overflow: 'hidden',
-            padding: '0.75rem 1rem', borderRadius: '0.625rem', marginBottom: '1rem',
-            background: 'rgba(83,58,253,0.04)', border: '1px solid rgba(83,58,253,0.12)',
-          }}>
-            <p style={{
-              fontSize: '0.875rem', color: 'var(--dp-ink)', fontWeight: 600,
-              margin: 0, lineHeight: 1.4,
-              filter: 'blur(3px)', userSelect: 'none', pointerEvents: 'none',
-            }}>
-              {titlePreview}{pack.copy_ready_title.length > 80 ? '...' : ''}
-            </p>
-            <div style={{
-              position: 'absolute', inset: 0,
-              background: 'linear-gradient(90deg, transparent 30%, rgba(246,249,252,0.95) 80%)',
-              display: 'flex', alignItems: 'center', justifyContent: 'flex-end',
-              paddingRight: '1rem',
-            }}>
-              <span style={{
-                display: 'inline-flex', alignItems: 'center', gap: '0.3rem',
-                fontSize: '0.6875rem', fontWeight: 700, color: 'var(--dp-primary)',
-              }}>
-                <Lock size={11} color="var(--dp-primary)" />
-                Locked
-              </span>
-            </div>
-          </div>
-        )}
+        <p style={{ fontSize: '0.8125rem', color: 'var(--dp-ink-muted)', margin: '0 0 1rem', lineHeight: 1.55 }}>
+          {isUnlocked
+            ? 'Your AI-written upgrade pack is ready — copy-optimized title, bullets, description, product detail fixes, and image briefs.'
+            : 'Upgrade to get your AI-written copy: title, 5 bullets, description, product detail fixes, and image briefs — all persona-tuned.'
+          }
+        </p>
 
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.375rem', marginBottom: '1rem' }}>
-          {['Improved Title', '5 Copy-Ready Bullets', 'Improved Description', 'Product Detail Fixes', 'Image Briefs'].map(item => (
+        {/* Feature pills */}
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.375rem', marginBottom: '1.125rem' }}>
+          {PRO_PACK_ITEMS.map(item => (
             <span key={item} style={{
-              display: 'inline-flex', alignItems: 'center', gap: '0.25rem',
-              padding: '0.25rem 0.625rem', borderRadius: '99px',
-              background: 'rgba(83,58,253,0.04)', border: '1px solid rgba(196,188,255,0.45)',
-              fontSize: '0.6875rem', color: 'var(--dp-ink-muted)', fontWeight: 600,
+              display: 'inline-flex', alignItems: 'center', gap: '0.3125rem',
+              padding: '0.3125rem 0.75rem', borderRadius: '99px',
+              background: isUnlocked ? 'rgba(47,158,111,0.07)' : 'rgba(238,240,255,0.8)',
+              border: `1px solid ${isUnlocked ? 'rgba(47,158,111,0.22)' : 'rgba(196,188,255,0.5)'}`,
+              fontSize: '0.75rem', color: isUnlocked ? '#2F9E6F' : '#475569', fontWeight: 600,
             }}>
-              <Lock size={9} color="#475569" />
+              {isUnlocked
+                ? <Check size={10} color="#2F9E6F" />
+                : <Lock size={9} color="#64748B" />
+              }
               {item}
             </span>
           ))}
         </div>
 
-        <Link
-          to="/dashboard/billing"
-          className="dp-btn-primary"
-          style={{ display: 'inline-flex', padding: '0.5625rem 1.125rem', fontSize: '0.8125rem' }}
-        >
-          <Crown size={13} />
-          Unlock Pro Pack
-        </Link>
+        {/* Title preview */}
+        {titlePreview && (
+          <div style={{
+            position: 'relative', overflow: 'hidden',
+            padding: '0.75rem 1rem', borderRadius: '0.625rem', marginBottom: '1.125rem',
+            background: 'rgba(238,240,255,0.5)', border: '1px solid rgba(196,188,255,0.45)',
+          }}>
+            <p style={{
+              fontSize: '0.875rem', color: 'var(--dp-ink)', fontWeight: 600,
+              margin: 0, lineHeight: 1.4,
+              filter: isUnlocked ? 'none' : 'blur(3.5px)',
+              userSelect: isUnlocked ? 'auto' : 'none',
+              pointerEvents: isUnlocked ? 'auto' : 'none',
+            }}>
+              {titlePreview}{pack.copy_ready_title.length > 90 ? '…' : ''}
+            </p>
+            {!isUnlocked && (
+              <div style={{
+                position: 'absolute', inset: 0,
+                background: 'linear-gradient(90deg, transparent 20%, rgba(246,249,252,0.95) 75%)',
+                display: 'flex', alignItems: 'center', justifyContent: 'flex-end',
+                paddingRight: '1rem',
+              }}>
+                <span style={{
+                  display: 'inline-flex', alignItems: 'center', gap: '0.3rem',
+                  fontSize: '0.6875rem', fontWeight: 700, color: '#64748B',
+                }}>
+                  <Lock size={11} color="#64748B" />
+                  Unlock to reveal
+                </span>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* CTA */}
+        {isUnlocked ? (
+          <Link
+            to={`/dashboard/audits/${auditId}/image-studio`}
+            className="dp-btn-secondary"
+            style={{ display: 'inline-flex', padding: '0.5rem 1rem', fontSize: '0.8125rem' }}
+          >
+            <Layers size={13} />
+            Open in Image Studio
+          </Link>
+        ) : (
+          <Link
+            to="/dashboard/billing"
+            className="dp-btn-primary"
+            style={{ display: 'inline-flex', padding: '0.5625rem 1.125rem', fontSize: '0.8125rem' }}
+          >
+            <Crown size={13} />
+            Unlock Pro Pack
+          </Link>
+        )}
       </div>
     </div>
   )
@@ -665,6 +717,7 @@ function ConciseAuditReport({
   report,
   audit,
   proUpgradePack,
+  isProUnlocked = false,
   onRegenerate,
   regenerating,
   regenError,
@@ -672,6 +725,7 @@ function ConciseAuditReport({
   report: ConciseReport
   audit: AuditDetail
   proUpgradePack: ProUpgradePack | null | undefined
+  isProUnlocked?: boolean
   onRegenerate: () => void
   regenerating: boolean
   regenError: string | null
@@ -727,6 +781,7 @@ function ConciseAuditReport({
           pack={proUpgradePack}
           auditId={audit.id}
           persona={audit.seller_persona ?? ''}
+          isUnlocked={isProUnlocked}
         />
       )}
 
@@ -1195,6 +1250,7 @@ function CompactAuditReport({
   compact,
   audit,
   proUpgradePack,
+  isProUnlocked = false,
   imagePlan,
   onRegenerate,
   regenerating,
@@ -1203,6 +1259,7 @@ function CompactAuditReport({
   compact: CompactReport
   audit: AuditDetail
   proUpgradePack: ProUpgradePack | null | undefined
+  isProUnlocked?: boolean
   imagePlan?: Array<{ image_type: string; goal: string; headline: string; visual_direction: string; text_elements?: string[] }>
   onRegenerate: () => void
   regenerating: boolean
@@ -1296,31 +1353,41 @@ function CompactAuditReport({
           pack={proUpgradePack}
           auditId={audit.id}
           persona={audit.seller_persona ?? ''}
+          isUnlocked={isProUnlocked}
         />
       )}
 
       {buyer_and_competitor_insights && (
         <Card>
           <SL>Buyer & Competitor Insights</SL>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1.25rem' }}>
 
             {Array.isArray(buyer_and_competitor_insights.buyer_objections) && buyer_and_competitor_insights.buyer_objections.length > 0 && (
               <div>
-                <div style={{ fontSize: '0.6875rem', fontWeight: 700, color: '#f97316', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.5rem' }}>
+                <div style={{
+                  display: 'flex', alignItems: 'center', gap: '0.4375rem',
+                  fontSize: '0.6875rem', fontWeight: 700, color: '#92400E',
+                  textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.625rem',
+                }}>
+                  <AlertTriangle size={12} color="#B45309" />
                   Buyer Concerns
                 </div>
-                <div style={{ borderRadius: '0.5rem', overflow: 'hidden', border: '1px solid rgba(249,115,22,0.14)' }}>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', background: 'rgba(249,115,22,0.06)', borderBottom: '1px solid rgba(249,115,22,0.1)' }}>
-                    <div style={{ padding: '0.375rem 0.625rem' }}><span style={{ fontSize: '0.5rem', fontWeight: 700, color: '#f97316', textTransform: 'uppercase', letterSpacing: '0.07em' }}>Buyer Concern</span></div>
-                    <div style={{ padding: '0.375rem 0.625rem', borderLeft: '1px solid rgba(249,115,22,0.09)' }}><span style={{ fontSize: '0.5rem', fontWeight: 700, color: 'var(--dp-primary)', textTransform: 'uppercase', letterSpacing: '0.07em' }}>Fix</span></div>
+                <div style={{ borderRadius: '0.625rem', overflow: 'hidden', border: '1px solid #E2E8F0' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', background: 'rgba(254,243,199,0.5)', borderBottom: '1px solid #E2E8F0' }}>
+                    <div style={{ padding: '0.4375rem 0.75rem' }}>
+                      <span style={{ fontSize: '0.5625rem', fontWeight: 700, color: '#92400E', textTransform: 'uppercase', letterSpacing: '0.07em' }}>Buyer Concern</span>
+                    </div>
+                    <div style={{ padding: '0.4375rem 0.75rem', borderLeft: '1px solid #E2E8F0' }}>
+                      <span style={{ fontSize: '0.5625rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.07em' }}>Fix</span>
+                    </div>
                   </div>
                   {buyer_and_competitor_insights.buyer_objections.slice(0, 3).map((item, i) => (
-                    <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid rgba(249,115,22,0.07)', background: i % 2 === 0 ? 'transparent' : 'rgba(249,115,22,0.02)' }}>
-                      <div style={{ padding: '0.5rem 0.625rem' }}>
-                        <p style={{ fontSize: '0.8125rem', color: '#f97316', margin: 0, lineHeight: 1.4 }}>{item.buyer_concern}</p>
+                    <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid #E2E8F0', background: i % 2 === 0 ? '#ffffff' : '#FAFAFA' }}>
+                      <div style={{ padding: '0.5625rem 0.75rem' }}>
+                        <p style={{ fontSize: '0.8125rem', color: '#92400E', margin: 0, lineHeight: 1.5 }}>{item.buyer_concern}</p>
                       </div>
-                      <div style={{ padding: '0.5rem 0.625rem', borderLeft: '1px solid rgba(249,115,22,0.07)' }}>
-                        <p style={{ fontSize: '0.8125rem', color: 'var(--dp-primary)', margin: 0, lineHeight: 1.4 }}>{item.fix}</p>
+                      <div style={{ padding: '0.5625rem 0.75rem', borderLeft: '1px solid #E2E8F0' }}>
+                        <p style={{ fontSize: '0.8125rem', color: '#475569', margin: 0, lineHeight: 1.5 }}>{item.fix}</p>
                       </div>
                     </div>
                   ))}
@@ -1330,21 +1397,30 @@ function CompactAuditReport({
 
             {Array.isArray(buyer_and_competitor_insights.competitor_actions) && buyer_and_competitor_insights.competitor_actions.length > 0 && (
               <div>
-                <div style={{ fontSize: '0.6875rem', fontWeight: 700, color: 'var(--dp-primary)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.5rem' }}>
+                <div style={{
+                  display: 'flex', alignItems: 'center', gap: '0.4375rem',
+                  fontSize: '0.6875rem', fontWeight: 700, color: 'var(--dp-primary)',
+                  textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.625rem',
+                }}>
+                  <TrendingUp size={12} color="var(--dp-primary)" />
                   Competitor Gaps
                 </div>
-                <div style={{ borderRadius: '0.5rem', overflow: 'hidden', border: '1px solid rgba(196,188,255,0.40)' }}>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', background: 'rgba(238,240,255,0.6)', borderBottom: '1px solid rgba(196,188,255,0.35)' }}>
-                    <div style={{ padding: '0.375rem 0.625rem' }}><span style={{ fontSize: '0.5rem', fontWeight: 700, color: 'var(--dp-primary)', textTransform: 'uppercase', letterSpacing: '0.07em' }}>Competitor Wins In</span></div>
-                    <div style={{ padding: '0.375rem 0.625rem', borderLeft: '1px solid rgba(196,188,255,0.25)' }}><span style={{ fontSize: '0.5rem', fontWeight: 700, color: 'var(--dp-primary)', textTransform: 'uppercase', letterSpacing: '0.07em' }}>Your Action</span></div>
+                <div style={{ borderRadius: '0.625rem', overflow: 'hidden', border: '1px solid rgba(196,188,255,0.5)' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', background: 'rgba(238,240,255,0.7)', borderBottom: '1px solid rgba(196,188,255,0.4)' }}>
+                    <div style={{ padding: '0.4375rem 0.75rem' }}>
+                      <span style={{ fontSize: '0.5625rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.07em' }}>Competitor Wins In</span>
+                    </div>
+                    <div style={{ padding: '0.4375rem 0.75rem', borderLeft: '1px solid rgba(196,188,255,0.4)' }}>
+                      <span style={{ fontSize: '0.5625rem', fontWeight: 700, color: 'var(--dp-primary)', textTransform: 'uppercase', letterSpacing: '0.07em' }}>Your Action</span>
+                    </div>
                   </div>
                   {buyer_and_competitor_insights.competitor_actions.slice(0, 3).map((item, i) => (
-                    <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid rgba(196,188,255,0.25)', background: i % 2 === 0 ? 'transparent' : 'rgba(238,240,255,0.3)' }}>
-                      <div style={{ padding: '0.5rem 0.625rem' }}>
-                        <p style={{ fontSize: '0.8125rem', color: 'var(--dp-ink-secondary)', margin: 0, lineHeight: 1.4 }}>{item.competitor_wins_in}</p>
+                    <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid rgba(196,188,255,0.3)', background: i % 2 === 0 ? '#ffffff' : 'rgba(238,240,255,0.35)' }}>
+                      <div style={{ padding: '0.5625rem 0.75rem' }}>
+                        <p style={{ fontSize: '0.8125rem', color: '#475569', margin: 0, lineHeight: 1.5 }}>{item.competitor_wins_in}</p>
                       </div>
-                      <div style={{ padding: '0.5rem 0.625rem', borderLeft: '1px solid rgba(196,188,255,0.25)' }}>
-                        <p style={{ fontSize: '0.8125rem', color: 'var(--dp-primary)', margin: 0, lineHeight: 1.4 }}>{item.your_action}</p>
+                      <div style={{ padding: '0.5625rem 0.75rem', borderLeft: '1px solid rgba(196,188,255,0.3)' }}>
+                        <p style={{ fontSize: '0.8125rem', color: 'var(--dp-primary)', margin: 0, lineHeight: 1.5, fontWeight: 500 }}>{item.your_action}</p>
                       </div>
                     </div>
                   ))}
@@ -2022,6 +2098,11 @@ export default function AuditDetailPage() {
   const [regenError, setRegenError] = useState<string | null>(null)
   const [submitError, setSubmitError] = useState<string | null>(null)
   const [submitting, setSubmitting] = useState(false)
+  const [billing, setBilling] = useState<BillingMeResponse | null>(null)
+
+  useEffect(() => {
+    getMyBilling().then(res => setBilling(res.data)).catch(() => {})
+  }, [])
 
   useEffect(() => {
     if (!id) return
@@ -2115,6 +2196,7 @@ export default function AuditDetailPage() {
   const isV2 = isCompleted && audit.result?.report_version === 'v2' && !!audit.result?.concise_report
   const hasCompact = isV2 && !!(audit.result?.concise_report as ConciseReport | null)?.compact_report
   const maxWidth = isCompleted ? 900 : 700
+  const isProUnlocked = (billing?.balance.full_upgrade_credits ?? 0) > 0
 
   return (
     <div style={{ maxWidth }}>
@@ -2288,6 +2370,7 @@ export default function AuditDetailPage() {
           compact={(audit.result.concise_report as ConciseReport).compact_report!}
           audit={audit}
           proUpgradePack={audit.result.pro_upgrade_pack}
+          isProUnlocked={isProUnlocked}
           imagePlan={(audit.result.concise_report as ConciseReport).image_gallery_plan}
           onRegenerate={handleRegenerate}
           regenerating={regenerating}
@@ -2301,6 +2384,7 @@ export default function AuditDetailPage() {
           report={audit.result.concise_report}
           audit={audit}
           proUpgradePack={audit.result.pro_upgrade_pack}
+          isProUnlocked={isProUnlocked}
           onRegenerate={handleRegenerate}
           regenerating={regenerating}
           regenError={regenError}

@@ -112,21 +112,22 @@ export default function ImagePreviewModal({
         width: '100%', maxWidth: 920,
         maxHeight: 'calc(100vh - 2rem)',
         borderRadius: '1rem',
-        background: '#0a1510',
-        border: '1px solid rgba(255,255,255,0.1)',
+        background: '#ffffff',
+        border: '1px solid rgba(196,188,255,0.45)',
         display: 'flex', flexDirection: 'column',
         overflow: 'hidden',
-        boxShadow: '0 32px 80px rgba(0,0,0,0.7)',
+        boxShadow: '0 24px 60px rgba(83,58,253,0.18), 0 4px 24px rgba(0,0,0,0.12)',
       }}>
         <div style={{
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
           padding: '0.875rem 1.25rem',
-          borderBottom: '1px solid rgba(196,188,255,0.40)',
+          borderBottom: '1px solid #E2E8F0',
+          background: 'rgba(238,240,255,0.4)',
           flexShrink: 0,
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', minWidth: 0 }}>
             <span style={{
-              fontSize: '0.9375rem', fontWeight: 700, color: 'var(--dp-ink)',
+              fontSize: '0.9375rem', fontWeight: 700, color: '#0F172A',
               letterSpacing: '-0.02em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
             }}>
               {generation.image_type}
@@ -146,17 +147,17 @@ export default function ImagePreviewModal({
             style={{
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               width: 30, height: 30, borderRadius: '0.5rem',
-              background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)',
-              color: 'var(--dp-ink-muted)', cursor: 'pointer', flexShrink: 0,
+              background: 'rgba(83,58,253,0.06)', border: '1px solid #E2E8F0',
+              color: '#64748B', cursor: 'pointer', flexShrink: 0,
               transition: 'all 0.15s',
             }}
             onMouseEnter={e => {
-              e.currentTarget.style.background = 'rgba(255,255,255,0.09)'
-              e.currentTarget.style.color = '#94a3b8'
+              e.currentTarget.style.background = 'rgba(83,58,253,0.1)'
+              e.currentTarget.style.color = '#533AFD'
             }}
             onMouseLeave={e => {
-              e.currentTarget.style.background = 'rgba(255,255,255,0.05)'
-              e.currentTarget.style.color = '#64748b'
+              e.currentTarget.style.background = 'rgba(83,58,253,0.06)'
+              e.currentTarget.style.color = '#64748B'
             }}
           >
             <X size={14} />
@@ -172,7 +173,8 @@ export default function ImagePreviewModal({
           <div style={{ display: 'flex', flexDirection: 'column', minHeight: 0 }}>
             {generation.status === 'completed' && generation.image_url ? (
               <div style={{
-                background: 'rgba(0,0,0,0.4)',
+                background: '#F6F9FC',
+                borderBottom: '1px solid #E2E8F0',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 padding: '1.5rem',
                 minHeight: 280,
@@ -192,10 +194,11 @@ export default function ImagePreviewModal({
                 minHeight: 200,
                 display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
                 gap: '0.75rem', padding: '2rem',
-                background: 'rgba(255,255,255,0.01)',
+                background: '#F6F9FC',
+                borderBottom: '1px solid #E2E8F0',
               }}>
-                <ImageIcon size={32} color="rgba(148,163,184,0.25)" />
-                <div style={{ fontSize: '0.8125rem', color: 'var(--dp-ink-muted)', textAlign: 'center' }}>
+                <ImageIcon size={32} color="rgba(83,58,253,0.2)" />
+                <div style={{ fontSize: '0.8125rem', color: '#64748B', textAlign: 'center' }}>
                   Image not available
                 </div>
               </div>
@@ -205,6 +208,7 @@ export default function ImagePreviewModal({
                 display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
                 gap: '0.75rem', padding: '2rem',
                 background: 'rgba(239,68,68,0.03)',
+                borderBottom: '1px solid rgba(239,68,68,0.1)',
               }}>
                 <div style={{ fontSize: '0.9375rem', color: '#f87171', fontWeight: 600 }}>
                   Generation failed
@@ -306,13 +310,13 @@ export default function ImagePreviewModal({
                   style={{
                     display: 'inline-flex', alignItems: 'center', gap: '0.375rem',
                     padding: '0.5rem 0.875rem', borderRadius: '0.5rem',
-                    background: 'rgba(83,58,253,0.04)', border: '1px solid rgba(255,255,255,0.1)',
-                    color: 'var(--dp-ink-muted)', fontSize: '0.8125rem', fontWeight: 600,
+                    background: 'rgba(83,58,253,0.04)', border: '1px solid #E2E8F0',
+                    color: '#475569', fontSize: '0.8125rem', fontWeight: 600,
                     cursor: isRegenerating ? 'not-allowed' : 'pointer', fontFamily: 'inherit',
                     transition: 'all 0.15s',
                     opacity: isRegenerating ? 0.6 : 1,
                   }}
-                  onMouseEnter={e => { if (!isRegenerating) e.currentTarget.style.background = 'rgba(255,255,255,0.08)' }}
+                  onMouseEnter={e => { if (!isRegenerating) e.currentTarget.style.background = 'rgba(83,58,253,0.08)' }}
                   onMouseLeave={e => { e.currentTarget.style.background = 'rgba(83,58,253,0.04)' }}
                 >
                   {isRegenerating
@@ -329,9 +333,9 @@ export default function ImagePreviewModal({
                     style={{
                       display: 'inline-flex', alignItems: 'center', gap: '0.375rem',
                       padding: '0.5rem 0.875rem', borderRadius: '0.5rem',
-                      background: promptCopied ? 'rgba(74,222,128,0.08)' : 'rgba(255,255,255,0.03)',
-                      border: `1px solid ${promptCopied ? 'rgba(74,222,128,0.22)' : 'rgba(255,255,255,0.08)'}`,
-                      color: promptCopied ? '#2F9E6F' : '#64748b',
+                      background: promptCopied ? 'rgba(47,158,111,0.08)' : 'rgba(238,240,255,0.5)',
+                      border: `1px solid ${promptCopied ? 'rgba(47,158,111,0.25)' : '#E2E8F0'}`,
+                      color: promptCopied ? '#2F9E6F' : '#475569',
                       fontSize: '0.8125rem', fontWeight: 600,
                       cursor: 'pointer', fontFamily: 'inherit', transition: 'all 0.15s',
                     }}
@@ -385,8 +389,8 @@ export default function ImagePreviewModal({
                       onClick={() => setConfirmDelete(false)}
                       style={{
                         padding: '0.375rem 0.75rem', borderRadius: '0.4375rem',
-                        background: 'rgba(83,58,253,0.04)', border: '1px solid rgba(255,255,255,0.09)',
-                        color: 'var(--dp-ink-muted)', fontSize: '0.8125rem', fontWeight: 600,
+                        background: 'rgba(83,58,253,0.04)', border: '1px solid #E2E8F0',
+                        color: '#475569', fontSize: '0.8125rem', fontWeight: 600,
                         cursor: 'pointer', fontFamily: 'inherit',
                       }}
                     >
@@ -425,10 +429,10 @@ export default function ImagePreviewModal({
                   {showPrompt && (
                     <div style={{
                       padding: '0.75rem 0.875rem', borderRadius: '0.5rem',
-                      background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(196,188,255,0.40)',
+                      background: '#F1F5F9', border: '1px solid #E2E8F0',
                     }}>
                       <pre style={{
-                        fontSize: '0.75rem', color: 'var(--dp-ink-muted)', margin: 0,
+                        fontSize: '0.75rem', color: '#475569', margin: 0,
                         fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace',
                         whiteSpace: 'pre-wrap', lineHeight: 1.7, wordBreak: 'break-word',
                       }}>

@@ -164,41 +164,45 @@ export default function ImageStudioPage() {
             <div
               key={cat.title}
               style={{
-                borderRadius: '0.75rem', padding: '1.125rem 1.25rem',
-                background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.07)',
-                display: 'flex', gap: '0.875rem',
-                transition: 'border-color 0.2s, background 0.2s',
+                borderRadius: 18, padding: '28px',
+                background: '#FFFFFF', border: '1px solid #E2E8F0',
+                boxShadow: '0 8px 24px rgba(15,23,42,0.05)',
+                display: 'flex', gap: '1rem',
+                transition: 'all 0.22s ease',
+                cursor: 'pointer',
               }}
               onMouseEnter={e => {
-                e.currentTarget.style.borderColor = 'rgba(83,58,253,0.2)'
-                e.currentTarget.style.background = 'rgba(255,255,255,0.03)'
+                e.currentTarget.style.transform = 'translateY(-4px)'
+                e.currentTarget.style.borderColor = '#C4B5FD'
+                e.currentTarget.style.boxShadow = '0 14px 34px rgba(83,58,253,0.12)'
               }}
               onMouseLeave={e => {
-                e.currentTarget.style.borderColor = 'rgba(255,255,255,0.07)'
-                e.currentTarget.style.background = 'rgba(255,255,255,0.02)'
+                e.currentTarget.style.transform = 'translateY(0)'
+                e.currentTarget.style.borderColor = '#E2E8F0'
+                e.currentTarget.style.boxShadow = '0 8px 24px rgba(15,23,42,0.05)'
               }}
             >
               <div style={{
-                width: 36, height: 36, borderRadius: '0.5rem',
+                width: 40, height: 40, borderRadius: '0.625rem',
                 background: cat.gradient,
                 display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
               }}>
-                <ImageIcon size={16} color="white" />
+                <ImageIcon size={18} color="white" />
               </div>
               <div style={{ minWidth: 0 }}>
                 <div style={{
-                  fontSize: '0.9375rem', fontWeight: 700, color: '#f1f5f9',
-                  marginBottom: '0.25rem', letterSpacing: '-0.01em',
+                  fontSize: '0.9375rem', fontWeight: 700, color: '#0F172A',
+                  marginBottom: '0.375rem', letterSpacing: '-0.01em',
                 }}>
                   {cat.title}
                 </div>
                 <div style={{
-                  fontSize: '0.75rem', color: '#64748b', lineHeight: 1.55, marginBottom: '0.375rem',
+                  fontSize: '0.8125rem', color: '#475569', lineHeight: 1.65, marginBottom: '0.5rem',
                 }}>
                   {cat.desc}
                 </div>
-                <div style={{ fontSize: '0.6875rem', color: '#64748b', lineHeight: 1.5 }}>
-                  <span style={{ color: 'rgba(83,58,253,0.6)', fontWeight: 600 }}>Goal: </span>
+                <div style={{ fontSize: '0.75rem', color: '#475569', lineHeight: 1.6 }}>
+                  <span style={{ color: '#533AFD', fontWeight: 700 }}>Goal: </span>
                   {cat.goal}
                 </div>
               </div>

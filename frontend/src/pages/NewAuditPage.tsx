@@ -502,6 +502,7 @@ function CollapsibleSection({
 }
 
 function SellerPersonaPicker({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  const [hovered, setHovered] = useState<string | null>(null)
   return (
     <div>
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem', marginBottom: '0.4375rem' }}>
@@ -525,31 +526,45 @@ function SellerPersonaPicker({ value, onChange }: { value: string; onChange: (v:
       }}>
         {PERSONA_OPTIONS.map(opt => {
           const selected = value === opt.value
+          const isHovered = hovered === opt.value
           return (
             <button
               key={opt.value}
               type="button"
               onClick={() => onChange(selected ? '' : opt.value)}
+              onMouseEnter={() => setHovered(opt.value)}
+              onMouseLeave={() => setHovered(null)}
               style={{
                 borderRadius: '0.625rem',
                 padding: '0.625rem 0.75rem',
-                background: selected ? 'rgba(83,58,253,0.07)' : 'rgba(255,255,255,0.025)',
-                border: `1px solid ${selected ? 'rgba(83,58,253,0.35)' : 'rgba(196,188,255,0.40)'}`,
+                background: selected
+                  ? 'rgba(83,58,253,0.08)'
+                  : isHovered
+                  ? 'rgba(83,58,253,0.05)'
+                  : '#ffffff',
+                border: `1px solid ${selected ? 'rgba(83,58,253,0.38)' : isHovered ? 'rgba(83,58,253,0.28)' : 'rgba(196,188,255,0.45)'}`,
+                boxShadow: selected
+                  ? '0 4px 18px rgba(83,58,253,0.18)'
+                  : isHovered
+                  ? '0 4px 14px rgba(83,58,253,0.13)'
+                  : 'none',
+                transform: isHovered && !selected ? 'translateY(-1px)' : 'translateY(0)',
                 cursor: 'pointer',
                 textAlign: 'left',
                 fontFamily: 'inherit',
-                transition: 'all 0.15s',
+                transition: 'all 0.18s ease',
                 outline: 'none',
               }}
             >
               <div style={{
                 fontSize: '0.8125rem', fontWeight: 700,
-                color: selected ? 'var(--dp-primary)' : 'var(--dp-ink-muted)',
+                color: selected || isHovered ? 'var(--dp-primary)' : 'var(--dp-ink-muted)',
                 marginBottom: '0.1875rem',
+                transition: 'color 0.15s',
               }}>
                 {opt.label}
               </div>
-              <div style={{ fontSize: '0.6875rem', color: selected ? '#64748b' : '#475569', lineHeight: 1.45 }}>
+              <div style={{ fontSize: '0.6875rem', color: selected ? '#475569' : '#64748B', lineHeight: 1.45 }}>
                 {opt.description}
               </div>
             </button>

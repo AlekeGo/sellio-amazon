@@ -102,9 +102,9 @@ function FieldRow({ label, children }: { label: string; children: React.ReactNod
 
 const selectStyle: React.CSSProperties = {
   width: '100%', boxSizing: 'border-box',
-  padding: '0.5rem 0.75rem', borderRadius: '0.5rem',
-  background: 'rgba(83,58,253,0.04)', border: '1px solid rgba(255,255,255,0.1)',
-  color: '#e2e8f0', fontSize: '0.8125rem',
+  padding: '0.4375rem 0.75rem', borderRadius: '0.4375rem',
+  background: '#ffffff', border: '1px solid #CBD5E1',
+  color: '#0F172A', fontSize: '0.8125rem',
   fontFamily: 'inherit', outline: 'none',
   appearance: 'none', WebkitAppearance: 'none',
   cursor: 'pointer',
@@ -153,8 +153,8 @@ export default function ImageBriefPanel({
   return (
     <div style={{
       borderRadius: '0.875rem',
-      background: 'rgba(255,255,255,0.02)',
-      border: '1px solid rgba(83,58,253,0.2)',
+      background: '#ffffff',
+      border: '1px solid rgba(196,188,255,0.45)',
       overflow: 'hidden',
     }}>
       <div style={{
@@ -185,7 +185,7 @@ export default function ImageBriefPanel({
           display: 'inline-flex', alignItems: 'center', gap: '0.3125rem',
           padding: '0.25rem 0.5625rem', borderRadius: '99px', flexShrink: 0,
           background: hasReference ? 'rgba(47,158,111,0.08)' : 'rgba(83,58,253,0.04)',
-          border: `1px solid ${hasReference ? 'rgba(47,158,111,0.2)' : 'rgba(255,255,255,0.08)'}`,
+          border: `1px solid ${hasReference ? 'rgba(47,158,111,0.2)' : 'rgba(196,188,255,0.4)'}`,
           fontSize: '0.5625rem', fontWeight: 700,
           color: hasReference ? '#2F9E6F' : '#64748b',
           textTransform: 'uppercase' as const, letterSpacing: '0.07em',
@@ -197,7 +197,7 @@ export default function ImageBriefPanel({
 
       <div style={{ padding: '1.25rem 1.375rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
         <FieldRow label="Goal">
-          <p style={{ fontSize: '0.875rem', color: '#cbd5e1', margin: 0, lineHeight: 1.65 }}>
+          <p style={{ fontSize: '0.875rem', color: '#475569', margin: 0, lineHeight: 1.65 }}>
             {item.goal}
           </p>
         </FieldRow>
@@ -216,7 +216,7 @@ export default function ImageBriefPanel({
         )}
 
         <FieldRow label="Visual Direction">
-          <p style={{ fontSize: '0.875rem', color: '#cbd5e1', margin: 0, lineHeight: 1.65 }}>
+          <p style={{ fontSize: '0.875rem', color: '#475569', margin: 0, lineHeight: 1.65 }}>
             {item.visual_direction}
           </p>
         </FieldRow>
@@ -239,7 +239,7 @@ export default function ImageBriefPanel({
 
         {item.buyer_objection && (
           <FieldRow label="Buyer Objection Addressed">
-            <p style={{ fontSize: '0.875rem', color: '#cbd5e1', margin: 0, lineHeight: 1.65 }}>
+            <p style={{ fontSize: '0.875rem', color: '#475569', margin: 0, lineHeight: 1.65 }}>
               {item.buyer_objection}
             </p>
           </FieldRow>
@@ -247,7 +247,7 @@ export default function ImageBriefPanel({
 
         {item.suggested_layout && (
           <FieldRow label="Suggested Layout">
-            <p style={{ fontSize: '0.875rem', color: '#cbd5e1', margin: 0, lineHeight: 1.65 }}>
+            <p style={{ fontSize: '0.875rem', color: '#475569', margin: 0, lineHeight: 1.65 }}>
               {item.suggested_layout}
             </p>
           </FieldRow>
@@ -256,89 +256,113 @@ export default function ImageBriefPanel({
 
       <div style={{
         margin: '0 1.375rem',
-        padding: '1rem 1.125rem',
         borderRadius: '0.625rem',
-        background: 'rgba(83,58,253,0.03)',
-        border: '1px solid rgba(83,58,253,0.1)',
+        border: '1px solid #E2E8F0',
+        overflow: 'hidden',
         marginBottom: '1rem',
       }}>
         <div style={{
-          fontSize: '0.5625rem', fontWeight: 700, color: 'rgba(83,58,253,0.5)',
-          textTransform: 'uppercase', letterSpacing: '0.09em', marginBottom: '0.875rem',
+          padding: '0.5rem 0.875rem',
+          background: 'rgba(238,240,255,0.7)',
+          borderBottom: '1px solid #E2E8F0',
         }}>
-          Quality Controls
+          <span style={{
+            fontSize: '0.5625rem', fontWeight: 700, color: '#475569',
+            textTransform: 'uppercase', letterSpacing: '0.09em',
+          }}>
+            Quality Controls
+          </span>
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-          <FieldRow label="Extra visual instruction — optional">
-            <textarea
-              value={quality.productVisualDetails}
-              onChange={e => setQuality(q => ({ ...q, productVisualDetails: e.target.value }))}
-              placeholder="e.g. yellow bottle, black cap, rectangular label, glossy plastic, supplement product"
-              rows={3}
-              style={{
-                width: '100%', boxSizing: 'border-box',
-                padding: '0.625rem 0.75rem', borderRadius: '0.5rem',
-                background: 'rgba(83,58,253,0.04)', border: '1px solid rgba(255,255,255,0.1)',
-                color: '#e2e8f0', fontSize: '0.8125rem', lineHeight: 1.6,
-                fontFamily: 'inherit', resize: 'vertical',
-                outline: 'none', transition: 'border-color 0.15s',
-              }}
-              onFocus={e => { e.currentTarget.style.borderColor = 'rgba(83,58,253,0.35)' }}
-              onBlur={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)' }}
-            />
-            <div style={{ fontSize: '0.6875rem', color: 'var(--dp-ink-muted)', marginTop: '0.375rem', lineHeight: 1.5 }}>
-              Sellio already builds the prompt from your product and audit. Use this only for extra style or layout direction.
-            </div>
-          </FieldRow>
+        <div style={{ padding: '0.75rem 0.875rem', borderBottom: '1px solid #E2E8F0' }}>
+          <div style={{
+            fontSize: '0.6875rem', fontWeight: 600, color: '#475569',
+            textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.375rem',
+          }}>
+            Extra visual instruction — optional
+          </div>
+          <textarea
+            value={quality.productVisualDetails}
+            onChange={e => setQuality(q => ({ ...q, productVisualDetails: e.target.value }))}
+            placeholder="e.g. yellow bottle, black cap, rectangular label, glossy plastic, supplement product"
+            rows={2}
+            style={{
+              width: '100%', boxSizing: 'border-box',
+              padding: '0.5rem 0.75rem', borderRadius: '0.4375rem',
+              background: '#ffffff', border: '1px solid #CBD5E1',
+              color: '#0F172A', fontSize: '0.8125rem', lineHeight: 1.6,
+              fontFamily: 'inherit', resize: 'vertical',
+              outline: 'none', transition: 'border-color 0.15s',
+            }}
+            onFocus={e => { e.currentTarget.style.borderColor = '#533AFD' }}
+            onBlur={e => { e.currentTarget.style.borderColor = '#CBD5E1' }}
+          />
+          <div style={{ fontSize: '0.6875rem', color: '#64748B', marginTop: '0.25rem', lineHeight: 1.5 }}>
+            Sellio already builds the prompt from your product and audit. Use this only for extra style or layout direction.
+          </div>
+        </div>
 
-          <FieldRow label="Style direction">
-            <select
-              value={quality.styleDirection}
-              onChange={e => setQuality(q => ({ ...q, styleDirection: e.target.value }))}
-              style={selectStyle}
-              onFocus={e => { e.currentTarget.style.borderColor = 'rgba(83,58,253,0.35)' }}
-              onBlur={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)' }}
-            >
-              {STYLE_DIRECTIONS.map(o => (
-                <option key={o.value} value={o.value} style={{ background: '#0a1510' }}>
-                  {o.label}
-                </option>
-              ))}
-            </select>
-          </FieldRow>
+        <div style={{
+          display: 'grid', gridTemplateColumns: '1fr 1.6fr',
+          alignItems: 'center', gap: '0.5rem',
+          padding: '0.625rem 0.875rem', borderBottom: '1px solid #E2E8F0',
+        }}>
+          <div style={{ fontSize: '0.6875rem', fontWeight: 600, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.07em' }}>
+            Style direction
+          </div>
+          <select
+            value={quality.styleDirection}
+            onChange={e => setQuality(q => ({ ...q, styleDirection: e.target.value }))}
+            style={selectStyle}
+            onFocus={e => { e.currentTarget.style.borderColor = '#533AFD' }}
+            onBlur={e => { e.currentTarget.style.borderColor = '#CBD5E1' }}
+          >
+            {STYLE_DIRECTIONS.map(o => (
+              <option key={o.value} value={o.value}>{o.label}</option>
+            ))}
+          </select>
+        </div>
 
-          <FieldRow label="Background">
-            <select
-              value={quality.backgroundPreference}
-              onChange={e => setQuality(q => ({ ...q, backgroundPreference: e.target.value }))}
-              style={selectStyle}
-              onFocus={e => { e.currentTarget.style.borderColor = 'rgba(83,58,253,0.35)' }}
-              onBlur={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)' }}
-            >
-              {BACKGROUND_PREFS.map(o => (
-                <option key={o.value} value={o.value} style={{ background: '#0a1510' }}>
-                  {o.label}
-                </option>
-              ))}
-            </select>
-          </FieldRow>
+        <div style={{
+          display: 'grid', gridTemplateColumns: '1fr 1.6fr',
+          alignItems: 'center', gap: '0.5rem',
+          padding: '0.625rem 0.875rem', borderBottom: '1px solid #E2E8F0',
+        }}>
+          <div style={{ fontSize: '0.6875rem', fontWeight: 600, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.07em' }}>
+            Background
+          </div>
+          <select
+            value={quality.backgroundPreference}
+            onChange={e => setQuality(q => ({ ...q, backgroundPreference: e.target.value }))}
+            style={selectStyle}
+            onFocus={e => { e.currentTarget.style.borderColor = '#533AFD' }}
+            onBlur={e => { e.currentTarget.style.borderColor = '#CBD5E1' }}
+          >
+            {BACKGROUND_PREFS.map(o => (
+              <option key={o.value} value={o.value}>{o.label}</option>
+            ))}
+          </select>
+        </div>
 
-          <FieldRow label="Text intensity">
-            <select
-              value={quality.textIntensity}
-              onChange={e => setQuality(q => ({ ...q, textIntensity: e.target.value }))}
-              style={selectStyle}
-              onFocus={e => { e.currentTarget.style.borderColor = 'rgba(83,58,253,0.35)' }}
-              onBlur={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)' }}
-            >
-              {TEXT_INTENSITIES.map(o => (
-                <option key={o.value} value={o.value} style={{ background: '#0a1510' }}>
-                  {o.label}
-                </option>
-              ))}
-            </select>
-          </FieldRow>
+        <div style={{
+          display: 'grid', gridTemplateColumns: '1fr 1.6fr',
+          alignItems: 'center', gap: '0.5rem',
+          padding: '0.625rem 0.875rem',
+        }}>
+          <div style={{ fontSize: '0.6875rem', fontWeight: 600, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.07em' }}>
+            Text intensity
+          </div>
+          <select
+            value={quality.textIntensity}
+            onChange={e => setQuality(q => ({ ...q, textIntensity: e.target.value }))}
+            style={selectStyle}
+            onFocus={e => { e.currentTarget.style.borderColor = '#533AFD' }}
+            onBlur={e => { e.currentTarget.style.borderColor = '#CBD5E1' }}
+          >
+            {TEXT_INTENSITIES.map(o => (
+              <option key={o.value} value={o.value}>{o.label}</option>
+            ))}
+          </select>
         </div>
       </div>
 
@@ -361,9 +385,9 @@ export default function ImageBriefPanel({
             style={{
               display: 'inline-flex', alignItems: 'center', gap: '0.3125rem',
               padding: '0.25rem 0.625rem', borderRadius: '0.375rem',
-              background: copied ? 'rgba(74,222,128,0.1)' : 'rgba(255,255,255,0.05)',
-              border: `1px solid ${copied ? 'rgba(74,222,128,0.25)' : 'rgba(255,255,255,0.1)'}`,
-              color: copied ? '#2F9E6F' : '#64748b',
+              background: copied ? 'rgba(47,158,111,0.08)' : 'rgba(238,240,255,0.6)',
+              border: `1px solid ${copied ? 'rgba(47,158,111,0.25)' : 'rgba(196,188,255,0.45)'}`,
+              color: copied ? '#2F9E6F' : '#475569',
               fontSize: '0.6875rem', fontWeight: 600,
               cursor: 'pointer', fontFamily: 'inherit',
               transition: 'all 0.15s',
@@ -373,9 +397,9 @@ export default function ImageBriefPanel({
             {copied ? 'Copied' : 'Copy Brief'}
           </button>
         </div>
-        <div style={{ padding: '0.875rem 1rem', background: 'rgba(0,0,0,0.25)' }}>
+        <div style={{ padding: '0.875rem 1rem', background: '#F1F5F9' }}>
           <pre style={{
-            fontSize: '0.75rem', color: 'var(--dp-ink-muted)', margin: 0,
+            fontSize: '0.75rem', color: '#475569', margin: 0,
             fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace',
             whiteSpace: 'pre-wrap', lineHeight: 1.75, wordBreak: 'break-word',
           }}>
