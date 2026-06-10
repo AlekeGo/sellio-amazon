@@ -1,4 +1,4 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import { Plus, Minus } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import AnimatedSection from '../ui/AnimatedSection'
@@ -34,26 +34,26 @@ function FaqItem({ q, a, index }: { q: string; a: string; index: number }) {
       <div
         className="rounded-2xl overflow-hidden transition-all duration-200"
         style={{
-          background: open ? 'rgba(163,230,53,0.04)' : 'var(--glass-bg)',
-          border: open ? '1px solid rgba(163,230,53,0.2)' : '1px solid var(--glass-border)',
+          background: open ? 'rgba(83,58,253,0.04)' : 'var(--glass-bg)',
+          border: open ? '1px solid rgba(83,58,253,0.2)' : '1px solid var(--glass-border)',
         }}
       >
         <button
           onClick={() => setOpen(!open)}
           className="w-full flex items-center justify-between gap-4 p-5 text-left"
-          style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#f1f5f9' }}
+          style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--dp-ink)' }}
         >
           <span className="text-base font-semibold leading-snug">{q}</span>
           <div
             className="w-7 h-7 rounded-full flex items-center justify-center shrink-0 transition-all duration-200"
             style={{
-              background: open ? 'rgba(163,230,53,0.12)' : 'rgba(255,255,255,0.06)',
-              border: open ? '1px solid rgba(163,230,53,0.28)' : '1px solid rgba(255,255,255,0.1)',
+              background: open ? 'rgba(83,58,253,0.12)' : 'rgba(255,255,255,0.06)',
+              border: open ? '1px solid rgba(83,58,253,0.28)' : '1px solid rgba(255,255,255,0.1)',
             }}
           >
             {open
-              ? <Minus size={13} style={{ color: '#a3e635' }} />
-              : <Plus size={13} style={{ color: '#94a3b8' }} />
+              ? <Minus size={13} style={{ color: 'var(--dp-primary)' }} />
+              : <Plus size={13} style={{ color: 'var(--dp-ink-muted)' }} />
             }
           </div>
         </button>
@@ -69,7 +69,7 @@ function FaqItem({ q, a, index }: { q: string; a: string; index: number }) {
             >
               <p
                 className="px-5 pb-6 text-sm leading-relaxed"
-                style={{ color: '#94a3b8' }}
+                style={{ color: 'var(--dp-ink-muted)' }}
               >
                 {a}
               </p>

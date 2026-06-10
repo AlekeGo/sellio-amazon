@@ -1,4 +1,4 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import {
   ImageIcon, ExternalLink, Download, Copy, Check, AlertTriangle,
   RefreshCw, Trash2, Loader2, Eye, ChevronDown, ChevronUp,
@@ -140,7 +140,7 @@ function GeneratedCard({ gen, isRegenerating, onDelete, onRegenerate, onPreview 
           background: 'rgba(255,255,255,0.015)', padding: '1.25rem',
         }}>
           <ImageIcon size={26} color="rgba(148,163,184,0.3)" />
-          <div style={{ fontSize: '0.6875rem', color: '#475569', textAlign: 'center' }}>
+          <div style={{ fontSize: '0.6875rem', color: 'var(--dp-ink-muted)', textAlign: 'center' }}>
             Preview unavailable
           </div>
           <a
@@ -150,8 +150,8 @@ function GeneratedCard({ gen, isRegenerating, onDelete, onRegenerate, onPreview 
             onClick={e => e.stopPropagation()}
             style={{
               ...btnBase,
-              background: 'rgba(163,230,53,0.08)', borderColor: 'rgba(163,230,53,0.2)',
-              color: '#a3e635', textDecoration: 'none',
+              background: 'rgba(83,58,253,0.08)', borderColor: 'rgba(83,58,253,0.2)',
+              color: 'var(--dp-primary)', textDecoration: 'none',
             }}
           >
             <ExternalLink size={11} />
@@ -165,7 +165,7 @@ function GeneratedCard({ gen, isRegenerating, onDelete, onRegenerate, onPreview 
           background: 'rgba(255,255,255,0.015)', padding: '1.25rem',
         }}>
           <ImageIcon size={26} color="rgba(148,163,184,0.3)" />
-          <div style={{ fontSize: '0.6875rem', color: '#475569', textAlign: 'center' }}>
+          <div style={{ fontSize: '0.6875rem', color: 'var(--dp-ink-muted)', textAlign: 'center' }}>
             Image not available
           </div>
         </div>
@@ -174,7 +174,7 @@ function GeneratedCard({ gen, isRegenerating, onDelete, onRegenerate, onPreview 
       <div style={{ padding: '0.875rem', flex: 1, display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
         <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '0.5rem' }}>
           <div style={{
-            fontSize: '0.8125rem', fontWeight: 700, color: '#f1f5f9',
+            fontSize: '0.8125rem', fontWeight: 700, color: 'var(--dp-ink)',
             lineHeight: 1.35, letterSpacing: '-0.01em', flex: 1, minWidth: 0,
           }}>
             {gen.image_type}
@@ -182,13 +182,13 @@ function GeneratedCard({ gen, isRegenerating, onDelete, onRegenerate, onPreview 
           <GenStatusBadge status={gen.status} />
         </div>
 
-        <div style={{ fontSize: '0.6875rem', color: '#475569' }}>
+        <div style={{ fontSize: '0.6875rem', color: 'var(--dp-ink-muted)' }}>
           {formatDate(gen.created_at)}
         </div>
 
         {gen.model_name && (
           <div style={{
-            fontSize: '0.625rem', color: '#334155',
+            fontSize: '0.625rem', color: 'var(--dp-ink-muted)',
             overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
           }}>
             {gen.provider} · {gen.model_name}
@@ -222,9 +222,9 @@ function GeneratedCard({ gen, isRegenerating, onDelete, onRegenerate, onPreview 
             display: 'inline-flex', alignItems: 'center', gap: '0.1875rem',
             padding: '0.125rem 0.4375rem', borderRadius: '99px',
             background: gen.product_locked ? 'rgba(163,230,53,0.06)' : 'rgba(255,255,255,0.03)',
-            border: `1px solid ${gen.product_locked ? 'rgba(163,230,53,0.15)' : 'rgba(255,255,255,0.07)'}`,
+            border: `1px solid ${gen.product_locked ? 'rgba(163,230,53,0.15)' : 'rgba(196,188,255,0.40)'}`,
             fontSize: '0.5625rem', fontWeight: 700,
-            color: gen.product_locked ? '#a3e635' : '#475569',
+            color: gen.product_locked ? 'var(--dp-primary)' : '#475569',
             textTransform: 'uppercase' as const, letterSpacing: '0.05em',
           }}>
             Product locked: {gen.product_locked ? 'Yes' : 'No'}
@@ -251,11 +251,11 @@ function GeneratedCard({ gen, isRegenerating, onDelete, onRegenerate, onPreview 
               onClick={() => onPreview(gen)}
               style={{
                 ...btnBase,
-                background: 'rgba(255,255,255,0.04)', borderColor: 'rgba(255,255,255,0.1)',
-                color: '#94a3b8',
+                background: 'rgba(83,58,253,0.04)', borderColor: 'rgba(255,255,255,0.1)',
+                color: 'var(--dp-ink-muted)',
               }}
               onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.08)' }}
-              onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.04)' }}
+              onMouseLeave={e => { e.currentTarget.style.background = 'rgba(83,58,253,0.04)' }}
             >
               <Eye size={11} />
               Preview
@@ -269,13 +269,13 @@ function GeneratedCard({ gen, isRegenerating, onDelete, onRegenerate, onPreview 
               disabled={downloading}
               style={{
                 ...btnBase,
-                background: downloading ? 'rgba(163,230,53,0.04)' : 'rgba(163,230,53,0.08)',
-                borderColor: 'rgba(163,230,53,0.2)',
-                color: '#a3e635',
+                background: downloading ? 'rgba(163,230,53,0.04)' : 'rgba(83,58,253,0.08)',
+                borderColor: 'rgba(83,58,253,0.2)',
+                color: 'var(--dp-primary)',
                 opacity: downloading ? 0.7 : 1,
               }}
               onMouseEnter={e => { if (!downloading) e.currentTarget.style.background = 'rgba(163,230,53,0.14)' }}
-              onMouseLeave={e => { e.currentTarget.style.background = downloading ? 'rgba(163,230,53,0.04)' : 'rgba(163,230,53,0.08)' }}
+              onMouseLeave={e => { e.currentTarget.style.background = downloading ? 'rgba(163,230,53,0.04)' : 'rgba(83,58,253,0.08)' }}
             >
               {downloading
                 ? <Loader2 size={11} style={{ animation: 'spin 1s linear infinite' }} />
@@ -292,10 +292,10 @@ function GeneratedCard({ gen, isRegenerating, onDelete, onRegenerate, onPreview 
             style={{
               ...btnBase,
               background: 'rgba(255,255,255,0.03)', borderColor: 'rgba(255,255,255,0.08)',
-              color: '#64748b',
+              color: 'var(--dp-ink-muted)',
               opacity: isRegenerating ? 0.5 : 1,
             }}
-            onMouseEnter={e => { if (!isRegenerating) e.currentTarget.style.background = 'rgba(255,255,255,0.07)' }}
+            onMouseEnter={e => { if (!isRegenerating) e.currentTarget.style.background = 'rgba(196,188,255,0.40)' }}
             onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.03)' }}
           >
             {isRegenerating
@@ -357,8 +357,8 @@ function GeneratedCard({ gen, isRegenerating, onDelete, onRegenerate, onPreview 
                 onClick={e => { e.stopPropagation(); setConfirmDelete(false) }}
                 style={{
                   ...btnBase,
-                  background: 'rgba(255,255,255,0.04)', borderColor: 'rgba(255,255,255,0.09)',
-                  color: '#64748b',
+                  background: 'rgba(83,58,253,0.04)', borderColor: 'rgba(255,255,255,0.09)',
+                  color: 'var(--dp-ink-muted)',
                 }}
               >
                 No
@@ -413,7 +413,7 @@ function FailedRow({ gen, isRegenerating, onDelete, onRegenerate }: FailedRowPro
       <AlertTriangle size={13} color="rgba(248,113,113,0.5)" style={{ flexShrink: 0 }} />
 
       <div style={{
-        fontSize: '0.75rem', fontWeight: 600, color: '#94a3b8',
+        fontSize: '0.75rem', fontWeight: 600, color: 'var(--dp-ink-muted)',
         flexShrink: 0, minWidth: 0,
       }}>
         {gen.image_type}
@@ -421,12 +421,12 @@ function FailedRow({ gen, isRegenerating, onDelete, onRegenerate }: FailedRowPro
 
       <GenStatusBadge status="failed" />
 
-      <div style={{ fontSize: '0.6875rem', color: '#475569', flexShrink: 0 }}>
+      <div style={{ fontSize: '0.6875rem', color: 'var(--dp-ink-muted)', flexShrink: 0 }}>
         {formatDate(gen.created_at)}
       </div>
 
       <div style={{
-        fontSize: '0.6875rem', color: '#64748b', flex: 1,
+        fontSize: '0.6875rem', color: 'var(--dp-ink-muted)', flex: 1,
         minWidth: '6rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
       }}
         title={rawError}
@@ -441,12 +441,12 @@ function FailedRow({ gen, isRegenerating, onDelete, onRegenerate }: FailedRowPro
           disabled={isRegenerating}
           style={{
             ...btnBase,
-            background: 'rgba(255,255,255,0.04)', borderColor: 'rgba(255,255,255,0.1)',
-            color: '#94a3b8',
+            background: 'rgba(83,58,253,0.04)', borderColor: 'rgba(255,255,255,0.1)',
+            color: 'var(--dp-ink-muted)',
             opacity: isRegenerating ? 0.5 : 1,
           }}
           onMouseEnter={e => { if (!isRegenerating) e.currentTarget.style.background = 'rgba(255,255,255,0.08)' }}
-          onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.04)' }}
+          onMouseLeave={e => { e.currentTarget.style.background = 'rgba(83,58,253,0.04)' }}
         >
           {isRegenerating
             ? <Loader2 size={11} style={{ animation: 'spin 1s linear infinite' }} />
@@ -491,8 +491,8 @@ function FailedRow({ gen, isRegenerating, onDelete, onRegenerate }: FailedRowPro
               onClick={e => { e.stopPropagation(); setConfirmDelete(false) }}
               style={{
                 ...btnBase,
-                background: 'rgba(255,255,255,0.04)', borderColor: 'rgba(255,255,255,0.09)',
-                color: '#64748b',
+                background: 'rgba(83,58,253,0.04)', borderColor: 'rgba(255,255,255,0.09)',
+                color: 'var(--dp-ink-muted)',
               }}
             >
               No
@@ -543,21 +543,21 @@ export default function GeneratedImageSlots({
       {completed.length === 0 && failed.length === 0 ? (
         <div style={{
           borderRadius: '0.875rem', padding: '2rem 1.5rem',
-          border: '1px dashed rgba(255,255,255,0.07)',
+          border: '1px dashed rgba(196,188,255,0.40)',
           background: 'rgba(255,255,255,0.01)',
           display: 'flex', flexDirection: 'column', alignItems: 'center',
           gap: '0.625rem', textAlign: 'center',
         }}>
           <div style={{
             width: 40, height: 40, borderRadius: '0.625rem',
-            background: 'rgba(163,230,53,0.04)', border: '1px solid rgba(163,230,53,0.1)',
+            background: 'rgba(163,230,53,0.04)', border: '1px solid rgba(83,58,253,0.1)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
           }}>
             <ImageIcon size={18} color="rgba(163,230,53,0.3)" />
           </div>
-          <div style={{ fontSize: '0.8125rem', color: '#475569', lineHeight: 1.6 }}>
+          <div style={{ fontSize: '0.8125rem', color: 'var(--dp-ink-muted)', lineHeight: 1.6 }}>
             No images generated yet.
-            <br />Select a type below and click <strong style={{ color: '#a3e635' }}>Generate Image</strong>.
+            <br />Select a type below and click <strong style={{ color: 'var(--dp-primary)' }}>Generate Image</strong>.
           </div>
         </div>
       ) : (
@@ -565,7 +565,7 @@ export default function GeneratedImageSlots({
           {completed.length === 0 && failed.length > 0 && (
             <div style={{
               borderRadius: '0.875rem', padding: '1.25rem 1.5rem',
-              border: '1px dashed rgba(255,255,255,0.07)',
+              border: '1px dashed rgba(196,188,255,0.40)',
               background: 'rgba(255,255,255,0.01)',
               display: 'flex', flexDirection: 'column', alignItems: 'center',
               gap: '0.5rem', textAlign: 'center', marginBottom: '1.25rem',
@@ -577,7 +577,7 @@ export default function GeneratedImageSlots({
               }}>
                 <AlertTriangle size={16} color="rgba(248,113,113,0.45)" />
               </div>
-              <div style={{ fontSize: '0.8125rem', color: '#475569', lineHeight: 1.6 }}>
+              <div style={{ fontSize: '0.8125rem', color: 'var(--dp-ink-muted)', lineHeight: 1.6 }}>
                 No generated images yet.
                 <br />Some attempts failed. You can retry or delete them below.
               </div>
@@ -586,7 +586,7 @@ export default function GeneratedImageSlots({
 
           {completed.length > 0 && (
             <>
-              <p style={{ fontSize: '0.8125rem', color: '#475569', margin: '0 0 1.125rem', lineHeight: 1.6 }}>
+              <p style={{ fontSize: '0.8125rem', color: 'var(--dp-ink-muted)', margin: '0 0 1.125rem', lineHeight: 1.6 }}>
                 Click any image to preview, download, or manage.
               </p>
               <div className="gen-images-grid">
@@ -623,7 +623,7 @@ export default function GeneratedImageSlots({
                   : <ChevronDown size={13} color="#6b7280" />
                 }
                 <span style={{
-                  fontSize: '0.6875rem', color: '#475569', fontWeight: 400,
+                  fontSize: '0.6875rem', color: 'var(--dp-ink-muted)', fontWeight: 400,
                   textTransform: 'none', letterSpacing: 0,
                 }}>
                   {failedOpen ? 'Hide failed attempts' : 'Show failed attempts'}

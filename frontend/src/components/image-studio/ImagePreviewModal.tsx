@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+﻿import { useState, useEffect } from 'react'
 import {
   X, Download, ExternalLink, Copy, Check, RefreshCw, Trash2, Loader2, ImageIcon,
 } from 'lucide-react'
@@ -121,12 +121,12 @@ export default function ImagePreviewModal({
         <div style={{
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
           padding: '0.875rem 1.25rem',
-          borderBottom: '1px solid rgba(255,255,255,0.07)',
+          borderBottom: '1px solid rgba(196,188,255,0.40)',
           flexShrink: 0,
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', minWidth: 0 }}>
             <span style={{
-              fontSize: '0.9375rem', fontWeight: 700, color: '#f1f5f9',
+              fontSize: '0.9375rem', fontWeight: 700, color: 'var(--dp-ink)',
               letterSpacing: '-0.02em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
             }}>
               {generation.image_type}
@@ -147,7 +147,7 @@ export default function ImagePreviewModal({
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               width: 30, height: 30, borderRadius: '0.5rem',
               background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)',
-              color: '#64748b', cursor: 'pointer', flexShrink: 0,
+              color: 'var(--dp-ink-muted)', cursor: 'pointer', flexShrink: 0,
               transition: 'all 0.15s',
             }}
             onMouseEnter={e => {
@@ -195,7 +195,7 @@ export default function ImagePreviewModal({
                 background: 'rgba(255,255,255,0.01)',
               }}>
                 <ImageIcon size={32} color="rgba(148,163,184,0.25)" />
-                <div style={{ fontSize: '0.8125rem', color: '#64748b', textAlign: 'center' }}>
+                <div style={{ fontSize: '0.8125rem', color: 'var(--dp-ink-muted)', textAlign: 'center' }}>
                   Image not available
                 </div>
               </div>
@@ -210,7 +210,7 @@ export default function ImagePreviewModal({
                   Generation failed
                 </div>
                 {generation.error_message && (
-                  <div style={{ fontSize: '0.8125rem', color: '#64748b', textAlign: 'center', maxWidth: 400 }}>
+                  <div style={{ fontSize: '0.8125rem', color: 'var(--dp-ink-muted)', textAlign: 'center', maxWidth: 400 }}>
                     {generation.error_message}
                   </div>
                 )}
@@ -226,7 +226,7 @@ export default function ImagePreviewModal({
                   }}>
                     Created
                   </div>
-                  <div style={{ fontSize: '0.8125rem', color: '#94a3b8' }}>
+                  <div style={{ fontSize: '0.8125rem', color: 'var(--dp-ink-muted)' }}>
                     {formatDate(generation.created_at)}
                   </div>
                 </div>
@@ -238,7 +238,7 @@ export default function ImagePreviewModal({
                     }}>
                       Completed
                     </div>
-                    <div style={{ fontSize: '0.8125rem', color: '#94a3b8' }}>
+                    <div style={{ fontSize: '0.8125rem', color: 'var(--dp-ink-muted)' }}>
                       {formatDate(generation.completed_at)}
                     </div>
                   </div>
@@ -250,7 +250,7 @@ export default function ImagePreviewModal({
                   }}>
                     Model
                   </div>
-                  <div style={{ fontSize: '0.8125rem', color: '#475569' }}>
+                  <div style={{ fontSize: '0.8125rem', color: 'var(--dp-ink-muted)' }}>
                     {generation.model_name}
                   </div>
                 </div>
@@ -266,7 +266,7 @@ export default function ImagePreviewModal({
                       style={{
                         display: 'inline-flex', alignItems: 'center', gap: '0.375rem',
                         padding: '0.5rem 0.875rem', borderRadius: '0.5rem',
-                        background: '#a3e635', border: 'none',
+                        background: 'var(--dp-primary)', border: 'none',
                         color: '#071008', fontSize: '0.8125rem', fontWeight: 700,
                         cursor: downloading ? 'wait' : 'pointer', fontFamily: 'inherit',
                         transition: 'opacity 0.15s',
@@ -286,12 +286,12 @@ export default function ImagePreviewModal({
                       style={{
                         display: 'inline-flex', alignItems: 'center', gap: '0.375rem',
                         padding: '0.5rem 0.875rem', borderRadius: '0.5rem',
-                        background: 'rgba(163,230,53,0.08)', border: '1px solid rgba(163,230,53,0.22)',
-                        color: '#a3e635', fontSize: '0.8125rem', fontWeight: 600,
+                        background: 'rgba(83,58,253,0.08)', border: '1px solid rgba(163,230,53,0.22)',
+                        color: 'var(--dp-primary)', fontSize: '0.8125rem', fontWeight: 600,
                         textDecoration: 'none', transition: 'background 0.15s',
                       }}
                       onMouseEnter={e => { e.currentTarget.style.background = 'rgba(163,230,53,0.14)' }}
-                      onMouseLeave={e => { e.currentTarget.style.background = 'rgba(163,230,53,0.08)' }}
+                      onMouseLeave={e => { e.currentTarget.style.background = 'rgba(83,58,253,0.08)' }}
                     >
                       <ExternalLink size={13} />
                       Open Original
@@ -306,14 +306,14 @@ export default function ImagePreviewModal({
                   style={{
                     display: 'inline-flex', alignItems: 'center', gap: '0.375rem',
                     padding: '0.5rem 0.875rem', borderRadius: '0.5rem',
-                    background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)',
-                    color: '#94a3b8', fontSize: '0.8125rem', fontWeight: 600,
+                    background: 'rgba(83,58,253,0.04)', border: '1px solid rgba(255,255,255,0.1)',
+                    color: 'var(--dp-ink-muted)', fontSize: '0.8125rem', fontWeight: 600,
                     cursor: isRegenerating ? 'not-allowed' : 'pointer', fontFamily: 'inherit',
                     transition: 'all 0.15s',
                     opacity: isRegenerating ? 0.6 : 1,
                   }}
                   onMouseEnter={e => { if (!isRegenerating) e.currentTarget.style.background = 'rgba(255,255,255,0.08)' }}
-                  onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.04)' }}
+                  onMouseLeave={e => { e.currentTarget.style.background = 'rgba(83,58,253,0.04)' }}
                 >
                   {isRegenerating
                     ? <Loader2 size={13} style={{ animation: 'spin 1s linear infinite' }} />
@@ -385,8 +385,8 @@ export default function ImagePreviewModal({
                       onClick={() => setConfirmDelete(false)}
                       style={{
                         padding: '0.375rem 0.75rem', borderRadius: '0.4375rem',
-                        background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.09)',
-                        color: '#64748b', fontSize: '0.8125rem', fontWeight: 600,
+                        background: 'rgba(83,58,253,0.04)', border: '1px solid rgba(255,255,255,0.09)',
+                        color: 'var(--dp-ink-muted)', fontSize: '0.8125rem', fontWeight: 600,
                         cursor: 'pointer', fontFamily: 'inherit',
                       }}
                     >
@@ -413,7 +413,7 @@ export default function ImagePreviewModal({
                     onClick={() => setShowPrompt(p => !p)}
                     style={{
                       background: 'none', border: 'none', padding: 0,
-                      fontSize: '0.6875rem', fontWeight: 700, color: '#475569',
+                      fontSize: '0.6875rem', fontWeight: 700, color: 'var(--dp-ink-muted)',
                       textTransform: 'uppercase', letterSpacing: '0.08em',
                       cursor: 'pointer', fontFamily: 'inherit',
                       display: 'flex', alignItems: 'center', gap: '0.375rem',
@@ -425,10 +425,10 @@ export default function ImagePreviewModal({
                   {showPrompt && (
                     <div style={{
                       padding: '0.75rem 0.875rem', borderRadius: '0.5rem',
-                      background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.07)',
+                      background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(196,188,255,0.40)',
                     }}>
                       <pre style={{
-                        fontSize: '0.75rem', color: '#64748b', margin: 0,
+                        fontSize: '0.75rem', color: 'var(--dp-ink-muted)', margin: 0,
                         fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace',
                         whiteSpace: 'pre-wrap', lineHeight: 1.7, wordBreak: 'break-word',
                       }}>

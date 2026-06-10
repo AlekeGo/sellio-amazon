@@ -1,4 +1,4 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import { Copy, Check, Layers, Zap, Loader2, Camera, AlertTriangle } from 'lucide-react'
 import type { ImagePackPlanItem } from '../../types/audit'
 import type { ImageGeneration, QualityOptions } from '../../types/imageGeneration'
@@ -103,7 +103,7 @@ function FieldRow({ label, children }: { label: string; children: React.ReactNod
 const selectStyle: React.CSSProperties = {
   width: '100%', boxSizing: 'border-box',
   padding: '0.5rem 0.75rem', borderRadius: '0.5rem',
-  background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)',
+  background: 'rgba(83,58,253,0.04)', border: '1px solid rgba(255,255,255,0.1)',
   color: '#e2e8f0', fontSize: '0.8125rem',
   fontFamily: 'inherit', outline: 'none',
   appearance: 'none', WebkitAppearance: 'none',
@@ -154,7 +154,7 @@ export default function ImageBriefPanel({
     <div style={{
       borderRadius: '0.875rem',
       background: 'rgba(255,255,255,0.02)',
-      border: '1px solid rgba(163,230,53,0.2)',
+      border: '1px solid rgba(83,58,253,0.2)',
       overflow: 'hidden',
     }}>
       <div style={{
@@ -177,14 +177,14 @@ export default function ImageBriefPanel({
           }}>
             Creative Brief
           </div>
-          <div style={{ fontSize: '1rem', fontWeight: 700, color: '#f1f5f9', letterSpacing: '-0.02em' }}>
+          <div style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--dp-ink)', letterSpacing: '-0.02em' }}>
             {item.image_type}
           </div>
         </div>
         <span style={{
           display: 'inline-flex', alignItems: 'center', gap: '0.3125rem',
           padding: '0.25rem 0.5625rem', borderRadius: '99px', flexShrink: 0,
-          background: hasReference ? 'rgba(52,211,153,0.08)' : 'rgba(255,255,255,0.04)',
+          background: hasReference ? 'rgba(52,211,153,0.08)' : 'rgba(83,58,253,0.04)',
           border: `1px solid ${hasReference ? 'rgba(52,211,153,0.2)' : 'rgba(255,255,255,0.08)'}`,
           fontSize: '0.5625rem', fontWeight: 700,
           color: hasReference ? '#34d399' : '#64748b',
@@ -206,8 +206,8 @@ export default function ImageBriefPanel({
           <FieldRow label="Headline">
             <div style={{
               padding: '0.625rem 0.875rem', borderRadius: '0.5rem',
-              background: 'rgba(163,230,53,0.04)', border: '1px solid rgba(163,230,53,0.12)',
-              fontSize: '0.9375rem', fontWeight: 700, color: '#a3e635',
+              background: 'rgba(163,230,53,0.04)', border: '1px solid rgba(83,58,253,0.12)',
+              fontSize: '0.9375rem', fontWeight: 700, color: 'var(--dp-primary)',
               letterSpacing: '-0.01em', wordBreak: 'break-word',
             }}>
               &ldquo;{item.headline}&rdquo;
@@ -228,7 +228,7 @@ export default function ImageBriefPanel({
                 <span key={i} style={{
                   padding: '0.25rem 0.625rem', borderRadius: '0.375rem',
                   background: 'rgba(52,211,153,0.06)', border: '1px solid rgba(52,211,153,0.14)',
-                  fontSize: '0.75rem', color: '#94a3b8',
+                  fontSize: '0.75rem', color: 'var(--dp-ink-muted)',
                 }}>
                   {el}
                 </span>
@@ -259,7 +259,7 @@ export default function ImageBriefPanel({
         padding: '1rem 1.125rem',
         borderRadius: '0.625rem',
         background: 'rgba(163,230,53,0.025)',
-        border: '1px solid rgba(163,230,53,0.1)',
+        border: '1px solid rgba(83,58,253,0.1)',
         marginBottom: '1rem',
       }}>
         <div style={{
@@ -279,7 +279,7 @@ export default function ImageBriefPanel({
               style={{
                 width: '100%', boxSizing: 'border-box',
                 padding: '0.625rem 0.75rem', borderRadius: '0.5rem',
-                background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)',
+                background: 'rgba(83,58,253,0.04)', border: '1px solid rgba(255,255,255,0.1)',
                 color: '#e2e8f0', fontSize: '0.8125rem', lineHeight: 1.6,
                 fontFamily: 'inherit', resize: 'vertical',
                 outline: 'none', transition: 'border-color 0.15s',
@@ -287,7 +287,7 @@ export default function ImageBriefPanel({
               onFocus={e => { e.currentTarget.style.borderColor = 'rgba(163,230,53,0.35)' }}
               onBlur={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)' }}
             />
-            <div style={{ fontSize: '0.6875rem', color: '#475569', marginTop: '0.375rem', lineHeight: 1.5 }}>
+            <div style={{ fontSize: '0.6875rem', color: 'var(--dp-ink-muted)', marginTop: '0.375rem', lineHeight: 1.5 }}>
               Sellio already builds the prompt from your product and audit. Use this only for extra style or layout direction.
             </div>
           </FieldRow>
@@ -342,11 +342,11 @@ export default function ImageBriefPanel({
         </div>
       </div>
 
-      <div style={{ margin: '0 1.375rem', borderRadius: '0.625rem', border: '1px solid rgba(255,255,255,0.07)', overflow: 'hidden' }}>
+      <div style={{ margin: '0 1.375rem', borderRadius: '0.625rem', border: '1px solid rgba(196,188,255,0.40)', overflow: 'hidden' }}>
         <div style={{
           padding: '0.625rem 0.875rem',
           background: 'rgba(255,255,255,0.03)',
-          borderBottom: '1px solid rgba(255,255,255,0.06)',
+          borderBottom: '1px solid rgba(196,188,255,0.30)',
           display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.5rem',
         }}>
           <span style={{
@@ -375,7 +375,7 @@ export default function ImageBriefPanel({
         </div>
         <div style={{ padding: '0.875rem 1rem', background: 'rgba(0,0,0,0.25)' }}>
           <pre style={{
-            fontSize: '0.75rem', color: '#94a3b8', margin: 0,
+            fontSize: '0.75rem', color: 'var(--dp-ink-muted)', margin: 0,
             fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace',
             whiteSpace: 'pre-wrap', lineHeight: 1.75, wordBreak: 'break-word',
           }}>
@@ -431,13 +431,13 @@ export default function ImageBriefPanel({
           style={{
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
             padding: '0.6875rem 1.25rem', borderRadius: '0.5rem', width: '100%',
-            background: isGenerating ? 'rgba(163,230,53,0.06)' : '#a3e635',
+            background: isGenerating ? 'rgba(163,230,53,0.06)' : 'var(--dp-primary)',
             border: 'none',
             color: isGenerating ? 'rgba(163,230,53,0.55)' : '#071008',
             fontSize: '0.875rem', fontWeight: 700,
             cursor: isGenerating ? 'not-allowed' : 'pointer',
             fontFamily: 'inherit', transition: 'all 0.15s',
-            boxShadow: isGenerating ? 'none' : '0 4px 16px rgba(163,230,53,0.2)',
+            boxShadow: isGenerating ? 'none' : '0 4px 16px rgba(83,58,253,0.2)',
           }}
         >
           {isGenerating

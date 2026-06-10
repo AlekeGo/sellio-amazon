@@ -1,4 +1,4 @@
-import { Eye, Image, Type, Search } from 'lucide-react'
+﻿import { Eye, Image, Type, Search } from 'lucide-react'
 import AnimatedSection from '../ui/AnimatedSection'
 
 const problems = [
@@ -37,7 +37,7 @@ const problems = [
 ]
 
 const stats = [
-  { value: '70%', label: 'of buyers never look past the first page of results', color: '#a3e635' },
+  { value: '70%', label: 'of buyers never look past the first page of results', color: 'var(--dp-primary)' },
   { value: '47%', label: 'of clicks go to the top 3 results — position and presentation are everything', color: '#34d399' },
   { value: '3 sec', label: 'is all it takes for a buyer to decide your listing is not worth their time', color: '#4ade80' },
 ]
@@ -62,7 +62,7 @@ export default function ProblemSection() {
             Invisible listings cost you{' '}
             <span className="gradient-text">real sales.</span>
           </h2>
-          <p className="text-lg max-w-2xl mx-auto leading-relaxed" style={{ color: '#94a3b8' }}>
+          <p className="text-lg max-w-2xl mx-auto leading-relaxed" style={{ color: 'var(--dp-ink-muted)' }}>
             Your product might be excellent. But if your listing doesn't earn attention, trust, and clicks — buyers never find out.
           </p>
         </AnimatedSection>
@@ -84,7 +84,7 @@ export default function ProblemSection() {
               >
                 {stat.value}
               </div>
-              <p className="text-sm leading-relaxed" style={{ color: '#64748b' }}>{stat.label}</p>
+              <p className="text-sm leading-relaxed" style={{ color: 'var(--dp-ink-muted)' }}>{stat.label}</p>
             </div>
           ))}
         </AnimatedSection>
@@ -104,10 +104,10 @@ export default function ProblemSection() {
                   >
                     <Icon size={18} style={{ color: problem.color }} />
                   </div>
-                  <h3 className="text-sm font-bold mb-2.5 leading-snug" style={{ color: '#f1f5f9' }}>
+                  <h3 className="text-sm font-bold mb-2.5 leading-snug" style={{ color: 'var(--dp-ink)' }}>
                     {problem.title}
                   </h3>
-                  <p className="text-sm leading-relaxed" style={{ color: '#64748b' }}>
+                  <p className="text-sm leading-relaxed" style={{ color: 'var(--dp-ink-muted)' }}>
                     {problem.body}
                   </p>
                 </div>

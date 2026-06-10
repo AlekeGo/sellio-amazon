@@ -216,7 +216,7 @@ export default function AuditImageStudioPage() {
           to="/dashboard/audits"
           style={{
             display: 'inline-flex', alignItems: 'center', gap: '0.375rem',
-            fontSize: '0.875rem', color: '#64748b', textDecoration: 'none', marginBottom: '1.5rem',
+            fontSize: '0.875rem', color: 'var(--dp-ink-muted)', textDecoration: 'none', marginBottom: '1.5rem',
             transition: 'color 0.15s',
           }}
           onMouseEnter={e => (e.currentTarget.style.color = '#94a3b8')}
@@ -282,7 +282,7 @@ export default function AuditImageStudioPage() {
             display: 'flex', alignItems: 'center', justifyContent: 'space-between',
             marginBottom: '0.4375rem',
           }}>
-            <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748b' }}>
+            <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--dp-ink-muted)' }}>
               Image Pack Progress
             </span>
             <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#475569' }}>
@@ -299,7 +299,7 @@ export default function AuditImageStudioPage() {
               display: 'inline-flex', alignItems: 'center', gap: '0.3125rem',
               padding: '0.25rem 0.625rem', borderRadius: '99px',
               background: 'rgba(163,230,53,0.07)', border: '1px solid rgba(163,230,53,0.18)',
-              fontSize: '0.6875rem', fontWeight: 700, color: '#a3e635',
+              fontSize: '0.6875rem', fontWeight: 700, color: 'var(--dp-primary)',
             }}>
               <Package size={11} />
               {billing.balance.image_generation_credits} image{billing.balance.image_generation_credits !== 1 ? 's' : ''} left
@@ -351,7 +351,7 @@ export default function AuditImageStudioPage() {
       </div>
 
       <div style={{ marginBottom: '1.25rem' }}>
-        <p style={{ fontSize: '0.875rem', color: '#64748b', margin: 0, lineHeight: 1.65 }}>
+        <p style={{ fontSize: '0.875rem', color: 'var(--dp-ink-muted)', margin: 0, lineHeight: 1.65 }}>
           Select an image type to view its creative brief, set quality controls, and generate.
         </p>
       </div>
@@ -406,13 +406,13 @@ export default function AuditImageStudioPage() {
                 <Zap size={22} color="#a3e635" style={{ opacity: 0.5 }} />
               </div>
               <h3 style={{
-                fontSize: '0.9375rem', fontWeight: 700, color: '#f1f5f9',
+                fontSize: '0.9375rem', fontWeight: 700, color: 'var(--dp-ink)',
                 margin: '0 0 0.5rem', letterSpacing: '-0.02em',
               }}>
                 Select an image type
               </h3>
               <p style={{ fontSize: '0.8125rem', color: '#475569', margin: 0, lineHeight: 1.65 }}>
-                Click <strong style={{ color: '#a3e635' }}>Prepare Brief</strong> on any card to see the creative brief, set quality controls, and generate.
+                Click <strong style={{ color: 'var(--dp-primary)' }}>Prepare Brief</strong> on any card to see the creative brief, set quality controls, and generate.
               </p>
             </div>
           )}
@@ -437,7 +437,7 @@ export default function AuditImageStudioPage() {
         </Link>
         <Link
           to="/dashboard/new-audit"
-          className="btn-primary glow-button"
+          className="dp-btn-primary"
           style={{ padding: '0.625rem 1.125rem', fontSize: '0.875rem' }}
         >
           <Zap size={14} />

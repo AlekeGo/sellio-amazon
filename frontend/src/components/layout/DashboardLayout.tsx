@@ -12,6 +12,7 @@ import {
   Menu,
   X,
   Home,
+  BarChart2,
 } from 'lucide-react'
 
 const NAV_ITEMS = [
@@ -51,16 +52,16 @@ function NavItem({
         alignItems: 'center',
         gap: '0.625rem',
         padding: '0.5625rem 0.75rem',
-        borderRadius: '0.5rem',
+        borderRadius: '0.625rem',
         fontSize: '0.875rem',
         fontWeight: isActive ? 600 : 400,
-        color: isActive ? '#f1f5f9' : hovered ? '#94a3b8' : '#64748b',
+        color: isActive ? 'var(--dp-primary)' : hovered ? 'var(--dp-ink)' : 'var(--dp-ink-muted)',
         background: isActive
-          ? 'rgba(163,230,53,0.09)'
+          ? 'rgba(83,58,253,0.09)'
           : hovered
-            ? 'rgba(255,255,255,0.04)'
+            ? 'rgba(83,58,253,0.04)'
             : 'transparent',
-        border: isActive ? '1px solid rgba(163,230,53,0.18)' : '1px solid transparent',
+        border: isActive ? '1px solid rgba(83,58,253,0.18)' : '1px solid transparent',
         textDecoration: 'none',
         transition: 'all 0.15s ease',
       })}
@@ -74,42 +75,19 @@ function NavItem({
 function SellioLogo({ small }: { small?: boolean }) {
   const wh = small ? 26 : 28
   const r = small ? 7 : 8
-  const ic = small ? 13 : 14
   const fs = small ? '0.9375rem' : '1rem'
 
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem' }}>
-      <div
-        style={{
-          width: wh,
-          height: wh,
-          borderRadius: r,
-          background: 'linear-gradient(135deg, #166534, #4ade80)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          flexShrink: 0,
-        }}
-      >
-        <svg width={ic} height={ic} viewBox="0 0 18 18" fill="none">
-          <path
-            d="M9 2L14.5 5.5V12.5L9 16L3.5 12.5V5.5L9 2Z"
-            stroke="white"
-            strokeWidth="1.5"
-            strokeLinejoin="round"
-            fill="none"
-          />
-          <path
-            d="M6.5 9.5L8 11L11.5 7"
-            stroke="white"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
+    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+      <div style={{
+        width: wh, height: wh, borderRadius: r,
+        background: 'linear-gradient(135deg, #6A55FE 0%, #533AFD 100%)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+      }}>
+        <BarChart2 size={small ? 13 : 15} color="#fff" />
       </div>
-      <span style={{ fontSize: fs, fontWeight: 800, color: '#f1f5f9', letterSpacing: '-0.03em' }}>
-        sell<span className="gradient-text">io</span>
+      <span style={{ fontSize: fs, fontWeight: 700, color: 'var(--dp-ink)', letterSpacing: '-0.02em' }}>
+        Sellio
       </span>
     </div>
   )
@@ -127,15 +105,13 @@ function SidebarContent({ onClose }: { onClose: () => void }) {
 
   return (
     <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-      <div
-        style={{
-          padding: '1.125rem 1rem',
-          borderBottom: '1px solid rgba(255,255,255,0.06)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-        }}
-      >
+      <div style={{
+        padding: '1.125rem 1rem',
+        borderBottom: '1px solid rgba(196,188,255,0.38)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+      }}>
         <SellioLogo />
         <button
           onClick={onClose}
@@ -144,9 +120,10 @@ function SidebarContent({ onClose }: { onClose: () => void }) {
             background: 'transparent',
             border: 'none',
             cursor: 'pointer',
-            color: '#475569',
+            color: 'var(--dp-ink-muted)',
             padding: 4,
             borderRadius: 6,
+            display: 'flex',
             alignItems: 'center',
           }}
         >
@@ -162,40 +139,29 @@ function SidebarContent({ onClose }: { onClose: () => void }) {
         </div>
       </nav>
 
-      <div style={{ padding: '0.75rem', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+      <div style={{ padding: '0.75rem', borderTop: '1px solid rgba(196,188,255,0.38)' }}>
         {user && (
-          <div
-            style={{
-              padding: '0.5rem 0.75rem',
-              marginBottom: '0.375rem',
-              borderRadius: '0.5rem',
-              background: 'rgba(255,255,255,0.03)',
-            }}
-          >
+          <div style={{
+            padding: '0.5rem 0.75rem',
+            marginBottom: '0.375rem',
+            borderRadius: '0.625rem',
+            background: 'rgba(83,58,253,0.04)',
+          }}>
             {user.full_name && (
-              <div
-                style={{
-                  fontSize: '0.75rem',
-                  fontWeight: 600,
-                  color: '#94a3b8',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  whiteSpace: 'nowrap',
-                }}
-              >
+              <div style={{
+                fontSize: '0.75rem', fontWeight: 600,
+                color: 'var(--dp-ink)',
+                overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+              }}>
                 {user.full_name}
               </div>
             )}
-            <div
-              style={{
-                fontSize: '0.6875rem',
-                color: '#475569',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap',
-                marginTop: user.full_name ? 1 : 0,
-              }}
-            >
+            <div style={{
+              fontSize: '0.6875rem',
+              color: 'var(--dp-ink-muted)',
+              overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+              marginTop: user.full_name ? 1 : 0,
+            }}>
               {user.email}
             </div>
           </div>
@@ -210,12 +176,12 @@ function SidebarContent({ onClose }: { onClose: () => void }) {
             gap: '0.625rem',
             width: '100%',
             padding: '0.5rem 0.75rem',
-            borderRadius: '0.5rem',
-            background: logoutHovered ? 'rgba(239,68,68,0.08)' : 'transparent',
+            borderRadius: '0.625rem',
+            background: logoutHovered ? 'rgba(239,68,68,0.07)' : 'transparent',
             border: 'none',
             cursor: 'pointer',
             fontSize: '0.875rem',
-            color: logoutHovered ? '#f87171' : '#64748b',
+            color: logoutHovered ? '#ef4444' : 'var(--dp-ink-muted)',
             transition: 'all 0.15s ease',
           }}
         >
@@ -231,7 +197,7 @@ export default function DashboardLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   return (
-    <div style={{ background: '#070e0a', minHeight: '100vh' }}>
+    <div style={{ background: '#F6F9FC', minHeight: '100vh' }}>
       {sidebarOpen && (
         <div
           onClick={() => setSidebarOpen(false)}
@@ -239,8 +205,9 @@ export default function DashboardLayout() {
           style={{
             position: 'fixed',
             inset: 0,
-            background: 'rgba(0,0,0,0.6)',
+            background: 'rgba(13,37,61,0.35)',
             zIndex: 45,
+            backdropFilter: 'blur(4px)',
           }}
         />
       )}
@@ -255,8 +222,9 @@ export default function DashboardLayout() {
           style={{
             justifyContent: 'space-between',
             padding: '0.875rem 1.125rem',
-            borderBottom: '1px solid rgba(255,255,255,0.06)',
-            background: '#0a1510',
+            borderBottom: '1px solid rgba(196,188,255,0.40)',
+            background: 'rgba(255,255,255,0.95)',
+            backdropFilter: 'blur(12px)',
             position: 'sticky',
             top: 0,
             zIndex: 30,
@@ -266,8 +234,8 @@ export default function DashboardLayout() {
           <button
             onClick={() => setSidebarOpen(true)}
             style={{
-              background: 'rgba(255,255,255,0.05)',
-              border: '1px solid rgba(255,255,255,0.09)',
+              background: 'rgba(83,58,253,0.06)',
+              border: '1px solid rgba(196,188,255,0.50)',
               borderRadius: 8,
               width: 36,
               height: 36,
@@ -275,7 +243,7 @@ export default function DashboardLayout() {
               alignItems: 'center',
               justifyContent: 'center',
               cursor: 'pointer',
-              color: '#94a3b8',
+              color: 'var(--dp-primary)',
             }}
           >
             <Menu size={18} />

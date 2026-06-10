@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+﻿import { Link } from 'react-router-dom'
 import { ArrowRight, Sparkles } from 'lucide-react'
 import AnimatedSection from '../ui/AnimatedSection'
 
@@ -38,8 +38,8 @@ const imageTypes = [
     desc: 'Step-by-step visual showing usage process with numbered callouts.',
     gradient: 'linear-gradient(135deg, #3f6212, #a3e635)',
     tag: 'Trust builder',
-    tagColor: '#a3e635',
-    tagBg: 'rgba(163,230,53,0.1)',
+    tagColor: 'var(--dp-primary)',
+    tagBg: 'rgba(83,58,253,0.1)',
     aspectLabel: '16:9',
     mockColors: ['#111a07', '#3f6212', '#ecfccb', '#1a2e05'],
   },
@@ -100,7 +100,7 @@ export default function ImageStudioSection() {
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          backgroundImage: 'radial-gradient(ellipse 80% 50% at 50% 0%, rgba(163,230,53,0.06) 0%, transparent 60%)',
+          backgroundImage: 'radial-gradient(ellipse 80% 50% at 50% 0%, rgba(83,58,253,0.06) 0%, transparent 60%)',
         }}
       />
 
@@ -117,7 +117,7 @@ export default function ImageStudioSection() {
             Premium visuals.{' '}
             <span className="gradient-text">Generated for your product.</span>
           </h2>
-          <p className="text-lg max-w-2xl mx-auto leading-relaxed" style={{ color: '#94a3b8' }}>
+          <p className="text-lg max-w-2xl mx-auto leading-relaxed" style={{ color: 'var(--dp-ink-muted)' }}>
             Upload your product images. Sellio generates a full Amazon-ready visual pack tailored to your listing and brand.
           </p>
         </AnimatedSection>
@@ -128,7 +128,7 @@ export default function ImageStudioSection() {
               <div className="glass-card glass-card-hover rounded-2xl p-5 h-full">
                 <MockImagePreview colors={item.mockColors} aspect={item.aspectLabel} />
                 <div className="flex items-start justify-between gap-2 mb-2">
-                  <h3 className="text-sm font-bold" style={{ color: '#f1f5f9' }}>{item.label}</h3>
+                  <h3 className="text-sm font-bold" style={{ color: 'var(--dp-ink)' }}>{item.label}</h3>
                   <span
                     className="text-xs px-2 py-0.5 rounded-full shrink-0"
                     style={{ background: item.tagBg, color: item.tagColor, border: `1px solid ${item.tagColor}28` }}
@@ -136,19 +136,19 @@ export default function ImageStudioSection() {
                     {item.tag}
                   </span>
                 </div>
-                <p className="text-xs leading-relaxed" style={{ color: '#64748b' }}>{item.desc}</p>
+                <p className="text-xs leading-relaxed" style={{ color: 'var(--dp-ink-muted)' }}>{item.desc}</p>
               </div>
             </AnimatedSection>
           ))}
         </div>
 
         <AnimatedSection delay={0.3} className="text-center">
-          <Link to="/image-studio" className="btn-primary glow-button">
+          <Link to="/image-studio" className="dp-btn-primary">
             <Sparkles size={15} />
             Explore Image Studio
             <ArrowRight size={16} />
           </Link>
-          <p className="text-xs mt-3" style={{ color: '#475569' }}>Image generation available on paid plans</p>
+          <p className="text-xs mt-3" style={{ color: 'var(--dp-ink-muted)' }}>Image generation available on paid plans</p>
         </AnimatedSection>
       </div>
     </section>

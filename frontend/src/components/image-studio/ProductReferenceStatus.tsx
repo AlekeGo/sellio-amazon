@@ -1,4 +1,4 @@
-import { ShieldCheck, AlertTriangle, Camera } from 'lucide-react'
+﻿import { ShieldCheck, AlertTriangle, Camera } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import type { AuditImage } from '../../types/audit'
 
@@ -36,7 +36,7 @@ export default function ProductReferenceStatus({ images }: Props) {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3125rem' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.4375rem' }}>
               <ShieldCheck size={14} color="#34d399" style={{ flexShrink: 0 }} />
-              <span style={{ fontSize: '0.875rem', fontWeight: 700, color: '#f1f5f9', letterSpacing: '-0.01em' }}>
+              <span style={{ fontSize: '0.875rem', fontWeight: 700, color: 'var(--dp-ink)', letterSpacing: '-0.01em' }}>
                 Reference product detected
               </span>
             </div>
@@ -44,11 +44,11 @@ export default function ProductReferenceStatus({ images }: Props) {
               <span style={{ fontSize: '0.75rem', color: '#34d399' }}>
                 Using your uploaded product photo
               </span>
-              <span style={{ fontSize: '0.75rem', color: '#64748b' }}>
+              <span style={{ fontSize: '0.75rem', color: 'var(--dp-ink-muted)' }}>
                 Product identity locked
               </span>
               {images.length > 1 && (
-                <span style={{ fontSize: '0.6875rem', color: '#475569' }}>
+                <span style={{ fontSize: '0.6875rem', color: 'var(--dp-ink-muted)' }}>
                   Using 1 of {images.length} product reference photos
                 </span>
               )}
@@ -86,9 +86,9 @@ export default function ProductReferenceStatus({ images }: Props) {
                 <div style={{
                   width: 32, height: 32, borderRadius: '0.3125rem',
                   border: '1px solid rgba(255,255,255,0.08)',
-                  background: 'rgba(255,255,255,0.04)',
+                  background: 'rgba(83,58,253,0.04)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: '0.5625rem', color: '#64748b', fontWeight: 700,
+                  fontSize: '0.5625rem', color: 'var(--dp-ink-muted)', fontWeight: 700,
                 }}>
                   +{images.length - 4}
                 </div>
@@ -112,7 +112,7 @@ export default function ProductReferenceStatus({ images }: Props) {
         <div style={{ fontSize: '0.8125rem', fontWeight: 600, color: '#fbbf24', marginBottom: '0.25rem' }}>
           No product reference photo found
         </div>
-        <div style={{ fontSize: '0.75rem', color: '#64748b', lineHeight: 1.6 }}>
+        <div style={{ fontSize: '0.75rem', color: 'var(--dp-ink-muted)', lineHeight: 1.6 }}>
           Sellio will generate an approximate product from text only. For best accuracy, upload 1–3 clean product photos on a clean background.
         </div>
       </div>

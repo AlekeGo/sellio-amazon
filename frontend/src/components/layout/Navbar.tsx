@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { Menu, X } from 'lucide-react'
+import { Menu, X, BarChart2 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAuth } from '../../contexts/AuthContext'
 
@@ -8,7 +8,6 @@ const guestLinks = [
   { label: 'Features', href: '/#features' },
   { label: 'How It Works', href: '/#how-it-works' },
   { label: 'Pricing', href: '/pricing' },
-  { label: 'Login', href: '/login' },
 ]
 
 const authLinks = [
@@ -17,27 +16,18 @@ const authLinks = [
   { label: 'Billing', href: '/dashboard/billing' },
 ]
 
-function SelliöLogo() {
+function SellioLogo() {
   return (
-    <Link to="/" className="flex items-center gap-2.5 no-underline select-none">
-      <div
-        className="w-8 h-8 rounded-lg flex items-center justify-center"
-        style={{
-          background: 'linear-gradient(135deg, #166534 0%, #4ade80 100%)',
-          boxShadow: '0 0 16px rgba(74,222,128,0.3)',
-        }}
-      >
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-          <rect x="2" y="10" width="2.5" height="4" rx="0.75" fill="white" opacity="0.65"/>
-          <rect x="6.75" y="6.5" width="2.5" height="7.5" rx="0.75" fill="white" opacity="0.82"/>
-          <rect x="11.5" y="2.5" width="2.5" height="11.5" rx="0.75" fill="white"/>
-        </svg>
+    <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', textDecoration: 'none' }}>
+      <div style={{
+        width: 28, height: 28, borderRadius: 8,
+        background: 'linear-gradient(135deg, #6A55FE 0%, #533AFD 100%)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+      }}>
+        <BarChart2 size={15} color="#fff" />
       </div>
-      <span
-        className="font-bold tracking-tight"
-        style={{ color: '#e8f4e8', letterSpacing: '-0.04em', fontSize: '1.1rem' }}
-      >
-        sell<span className="gradient-text">io</span>
+      <span style={{ fontWeight: 700, fontSize: '1rem', color: 'var(--dp-ink)', letterSpacing: '-0.02em' }}>
+        Sellio
       </span>
     </Link>
   )
@@ -50,18 +40,16 @@ export default function Navbar() {
   const { isAuthenticated } = useAuth()
 
   const navLinks = isAuthenticated ? authLinks : guestLinks
-  const ctaLabel = isAuthenticated ? 'New Audit' : 'Start Free Audit'
+  const ctaLabel = isAuthenticated ? 'New Audit' : 'Start Free'
   const ctaHref = '/dashboard/new-audit'
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 16)
+    const onScroll = () => setScrolled(window.scrollY > 12)
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  useEffect(() => {
-    setMobileOpen(false)
-  }, [location])
+  useEffect(() => { setMobileOpen(false) }, [location])
 
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? 'hidden' : ''
@@ -70,8 +58,7 @@ export default function Navbar() {
 
   const handleAnchorClick = (href: string) => {
     if (href.startsWith('/#')) {
-      const id = href.slice(2)
-      const el = document.getElementById(id)
+      const el = document.getElementById(href.slice(2))
       if (el) el.scrollIntoView({ behavior: 'smooth' })
     }
   }
@@ -79,118 +66,120 @@ export default function Navbar() {
   return (
     <>
       <header
-        className="fixed top-0 left-0 right-0 z-50 flex justify-center"
-        style={{ padding: '1rem 1rem 0' }}
+        className="dp-nav"
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: 100,
+          background: scrolled ? 'rgba(255,255,255,0.95)' : 'rgba(255,255,255,0.88)',
+          borderBottom: scrolled ? '1px solid rgba(196,188,255,0.55)' : '1px solid rgba(196,188,255,0.38)',
+          boxShadow: scrolled ? '0 4px 24px rgba(83,58,253,0.08)' : 'none',
+          backdropFilter: 'blur(16px)',
+          WebkitBackdropFilter: 'blur(16px)',
+          padding: '0 1.5rem',
+          height: 60,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          transition: 'box-shadow 0.25s ease, border-color 0.25s ease',
+        }}
       >
-        <div
-          style={{
-            maxWidth: '960px',
-            width: '100%',
-            background: scrolled
-              ? 'rgba(7, 14, 10, 0.95)'
-              : 'rgba(7, 14, 10, 0.72)',
-            border: '1px solid rgba(255,255,255,0.09)',
-            borderRadius: '9999px',
-            backdropFilter: 'blur(24px)',
-            WebkitBackdropFilter: 'blur(24px)',
-            transition: 'background 0.3s ease, box-shadow 0.3s ease',
-            boxShadow: scrolled
-              ? '0 8px 32px rgba(0,0,0,0.35), 0 1px 0 rgba(163,230,53,0.06) inset'
-              : '0 2px 16px rgba(0,0,0,0.2)',
-          }}
-        >
-          <div className="flex items-center justify-between" style={{ padding: '0.5rem 0.75rem 0.5rem 1.25rem' }}>
-            <SelliöLogo />
+        <SellioLogo />
 
-            <nav className="hidden md:flex items-center gap-1">
-              {navLinks.map((link) => (
-                link.href.startsWith('/#') ? (
-                  <button
-                    key={link.label}
-                    onClick={() => handleAnchorClick(link.href)}
-                    className="nav-link-item px-4 py-2 text-sm font-medium rounded-full cursor-pointer"
-                    style={{ background: 'none', border: 'none' }}
-                  >
-                    {link.label}
-                  </button>
-                ) : (
-                  <Link
-                    key={link.label}
-                    to={link.href}
-                    className="nav-link-item px-4 py-2 text-sm font-medium rounded-full"
-                    style={{ textDecoration: 'none' }}
-                  >
-                    {link.label}
-                  </Link>
-                )
-              ))}
-            </nav>
-
-            <div className="hidden md:flex items-center gap-3">
-              <Link
-                to={ctaHref}
-                className="btn-primary text-sm"
-                style={{ padding: '0.5rem 1.25rem', borderRadius: '9999px', fontSize: '0.875rem' }}
+        <nav style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }} className="hidden md:flex">
+          {navLinks.map((link) =>
+            link.href.startsWith('/#') ? (
+              <button
+                key={link.label}
+                onClick={() => handleAnchorClick(link.href)}
+                className="nav-link-item"
+                style={{
+                  fontSize: '0.875rem', fontWeight: 500,
+                  padding: '0.5rem 0.875rem', borderRadius: 9999,
+                  background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit',
+                }}
               >
-                {ctaLabel}
+                {link.label}
+              </button>
+            ) : (
+              <Link
+                key={link.label}
+                to={link.href}
+                className="nav-link-item"
+                style={{
+                  fontSize: '0.875rem', fontWeight: 500,
+                  padding: '0.5rem 0.875rem', borderRadius: 9999,
+                  textDecoration: 'none', display: 'inline-flex', alignItems: 'center',
+                }}
+              >
+                {link.label}
               </Link>
-            </div>
+            )
+          )}
+        </nav>
 
-            <button
-              className="md:hidden p-2 rounded-full"
-              style={{ color: '#94a3b8', background: 'none', border: 'none', cursor: 'pointer' }}
-              onClick={() => setMobileOpen(!mobileOpen)}
-              aria-label="Toggle menu"
-            >
-              {mobileOpen ? <X size={20} /> : <Menu size={20} />}
-            </button>
-          </div>
+        <div className="hidden md:flex" style={{ alignItems: 'center', gap: '0.625rem' }}>
+          {!isAuthenticated && (
+            <Link to="/login" className="dp-btn-ghost" style={{ fontSize: '0.875rem', padding: '0.5rem 0.875rem' }}>
+              Sign in
+            </Link>
+          )}
+          <Link to={ctaHref} className="dp-btn-primary" style={{ fontSize: '0.875rem', padding: '0.5rem 1.125rem' }}>
+            {ctaLabel}
+          </Link>
         </div>
+
+        <button
+          className="md:hidden"
+          onClick={() => setMobileOpen(!mobileOpen)}
+          style={{
+            background: 'rgba(83,58,253,0.06)', border: '1px solid rgba(196,188,255,0.5)',
+            borderRadius: 8, width: 36, height: 36,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            cursor: 'pointer', color: 'var(--dp-primary)',
+          }}
+          aria-label="Toggle menu"
+        >
+          {mobileOpen ? <X size={18} /> : <Menu size={18} />}
+        </button>
       </header>
 
       <AnimatePresence>
         {mobileOpen && (
           <>
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="fixed inset-0 z-40"
-              style={{ background: 'rgba(3, 8, 5, 0.75)', backdropFilter: 'blur(4px)' }}
+              style={{ position: 'fixed', inset: 0, zIndex: 40, background: 'rgba(13,37,61,0.35)', backdropFilter: 'blur(4px)' }}
               onClick={() => setMobileOpen(false)}
             />
             <motion.div
-              initial={{ x: '100%' }}
-              animate={{ x: 0 }}
-              exit={{ x: '100%' }}
+              initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }}
               transition={{ type: 'tween', duration: 0.28, ease: [0.32, 0.72, 0, 1] }}
-              className="fixed top-0 right-0 bottom-0 z-50 w-72 flex flex-col"
               style={{
-                background: 'rgba(8, 16, 11, 0.98)',
-                borderLeft: '1px solid rgba(255,255,255,0.08)',
-                backdropFilter: 'blur(24px)',
+                position: 'fixed', top: 0, right: 0, bottom: 0, zIndex: 50, width: 280,
+                background: '#ffffff', borderLeft: '1px solid rgba(196,188,255,0.50)',
+                display: 'flex', flexDirection: 'column',
+                boxShadow: '-8px 0 40px rgba(83,58,253,0.12)',
               }}
             >
-              <div className="flex items-center justify-between px-6 h-16">
-                <SelliöLogo />
-                <button
-                  onClick={() => setMobileOpen(false)}
-                  className="p-2 rounded-full"
-                  style={{ color: '#94a3b8', background: 'none', border: 'none', cursor: 'pointer' }}
-                >
-                  <X size={20} />
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1rem 1.25rem', borderBottom: '1px solid rgba(196,188,255,0.38)' }}>
+                <SellioLogo />
+                <button onClick={() => setMobileOpen(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--dp-ink-muted)', padding: 4 }}>
+                  <X size={18} />
                 </button>
               </div>
 
-              <nav className="flex flex-col px-4 pt-4 gap-1 flex-1">
-                {navLinks.map((link) => (
+              <nav style={{ flex: 1, padding: '0.75rem 1rem', display: 'flex', flexDirection: 'column', gap: 2 }}>
+                {navLinks.map((link) =>
                   link.href.startsWith('/#') ? (
                     <button
                       key={link.label}
                       onClick={() => { handleAnchorClick(link.href); setMobileOpen(false) }}
-                      className="mobile-nav-item px-4 py-3 rounded-xl text-sm font-medium text-left cursor-pointer"
-                      style={{ border: 'none', background: 'none' }}
+                      className="mobile-nav-item"
+                      style={{ padding: '0.75rem 1rem', borderRadius: 10, border: 'none', background: 'none', cursor: 'pointer', fontSize: '0.9375rem', fontFamily: 'inherit', textAlign: 'left' }}
                     >
                       {link.label}
                     </button>
@@ -198,22 +187,22 @@ export default function Navbar() {
                     <Link
                       key={link.label}
                       to={link.href}
-                      className="mobile-nav-item px-4 py-3 rounded-xl text-sm font-medium"
-                      style={{ textDecoration: 'none' }}
+                      className="mobile-nav-item"
+                      style={{ padding: '0.75rem 1rem', borderRadius: 10, textDecoration: 'none', fontSize: '0.9375rem' }}
                     >
                       {link.label}
                     </Link>
                   )
-                ))}
+                )}
               </nav>
 
-              <div className="p-6">
-                <Link
-                  to={ctaHref}
-                  className="btn-primary w-full justify-center"
-                  style={{ borderRadius: '9999px' }}
-                  onClick={() => setMobileOpen(false)}
-                >
+              <div style={{ padding: '1rem 1.25rem', borderTop: '1px solid rgba(196,188,255,0.38)', display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
+                {!isAuthenticated && (
+                  <Link to="/login" onClick={() => setMobileOpen(false)} className="dp-btn-ghost" style={{ justifyContent: 'center', width: '100%' }}>
+                    Sign in
+                  </Link>
+                )}
+                <Link to={ctaHref} onClick={() => setMobileOpen(false)} className="dp-btn-primary" style={{ justifyContent: 'center', width: '100%' }}>
                   {ctaLabel}
                 </Link>
               </div>

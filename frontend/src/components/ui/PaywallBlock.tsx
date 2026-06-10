@@ -39,14 +39,14 @@ export default function PaywallBlock({
           margin: '0 auto 1rem',
         }}
       >
-        <Crown size={22} color="#a3e635" />
+        <Crown size={22} color="var(--dp-primary)" />
       </div>
 
       <h3
         style={{
           fontSize: '1.0625rem',
           fontWeight: 800,
-          color: '#f1f5f9',
+          color: 'var(--dp-ink)',
           margin: '0 0 0.5rem',
           letterSpacing: '-0.02em',
         }}

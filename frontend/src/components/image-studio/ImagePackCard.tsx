@@ -1,4 +1,4 @@
-import { FileText, Loader2, Zap } from 'lucide-react'
+﻿import { FileText, Loader2, Zap } from 'lucide-react'
 import type { ImagePackPlanItem } from '../../types/audit'
 import type { ImageGeneration } from '../../types/imageGeneration'
 
@@ -23,10 +23,10 @@ const GRADIENTS = [
 
 function cardStatusBadge(gen?: ImageGeneration, generating?: boolean) {
   if (generating) return { label: 'Generating', c: '#fbbf24', bg: 'rgba(251,191,36,0.08)', bd: 'rgba(251,191,36,0.22)' }
-  if (!gen) return { label: 'Planned', c: '#a3e635', bg: 'rgba(163,230,53,0.07)', bd: 'rgba(163,230,53,0.18)' }
+  if (!gen) return { label: 'Planned', c: 'var(--dp-primary)', bg: 'rgba(163,230,53,0.07)', bd: 'rgba(83,58,253,0.18)' }
   if (gen.status === 'completed') return { label: 'Generated', c: '#34d399', bg: 'rgba(52,211,153,0.08)', bd: 'rgba(52,211,153,0.2)' }
   if (gen.status === 'failed') return { label: 'Failed', c: '#f87171', bg: 'rgba(248,113,113,0.07)', bd: 'rgba(248,113,113,0.18)' }
-  return { label: 'Planned', c: '#a3e635', bg: 'rgba(163,230,53,0.07)', bd: 'rgba(163,230,53,0.18)' }
+  return { label: 'Planned', c: 'var(--dp-primary)', bg: 'rgba(163,230,53,0.07)', bd: 'rgba(83,58,253,0.18)' }
 }
 
 function genButtonLabel(gen?: ImageGeneration, generating?: boolean) {
@@ -48,12 +48,12 @@ export default function ImagePackCard({
       style={{
         borderRadius: '0.875rem', padding: '1.25rem',
         background: selected ? 'rgba(163,230,53,0.035)' : 'rgba(255,255,255,0.02)',
-        border: `1px solid ${selected ? 'rgba(163,230,53,0.3)' : 'rgba(255,255,255,0.07)'}`,
+        border: `1px solid ${selected ? 'rgba(163,230,53,0.3)' : 'rgba(196,188,255,0.40)'}`,
         transition: 'all 0.15s',
         cursor: 'pointer',
       }}
       onMouseEnter={e => { if (!selected) e.currentTarget.style.borderColor = 'rgba(255,255,255,0.13)' }}
-      onMouseLeave={e => { if (!selected) e.currentTarget.style.borderColor = 'rgba(255,255,255,0.07)' }}
+      onMouseLeave={e => { if (!selected) e.currentTarget.style.borderColor = 'rgba(196,188,255,0.40)' }}
     >
       <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem', marginBottom: '0.875rem' }}>
         <div style={{
@@ -65,14 +65,14 @@ export default function ImagePackCard({
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{
-            fontSize: '0.9375rem', fontWeight: 700, color: '#f1f5f9',
+            fontSize: '0.9375rem', fontWeight: 700, color: 'var(--dp-ink)',
             lineHeight: 1.3, letterSpacing: '-0.01em',
           }}>
             {item.image_type}
           </div>
           {item.goal && (
             <div style={{
-              fontSize: '0.75rem', color: '#64748b', marginTop: 2, lineHeight: 1.5,
+              fontSize: '0.75rem', color: 'var(--dp-ink-muted)', marginTop: 2, lineHeight: 1.5,
               overflow: 'hidden', display: '-webkit-box',
               WebkitLineClamp: 2, WebkitBoxOrient: 'vertical',
             }}>
@@ -94,11 +94,11 @@ export default function ImagePackCard({
       {item.headline && (
         <div style={{
           padding: '0.5625rem 0.875rem', borderRadius: '0.5rem',
-          background: 'rgba(163,230,53,0.04)', border: '1px solid rgba(163,230,53,0.1)',
+          background: 'rgba(163,230,53,0.04)', border: '1px solid rgba(83,58,253,0.1)',
           marginBottom: '0.875rem',
         }}>
           <span style={{
-            fontSize: '0.8125rem', fontWeight: 700, color: '#a3e635',
+            fontSize: '0.8125rem', fontWeight: 700, color: 'var(--dp-primary)',
             letterSpacing: '-0.01em', wordBreak: 'break-word',
           }}>
             &ldquo;{item.headline}&rdquo;
@@ -108,7 +108,7 @@ export default function ImagePackCard({
 
       {item.visual_direction && (
         <div style={{
-          fontSize: '0.75rem', color: '#475569', lineHeight: 1.55,
+          fontSize: '0.75rem', color: 'var(--dp-ink-muted)', lineHeight: 1.55,
           marginBottom: '0.875rem',
           overflow: 'hidden', display: '-webkit-box',
           WebkitLineClamp: 2, WebkitBoxOrient: 'vertical',
@@ -131,8 +131,8 @@ export default function ImagePackCard({
           {item.text_elements.length > 4 && (
             <span style={{
               padding: '0.1875rem 0.5625rem', borderRadius: '0.3125rem',
-              background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)',
-              fontSize: '0.6875rem', color: '#475569',
+              background: 'rgba(83,58,253,0.04)', border: '1px solid rgba(196,188,255,0.40)',
+              fontSize: '0.6875rem', color: 'var(--dp-ink-muted)',
             }}>
               +{item.text_elements.length - 4} more
             </span>
@@ -147,9 +147,9 @@ export default function ImagePackCard({
           style={{
             display: 'inline-flex', alignItems: 'center', gap: '0.3125rem',
             padding: '0.4375rem 0.875rem', borderRadius: '0.4375rem',
-            background: selected ? '#a3e635' : 'rgba(163,230,53,0.08)',
-            border: `1px solid ${selected ? '#a3e635' : 'rgba(163,230,53,0.22)'}`,
-            color: selected ? '#071008' : '#a3e635',
+            background: selected ? 'var(--dp-primary)' : 'rgba(83,58,253,0.08)',
+            border: `1px solid ${selected ? 'var(--dp-primary)' : 'rgba(163,230,53,0.22)'}`,
+            color: selected ? '#071008' : 'var(--dp-primary)',
             fontSize: '0.8125rem', fontWeight: 700,
             cursor: 'pointer', fontFamily: 'inherit',
             transition: 'all 0.15s',
@@ -172,7 +172,7 @@ export default function ImagePackCard({
               ? 'rgba(248,113,113,0.07)'
               : 'rgba(163,230,53,0.09)',
             border: isGenerating
-              ? '1px solid rgba(163,230,53,0.1)'
+              ? '1px solid rgba(83,58,253,0.1)'
               : generation?.status === 'failed'
               ? '1px solid rgba(248,113,113,0.2)'
               : '1px solid rgba(163,230,53,0.25)',
@@ -180,7 +180,7 @@ export default function ImagePackCard({
               ? 'rgba(163,230,53,0.45)'
               : generation?.status === 'failed'
               ? '#f87171'
-              : '#a3e635',
+              : 'var(--dp-primary)',
             fontSize: '0.8125rem', fontWeight: 600,
             cursor: isGenerating ? 'not-allowed' : 'pointer',
             fontFamily: 'inherit', transition: 'all 0.15s',

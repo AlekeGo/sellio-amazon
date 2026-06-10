@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom'
+﻿import { useNavigate } from 'react-router-dom'
 import { Check, Zap, Star } from 'lucide-react'
 import AnimatedSection from '../ui/AnimatedSection'
 import { useAuth } from '../../contexts/AuthContext'
@@ -106,9 +106,9 @@ const addons = [
     name: 'Extra Full Upgrade',
     price: '$19',
     desc: 'One additional complete listing upgrade, usable anytime on any plan.',
-    accentColor: '#a3e635',
-    accentBg: 'rgba(163,230,53,0.05)',
-    accentBorder: 'rgba(163,230,53,0.2)',
+    accentColor: 'var(--dp-primary)',
+    accentBg: 'rgba(83,58,253,0.05)',
+    accentBorder: 'rgba(83,58,253,0.2)',
   },
   {
     key: 'extra_audit_pack',
@@ -129,13 +129,13 @@ function FeatureItem({ text, highlighted }: { text: string; highlighted?: boolea
         className="w-4 h-4 rounded-full flex items-center justify-center shrink-0"
         style={{
           marginTop: '2px',
-          background: highlighted ? 'rgba(163,230,53,0.15)' : 'rgba(74,222,128,0.1)',
-          border: `1px solid ${highlighted ? 'rgba(163,230,53,0.3)' : 'rgba(74,222,128,0.25)'}`,
+          background: highlighted ? 'rgba(83,58,253,0.1)' : 'rgba(83,58,253,0.06)',
+          border: `1px solid ${highlighted ? 'rgba(83,58,253,0.28)' : 'rgba(196,188,255,0.5)'}`,
         }}
       >
-        <Check size={9} style={{ color: highlighted ? '#a3e635' : '#4ade80' }} />
+        <Check size={9} style={{ color: 'var(--dp-primary)' }} />
       </div>
-      <span className="text-sm leading-snug" style={{ color: highlighted ? '#d4f5a0' : '#aec0d4' }}>
+      <span className="text-sm leading-snug" style={{ color: highlighted ? 'var(--dp-ink)' : 'var(--dp-ink-secondary)' }}>
         {text}
       </span>
     </li>
@@ -171,7 +171,7 @@ export default function PricingSection() {
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          backgroundImage: 'radial-gradient(ellipse 80% 50% at 50% 0%, rgba(163,230,53,0.04) 0%, transparent 60%)',
+          backgroundImage: 'radial-gradient(ellipse 80% 50% at 50% 0%, rgba(83,58,253,0.04) 0%, transparent 60%)',
         }}
       />
 
@@ -185,7 +185,7 @@ export default function PricingSection() {
             Built for sellers at{' '}
             <span className="gradient-text">every stage.</span>
           </h2>
-          <p className="text-lg max-w-2xl mx-auto leading-relaxed" style={{ color: '#94a3b8' }}>
+          <p className="text-lg max-w-2xl mx-auto leading-relaxed" style={{ color: 'var(--dp-ink-muted)' }}>
             Start free. Upgrade when you're ready. Cancel anytime.
           </p>
         </AnimatedSection>
@@ -194,9 +194,9 @@ export default function PricingSection() {
           <div
             className="rounded-2xl p-6 mb-8"
             style={{
-              background: 'linear-gradient(135deg, rgba(163,230,53,0.07) 0%, rgba(52,211,153,0.04) 100%)',
-              border: '1.5px solid rgba(163,230,53,0.3)',
-              boxShadow: '0 4px 40px rgba(163,230,53,0.07), inset 0 1px 0 rgba(255,255,255,0.05)',
+              background: 'linear-gradient(135deg, rgba(83,58,253,0.05) 0%, rgba(83,58,253,0.02) 100%)',
+              border: '1.5px solid rgba(83,58,253,0.25)',
+              boxShadow: '0 4px 32px rgba(83,58,253,0.08), inset 0 1px 0 rgba(255,255,255,0.8)',
             }}
           >
             <div className="flex flex-col md:flex-row md:items-center gap-6">
@@ -209,31 +209,31 @@ export default function PricingSection() {
                 </div>
                 <h3
                   className="font-black mb-2"
-                  style={{ color: '#f1f5f9', letterSpacing: '-0.02em', fontSize: '1.25rem' }}
+                  style={{ color: 'var(--dp-ink)', letterSpacing: '-0.02em', fontSize: '1.25rem' }}
                 >
                   Full Listing Upgrade
                 </h3>
                 <div className="flex items-end gap-2">
                   <span
                     className="font-black"
-                    style={{ color: '#a3e635', letterSpacing: '-0.04em', lineHeight: 1, fontSize: '2.25rem' }}
+                    style={{ color: 'var(--dp-primary)', letterSpacing: '-0.04em', lineHeight: 1, fontSize: '2.25rem' }}
                   >
                     $29
                   </span>
-                  <span className="text-sm pb-1" style={{ color: '#64748b' }}>one-time</span>
+                  <span className="text-sm pb-1" style={{ color: 'var(--dp-ink-muted)' }}>one-time</span>
                 </div>
-                <p className="text-xs mt-1.5 leading-relaxed" style={{ color: '#6e849e' }}>
+                <p className="text-xs mt-1.5 leading-relaxed" style={{ color: 'var(--dp-ink-muted)' }}>
                   No subscription. Upgrade one listing and you're done.
                 </p>
               </div>
 
               <div
                 className="hidden md:block"
-                style={{ width: '1px', alignSelf: 'stretch', background: 'rgba(163,230,53,0.15)', flexShrink: 0 }}
+                style={{ width: '1px', alignSelf: 'stretch', background: 'rgba(83,58,253,0.15)', flexShrink: 0 }}
               />
               <div
                 className="md:hidden h-px"
-                style={{ background: 'rgba(163,230,53,0.15)' }}
+                style={{ background: 'rgba(83,58,253,0.15)' }}
               />
 
               <ul className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-2.5">
@@ -245,7 +245,7 @@ export default function PricingSection() {
               <div className="flex-shrink-0">
                 <button
                   onClick={() => handleOneTimeClick('full_upgrade')}
-                  className="btn-secondary"
+                  className="dp-btn-ghost"
                   style={{ whiteSpace: 'nowrap', fontFamily: 'inherit' }}
                 >
                   Buy Once — $29
@@ -257,14 +257,14 @@ export default function PricingSection() {
 
         <AnimatedSection delay={0.1}>
           <div className="flex items-center gap-4 mb-6">
-            <div className="h-px flex-1" style={{ background: 'rgba(255,255,255,0.07)' }} />
+            <div className="h-px flex-1" style={{ background: 'rgba(196,188,255,0.40)' }} />
             <span
               className="text-xs font-semibold uppercase tracking-widest px-3"
-              style={{ color: '#475569' }}
+              style={{ color: 'var(--dp-ink-muted)' }}
             >
               Monthly Plans
             </span>
-            <div className="h-px flex-1" style={{ background: 'rgba(255,255,255,0.07)' }} />
+            <div className="h-px flex-1" style={{ background: 'rgba(196,188,255,0.40)' }} />
           </div>
         </AnimatedSection>
 
@@ -273,26 +273,28 @@ export default function PricingSection() {
             {subscriptionPlans.map((plan) => (
               <div
                 key={plan.name}
-                className="rounded-2xl p-5 flex flex-col relative"
+                className="rounded-2xl p-5 flex flex-col relative hover-lift"
                 style={plan.highlight ? {
-                  background: 'linear-gradient(160deg, rgba(163,230,53,0.08) 0%, rgba(52,211,153,0.05) 100%)',
-                  border: '1.5px solid rgba(163,230,53,0.42)',
-                  boxShadow: '0 0 60px rgba(163,230,53,0.08), inset 0 1px 0 rgba(255,255,255,0.07)',
+                  background: 'linear-gradient(160deg, rgba(83,58,253,0.07) 0%, rgba(83,58,253,0.03) 100%)',
+                  border: '1.5px solid rgba(83,58,253,0.38)',
+                  boxShadow: '0 0 0 1px rgba(83,58,253,0.08), 0 8px 40px rgba(83,58,253,0.12), inset 0 1px 0 rgba(255,255,255,0.8)',
                   zIndex: 1,
                 } : {
-                  background: 'rgba(255,255,255,0.03)',
-                  border: '1px solid rgba(255,255,255,0.09)',
+                  background: '#ffffff',
+                  border: '1px solid rgba(196,188,255,0.4)',
+                  boxShadow: '0 2px 12px rgba(83,58,253,0.05)',
                 }}
               >
                 {plan.badge && (
                   <div
                     className="absolute -top-3.5 left-1/2 -translate-x-1/2 text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1.5 whitespace-nowrap"
                     style={{
-                      background: 'linear-gradient(135deg, #4d7c0f, #a3e635)',
-                      color: '#071008',
+                      background: 'linear-gradient(135deg, #533AFD, #7A66FF)',
+                      color: '#ffffff',
+                      boxShadow: '0 2px 12px rgba(83,58,253,0.35)',
                     }}
                   >
-                    <Zap size={9} fill="#071008" />
+                    <Zap size={9} fill="#ffffff" />
                     {plan.badge}
                   </div>
                 )}
@@ -300,27 +302,27 @@ export default function PricingSection() {
                 <div className="mb-4">
                   <p
                     className="text-xs font-semibold uppercase tracking-widest mb-2"
-                    style={{ color: plan.highlight ? '#a3e635' : '#64748b' }}
+                    style={{ color: plan.highlight ? 'var(--dp-primary)' : '#64748b' }}
                   >
                     {plan.name}
                   </p>
                   <div className="flex items-end gap-1.5 mb-1.5">
                     <span
                       className="font-black leading-none"
-                      style={{ color: '#f1f5f9', letterSpacing: '-0.04em', fontSize: '1.875rem' }}
+                      style={{ color: 'var(--dp-ink)', letterSpacing: '-0.04em', fontSize: '1.875rem' }}
                     >
                       {plan.price}
                     </span>
                     {plan.period !== 'free' && (
-                      <span className="text-xs pb-0.5" style={{ color: '#64748b' }}>{plan.period}</span>
+                      <span className="text-xs pb-0.5" style={{ color: 'var(--dp-ink-muted)' }}>{plan.period}</span>
                     )}
                   </div>
-                  <p className="text-xs leading-relaxed" style={{ color: '#6e849e' }}>{plan.description}</p>
+                  <p className="text-xs leading-relaxed" style={{ color: 'var(--dp-ink-muted)' }}>{plan.description}</p>
                 </div>
 
                 <div
                   className="h-px mb-4"
-                  style={{ background: plan.highlight ? 'rgba(163,230,53,0.2)' : 'rgba(255,255,255,0.07)' }}
+                  style={{ background: plan.highlight ? 'rgba(83,58,253,0.2)' : 'rgba(196,188,255,0.40)' }}
                 />
 
                 <ul className="space-y-2 mb-5 flex-1">
@@ -343,14 +345,14 @@ export default function PricingSection() {
 
         <AnimatedSection delay={0.2}>
           <div className="flex items-center gap-4 mb-5">
-            <div className="h-px flex-1" style={{ background: 'rgba(255,255,255,0.07)' }} />
+            <div className="h-px flex-1" style={{ background: 'rgba(196,188,255,0.40)' }} />
             <span
               className="text-xs font-semibold uppercase tracking-widest px-3"
-              style={{ color: '#475569' }}
+              style={{ color: 'var(--dp-ink-muted)' }}
             >
               Add-ons — any paid plan
             </span>
-            <div className="h-px flex-1" style={{ background: 'rgba(255,255,255,0.07)' }} />
+            <div className="h-px flex-1" style={{ background: 'rgba(196,188,255,0.40)' }} />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -375,8 +377,8 @@ export default function PricingSection() {
                     <Icon size={16} style={{ color: addon.accentColor }} />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-bold mb-1" style={{ color: '#f1f5f9' }}>{addon.name}</p>
-                    <p className="text-xs leading-relaxed" style={{ color: '#6e849e' }}>{addon.desc}</p>
+                    <p className="text-sm font-bold mb-1" style={{ color: 'var(--dp-ink)' }}>{addon.name}</p>
+                    <p className="text-xs leading-relaxed" style={{ color: 'var(--dp-ink-muted)' }}>{addon.desc}</p>
                   </div>
                   <div className="shrink-0 text-right">
                     <span
@@ -412,7 +414,7 @@ export default function PricingSection() {
         </AnimatedSection>
 
         <AnimatedSection delay={0.3} className="text-center mt-8">
-          <p className="text-sm" style={{ color: '#475569' }}>
+          <p className="text-sm" style={{ color: 'var(--dp-ink-muted)' }}>
             All plans include a free first audit. No credit card required to start.
           </p>
         </AnimatedSection>

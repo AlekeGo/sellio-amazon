@@ -32,10 +32,10 @@ function formatDate(iso: string) {
 }
 
 function txLabel(type: string) {
-  if (type === 'grant') return { label: '+Grant', color: '#a3e635', bg: 'rgba(163,230,53,0.08)' }
+  if (type === 'grant') return { label: '+Grant', color: '#16a34a', bg: 'rgba(22,163,74,0.08)' }
   if (type === 'consume') return { label: '−Use', color: '#f97316', bg: 'rgba(249,115,22,0.08)' }
-  if (type === 'refund') return { label: '+Refund', color: '#34d399', bg: 'rgba(52,211,153,0.08)' }
-  return { label: 'Adj', color: '#94a3b8', bg: 'rgba(148,163,184,0.08)' }
+  if (type === 'refund') return { label: '+Refund', color: '#16a34a', bg: 'rgba(22,163,74,0.08)' }
+  return { label: 'Adj', color: 'var(--dp-ink-muted)', bg: 'rgba(196,188,255,0.15)' }
 }
 
 function creditTypeLabel(type: string) {
@@ -46,19 +46,19 @@ function creditTypeLabel(type: string) {
 }
 
 function paymentStatusStyle(status: string): [string, string] {
-  if (status === 'completed') return ['#a3e635', 'rgba(163,230,53,0.08)']
-  if (status === 'pending') return ['#fbbf24', 'rgba(251,191,36,0.08)']
+  if (status === 'completed') return ['#16a34a', 'rgba(22,163,74,0.08)']
+  if (status === 'pending') return ['#b45309', 'rgba(180,83,9,0.08)']
   if (status === 'failed') return ['#ef4444', 'rgba(239,68,68,0.08)']
-  if (status === 'cancelled') return ['#94a3b8', 'rgba(148,163,184,0.08)']
-  return ['#64748b', 'rgba(100,116,139,0.08)']
+  if (status === 'cancelled') return ['var(--dp-ink-muted)', 'rgba(196,188,255,0.15)']
+  return ['var(--dp-ink-muted)', 'rgba(196,188,255,0.15)']
 }
 
 function subStatusStyle(status: string): [string, string] {
-  if (status === 'active') return ['#a3e635', 'rgba(163,230,53,0.08)']
+  if (status === 'active') return ['#16a34a', 'rgba(22,163,74,0.08)']
   if (status === 'cancelled') return ['#f97316', 'rgba(249,115,22,0.08)']
-  if (status === 'past_due') return ['#fbbf24', 'rgba(251,191,36,0.08)']
+  if (status === 'past_due') return ['#b45309', 'rgba(180,83,9,0.08)']
   if (status === 'expired') return ['#ef4444', 'rgba(239,68,68,0.08)']
-  return ['#64748b', 'rgba(100,116,139,0.08)']
+  return ['var(--dp-ink-muted)', 'rgba(196,188,255,0.15)']
 }
 
 function StatusPill({ label, color, bg }: { label: string; color: string; bg: string }) {
@@ -82,8 +82,9 @@ function GlassCard({ children, accent, style }: {
     <div style={{
       borderRadius: '0.875rem',
       padding: '1.25rem 1.5rem',
-      background: accent ? 'rgba(163,230,53,0.04)' : 'rgba(255,255,255,0.025)',
-      border: `1px solid ${accent ? 'rgba(163,230,53,0.18)' : 'rgba(255,255,255,0.07)'}`,
+      background: accent ? 'rgba(83,58,253,0.05)' : '#ffffff',
+      border: `1px solid ${accent ? 'rgba(83,58,253,0.22)' : 'rgba(196,188,255,0.45)'}`,
+      boxShadow: '0 2px 12px rgba(83,58,253,0.06)',
       ...style,
     }}>
       {children}
@@ -94,7 +95,7 @@ function GlassCard({ children, accent, style }: {
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
     <h2 style={{
-      fontSize: '0.6875rem', fontWeight: 700, color: '#475569',
+      fontSize: '0.6875rem', fontWeight: 700, color: 'var(--dp-ink-muted)',
       textTransform: 'uppercase', letterSpacing: '0.08em', margin: '0 0 0.875rem',
     }}>
       {children}
@@ -218,11 +219,11 @@ export default function BillingPage() {
       <div style={{ marginBottom: '1.75rem' }}>
         <h1 style={{
           fontSize: 'clamp(1.25rem, 3vw, 1.5rem)', fontWeight: 900,
-          color: '#f1f5f9', letterSpacing: '-0.03em', margin: '0 0 0.375rem',
+          color: 'var(--dp-ink)', letterSpacing: '-0.03em', margin: '0 0 0.375rem',
         }}>
           Billing
         </h1>
-        <p style={{ fontSize: '0.875rem', color: '#64748b', margin: 0 }}>
+        <p style={{ fontSize: '0.875rem', color: 'var(--dp-ink-muted)', margin: 0 }}>
           Manage your plan, credits, and payments.
         </p>
       </div>
@@ -231,17 +232,17 @@ export default function BillingPage() {
         <div style={{
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
           gap: '0.75rem', padding: '0.875rem 1.125rem', borderRadius: '0.75rem',
-          background: 'rgba(163,230,53,0.06)', border: '1px solid rgba(163,230,53,0.22)',
+          background: 'rgba(22,163,74,0.06)', border: '1px solid rgba(22,163,74,0.25)',
           marginBottom: '1.25rem',
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem' }}>
-            <CheckCircle2 size={16} color="#a3e635" />
-            <span style={{ fontSize: '0.875rem', fontWeight: 600, color: '#d4f5a0' }}>
+            <CheckCircle2 size={16} color="#16a34a" />
+            <span style={{ fontSize: '0.875rem', fontWeight: 600, color: '#16a34a' }}>
               Credits added successfully.
             </span>
           </div>
           <button onClick={() => setBanner(null)} style={{
-            background: 'none', border: 'none', cursor: 'pointer', color: '#64748b', padding: 0, flexShrink: 0,
+            background: 'none', border: 'none', cursor: 'pointer', color: 'var(--dp-ink-muted)', padding: 0, flexShrink: 0,
           }}>
             <X size={14} />
           </button>
@@ -262,7 +263,7 @@ export default function BillingPage() {
             </span>
           </div>
           <button onClick={() => setBanner(null)} style={{
-            background: 'none', border: 'none', cursor: 'pointer', color: '#64748b', padding: 0, flexShrink: 0,
+            background: 'none', border: 'none', cursor: 'pointer', color: 'var(--dp-ink-muted)', padding: 0, flexShrink: 0,
           }}>
             <X size={14} />
           </button>
@@ -273,11 +274,11 @@ export default function BillingPage() {
         <div style={{
           display: 'flex', alignItems: 'center', gap: '0.625rem',
           padding: '0.875rem 1.125rem', borderRadius: '0.75rem',
-          background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.07)',
+          background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(196,188,255,0.40)',
           marginBottom: '1.25rem',
         }}>
           <Loader2 size={15} color="#64748b" style={{ animation: 'spin 1s linear infinite' }} />
-          <span style={{ fontSize: '0.875rem', color: '#64748b' }}>Opening checkout...</span>
+          <span style={{ fontSize: '0.875rem', color: 'var(--dp-ink-muted)' }}>Opening checkout...</span>
         </div>
       )}
 
@@ -319,8 +320,8 @@ export default function BillingPage() {
             }}>
               <div style={{ flex: 1, minWidth: 200 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
-                  <Crown size={14} color="#a3e635" />
-                  <span style={{ fontSize: '0.6875rem', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+                  <Crown size={14} color="var(--dp-primary)" />
+                  <span style={{ fontSize: '0.6875rem', fontWeight: 700, color: 'var(--dp-ink-muted)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
                     Current Plan
                   </span>
                 </div>
@@ -335,7 +336,7 @@ export default function BillingPage() {
                       bg={subStatusStyle(profile.subscription_status)[1]}
                     />
                     {profile.payment_provider === 'mock' && (
-                      <span style={{ fontSize: '0.6875rem', color: '#334155' }}>Test mode</span>
+                      <span style={{ fontSize: '0.6875rem', color: 'var(--dp-ink-muted)' }}>Test mode</span>
                     )}
                   </div>
                 )}
@@ -387,26 +388,26 @@ export default function BillingPage() {
             ].map(({ icon: Icon, label, value, sub, low }) => (
               <div key={label} style={{
                 borderRadius: '0.75rem', padding: '1rem 1.125rem',
-                background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(255,255,255,0.07)',
+                background: '#ffffff', border: '1px solid rgba(196,188,255,0.40)',
               }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.625rem' }}>
                   <div style={{
                     width: 28, height: 28, borderRadius: '0.4375rem',
-                    background: low ? 'rgba(255,255,255,0.03)' : 'rgba(163,230,53,0.06)',
-                    border: `1px solid ${low ? 'rgba(255,255,255,0.06)' : 'rgba(163,230,53,0.12)'}`,
+                    background: low ? 'rgba(196,188,255,0.08)' : 'rgba(83,58,253,0.08)',
+                    border: `1px solid ${low ? 'rgba(196,188,255,0.25)' : 'rgba(83,58,253,0.2)'}`,
                     display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
                   }}>
-                    <Icon size={13} color={low ? '#334155' : '#a3e635'} />
+                    <Icon size={13} color={low ? 'var(--dp-ink-muted)' : 'var(--dp-primary)'} />
                   </div>
-                  <span style={{ fontSize: '0.75rem', fontWeight: 600, color: '#64748b' }}>{label}</span>
+                  <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--dp-ink-muted)' }}>{label}</span>
                 </div>
                 <div style={{
                   fontSize: '1.75rem', fontWeight: 900, letterSpacing: '-0.04em',
-                  color: low ? '#334155' : '#f1f5f9', lineHeight: 1, marginBottom: '0.25rem',
+                  color: low ? 'var(--dp-ink-muted)' : 'var(--dp-ink)', lineHeight: 1, marginBottom: '0.25rem',
                 }}>
                   {value}
                 </div>
-                <div style={{ fontSize: '0.75rem', color: low ? '#1e293b' : '#475569' }}>{sub}</div>
+                <div style={{ fontSize: '0.75rem', color: 'var(--dp-ink-muted)' }}>{sub}</div>
               </div>
             ))}
           </div>
@@ -425,17 +426,17 @@ export default function BillingPage() {
                   <div key={plan.key} style={{
                     borderRadius: '0.875rem', padding: '1.125rem',
                     background: isHighlighted
-                      ? 'linear-gradient(160deg, rgba(163,230,53,0.07) 0%, rgba(52,211,153,0.04) 100%)'
-                      : 'rgba(255,255,255,0.025)',
-                    border: `${isHighlighted ? '1.5px' : '1px'} solid ${isHighlighted ? 'rgba(163,230,53,0.35)' : isCurrent ? 'rgba(255,255,255,0.14)' : 'rgba(255,255,255,0.07)'}`,
+                      ? 'linear-gradient(160deg, rgba(83,58,253,0.07) 0%, rgba(106,85,254,0.04) 100%)'
+                      : '#ffffff',
+                    border: `${isHighlighted ? '1.5px' : '1px'} solid ${isHighlighted ? 'rgba(83,58,253,0.40)' : isCurrent ? 'rgba(196,188,255,0.55)' : 'rgba(196,188,255,0.38)'}`,
                     display: 'flex', flexDirection: 'column', gap: '0.75rem',
                     position: 'relative',
                   }}>
                     {isHighlighted && (
                       <div style={{
                         position: 'absolute', top: -12, left: '50%', transform: 'translateX(-50%)',
-                        background: 'linear-gradient(135deg, #4d7c0f, #a3e635)',
-                        color: '#071008', fontSize: '0.625rem', fontWeight: 800,
+                        background: 'linear-gradient(135deg, #533AFD, #6A55FE)',
+                        color: '#ffffff', fontSize: '0.625rem', fontWeight: 800,
                         padding: '0.1875rem 0.625rem', borderRadius: 99,
                         whiteSpace: 'nowrap', letterSpacing: '0.04em',
                       }}>
@@ -445,8 +446,8 @@ export default function BillingPage() {
                     {isCurrent && !isHighlighted && (
                       <div style={{
                         position: 'absolute', top: -12, right: 12,
-                        background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)',
-                        color: '#94a3b8', fontSize: '0.625rem', fontWeight: 700,
+                        background: 'rgba(83,58,253,0.06)', border: '1px solid rgba(196,188,255,0.45)',
+                        color: 'var(--dp-primary)', fontSize: '0.625rem', fontWeight: 700,
                         padding: '0.1875rem 0.5rem', borderRadius: 99,
                         whiteSpace: 'nowrap', letterSpacing: '0.04em',
                       }}>
@@ -454,18 +455,18 @@ export default function BillingPage() {
                       </div>
                     )}
                     <div>
-                      <p style={{ fontSize: '0.6875rem', fontWeight: 700, color: isHighlighted ? '#a3e635' : '#64748b', textTransform: 'uppercase', letterSpacing: '0.06em', margin: '0 0 0.375rem' }}>
+                      <p style={{ fontSize: '0.6875rem', fontWeight: 700, color: isHighlighted ? 'var(--dp-primary)' : 'var(--dp-ink-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', margin: '0 0 0.375rem' }}>
                         {plan.name}
                       </p>
-                      <div style={{ fontSize: '1.375rem', fontWeight: 900, color: '#f1f5f9', letterSpacing: '-0.04em', lineHeight: 1 }}>
+                      <div style={{ fontSize: '1.375rem', fontWeight: 900, color: 'var(--dp-ink)', letterSpacing: '-0.04em', lineHeight: 1 }}>
                         {plan.price_display}
                       </div>
                     </div>
                     <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.3125rem' }}>
                       {plan.features.map(f => (
                         <li key={f} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.375rem' }}>
-                          <Check size={11} color={isHighlighted ? '#a3e635' : '#4ade80'} style={{ flexShrink: 0, marginTop: 2 }} />
-                          <span style={{ fontSize: '0.75rem', color: '#94a3b8', lineHeight: 1.4 }}>{f}</span>
+                          <Check size={11} color={isHighlighted ? 'var(--dp-primary)' : '#16a34a'} style={{ flexShrink: 0, marginTop: 2 }} />
+                          <span style={{ fontSize: '0.75rem', color: 'var(--dp-ink-muted)', lineHeight: 1.4 }}>{f}</span>
                         </li>
                       ))}
                     </ul>
@@ -478,11 +479,11 @@ export default function BillingPage() {
                         cursor: isCurrent ? 'default' : 'pointer',
                         border: 'none', fontFamily: 'inherit',
                         background: isCurrent
-                          ? 'rgba(255,255,255,0.04)'
+                          ? 'rgba(196,188,255,0.12)'
                           : isHighlighted
-                          ? 'linear-gradient(135deg, #166534, #4ade80)'
-                          : 'rgba(255,255,255,0.06)',
-                        color: isCurrent ? '#334155' : isHighlighted ? 'white' : '#94a3b8',
+                          ? 'linear-gradient(135deg, #533AFD, #6A55FE)'
+                          : 'rgba(83,58,253,0.07)',
+                        color: isCurrent ? 'var(--dp-ink-muted)' : isHighlighted ? 'white' : 'var(--dp-primary)',
                         transition: 'opacity 0.15s',
                         opacity: checkoutLoading ? 0.6 : 1,
                       }}
@@ -503,9 +504,9 @@ export default function BillingPage() {
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '0.75rem' }}>
                 {addonPlans.map(addon => {
                   const isUpgrade = addon.key === 'extra_upgrade'
-                  const accentColor = isUpgrade ? '#a3e635' : '#34d399'
-                  const accentBg = isUpgrade ? 'rgba(163,230,53,0.04)' : 'rgba(52,211,153,0.04)'
-                  const accentBorder = isUpgrade ? 'rgba(163,230,53,0.18)' : 'rgba(52,211,153,0.16)'
+                  const accentColor = 'var(--dp-primary)'
+                  const accentBg = 'rgba(83,58,253,0.05)'
+                  const accentBorder = 'rgba(83,58,253,0.20)'
                   const Icon = isUpgrade ? Star : Zap
                   return (
                     <div key={addon.key} style={{
@@ -522,10 +523,10 @@ export default function BillingPage() {
                         <Icon size={16} color={accentColor} />
                       </div>
                       <div style={{ flex: 1, minWidth: 0 }}>
-                        <p style={{ fontSize: '0.875rem', fontWeight: 700, color: '#f1f5f9', margin: '0 0 0.25rem' }}>
+                        <p style={{ fontSize: '0.875rem', fontWeight: 700, color: 'var(--dp-ink)', margin: '0 0 0.25rem' }}>
                           {addon.name}
                         </p>
-                        <p style={{ fontSize: '0.75rem', color: '#64748b', margin: 0, lineHeight: 1.5 }}>
+                        <p style={{ fontSize: '0.75rem', color: 'var(--dp-ink-muted)', margin: 0, lineHeight: 1.5 }}>
                           {addon.features[0]}
                         </p>
                       </div>
@@ -560,7 +561,7 @@ export default function BillingPage() {
               {transactions.length === 0 ? (
                 <div style={{ padding: '2rem 1.5rem', textAlign: 'center' }}>
                   <Receipt size={24} color="#1e293b" style={{ margin: '0 auto 0.75rem' }} />
-                  <p style={{ fontSize: '0.875rem', color: '#334155', margin: 0 }}>No transactions yet.</p>
+                  <p style={{ fontSize: '0.875rem', color: 'var(--dp-ink-muted)', margin: 0 }}>No transactions yet.</p>
                 </div>
               ) : (
                 <div>
@@ -581,14 +582,14 @@ export default function BillingPage() {
                           {label}
                         </span>
                         <div style={{ flex: 1, minWidth: 0 }}>
-                          <div style={{ fontSize: '0.8125rem', fontWeight: 600, color: '#94a3b8', marginBottom: 1 }}>
+                          <div style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--dp-ink-muted)', marginBottom: 1 }}>
                             {creditTypeLabel(tx.credit_type)} · {tx.amount > 0 ? '+' : ''}{tx.amount}
                           </div>
-                          <div style={{ fontSize: '0.6875rem', color: '#334155', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                          <div style={{ fontSize: '0.6875rem', color: 'var(--dp-ink-muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                             {tx.reason}
                           </div>
                         </div>
-                        <span style={{ fontSize: '0.6875rem', color: '#334155', flexShrink: 0 }}>
+                        <span style={{ fontSize: '0.6875rem', color: 'var(--dp-ink-muted)', flexShrink: 0 }}>
                           {formatDate(tx.created_at)}
                         </span>
                       </div>
@@ -605,7 +606,7 @@ export default function BillingPage() {
               {payments.length === 0 ? (
                 <div style={{ padding: '2rem 1.5rem', textAlign: 'center' }}>
                   <CreditCard size={24} color="#1e293b" style={{ margin: '0 auto 0.75rem' }} />
-                  <p style={{ fontSize: '0.875rem', color: '#334155', margin: 0 }}>No payments yet.</p>
+                  <p style={{ fontSize: '0.875rem', color: 'var(--dp-ink-muted)', margin: 0 }}>No payments yet.</p>
                 </div>
               ) : (
                 <div>
@@ -620,15 +621,15 @@ export default function BillingPage() {
                         flexWrap: 'wrap',
                       }}>
                         <div style={{ flex: 1, minWidth: 0 }}>
-                          <div style={{ fontSize: '0.8125rem', fontWeight: 600, color: '#94a3b8', marginBottom: 2 }}>
+                          <div style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--dp-ink-muted)', marginBottom: 2 }}>
                             {PLAN_DISPLAY_NAMES[p.plan_key] ?? p.plan_key}
                           </div>
-                          <div style={{ fontSize: '0.6875rem', color: '#334155' }}>
+                          <div style={{ fontSize: '0.6875rem', color: 'var(--dp-ink-muted)' }}>
                             {formatDate(p.created_at)} · {p.mode}
                           </div>
                         </div>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem', flexShrink: 0 }}>
-                          <span style={{ fontSize: '0.9375rem', fontWeight: 800, color: '#64748b', letterSpacing: '-0.02em' }}>
+                          <span style={{ fontSize: '0.9375rem', fontWeight: 800, color: 'var(--dp-ink-muted)', letterSpacing: '-0.02em' }}>
                             {formatCents(p.amount_cents)}
                           </span>
                           <StatusPill label={p.status} color={statusColor} bg={statusBg} />
@@ -646,10 +647,10 @@ export default function BillingPage() {
             background: 'rgba(255,255,255,0.015)', border: '1px solid rgba(255,255,255,0.05)',
             display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap',
           }}>
-            <p style={{ fontSize: '0.8125rem', color: '#334155', margin: 0 }}>
+            <p style={{ fontSize: '0.8125rem', color: 'var(--dp-ink-muted)', margin: 0 }}>
               All plans include a free first audit. Payments are currently in test mode — no real charges.
             </p>
-            <Link to="/pricing" style={{ fontSize: '0.8125rem', color: '#475569', textDecoration: 'none', fontWeight: 500, flexShrink: 0 }}>
+            <Link to="/pricing" style={{ fontSize: '0.8125rem', color: 'var(--dp-ink-muted)', textDecoration: 'none', fontWeight: 500, flexShrink: 0 }}>
               View full pricing
             </Link>
           </div>
@@ -669,25 +670,25 @@ export default function BillingPage() {
           <div style={{
             width: '100%', maxWidth: 420,
             borderRadius: '1.125rem',
-            background: '#0d1a11',
-            border: '1px solid rgba(163,230,53,0.25)',
-            boxShadow: '0 8px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(163,230,53,0.06)',
+            background: '#ffffff',
+            border: '1px solid rgba(196,188,255,0.50)',
+            boxShadow: '0 8px 60px rgba(83,58,253,0.15), 0 0 0 1px rgba(196,188,255,0.25)',
             overflow: 'hidden',
           }}>
             <div style={{
               padding: '1.25rem 1.5rem',
-              borderBottom: '1px solid rgba(255,255,255,0.06)',
+              borderBottom: '1px solid rgba(196,188,255,0.38)',
               display: 'flex', alignItems: 'center', justifyContent: 'space-between',
             }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <CreditCard size={15} color="#a3e635" />
-                <span style={{ fontSize: '0.875rem', fontWeight: 700, color: '#94a3b8' }}>
+                <CreditCard size={15} color="var(--dp-primary)" />
+                <span style={{ fontSize: '0.875rem', fontWeight: 700, color: 'var(--dp-ink-muted)' }}>
                   Mock Checkout
                 </span>
               </div>
               <button
                 onClick={() => setCheckoutState(null)}
-                style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#475569', padding: 2 }}
+                style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--dp-ink-muted)', padding: 2 }}
               >
                 <X size={16} />
               </button>
@@ -695,10 +696,10 @@ export default function BillingPage() {
 
             <div style={{ padding: '1.5rem' }}>
               <div style={{ marginBottom: '1.25rem' }}>
-                <p style={{ fontSize: '0.6875rem', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.08em', margin: '0 0 0.375rem' }}>
+                <p style={{ fontSize: '0.6875rem', fontWeight: 700, color: 'var(--dp-ink-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', margin: '0 0 0.375rem' }}>
                   {checkoutState.plan.mode === 'subscription' ? 'Subscription' : 'One-time Purchase'}
                 </p>
-                <h3 style={{ fontSize: '1.25rem', fontWeight: 900, color: '#f1f5f9', letterSpacing: '-0.03em', margin: '0 0 0.25rem' }}>
+                <h3 style={{ fontSize: '1.25rem', fontWeight: 900, color: 'var(--dp-ink)', letterSpacing: '-0.03em', margin: '0 0 0.25rem' }}>
                   {checkoutState.plan.name}
                 </h3>
                 <div className="gradient-text" style={{ fontSize: '2rem', fontWeight: 900, letterSpacing: '-0.04em', lineHeight: 1 }}>
@@ -709,18 +710,18 @@ export default function BillingPage() {
               <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 1.25rem', display: 'flex', flexDirection: 'column', gap: '0.4375rem' }}>
                 {checkoutState.plan.features.map(f => (
                   <li key={f} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
-                    <Check size={12} color="#a3e635" style={{ flexShrink: 0, marginTop: 2 }} />
-                    <span style={{ fontSize: '0.875rem', color: '#94a3b8' }}>{f}</span>
+                    <Check size={12} color="var(--dp-primary)" style={{ flexShrink: 0, marginTop: 2 }} />
+                    <span style={{ fontSize: '0.875rem', color: 'var(--dp-ink-muted)' }}>{f}</span>
                   </li>
                 ))}
               </ul>
 
               <div style={{
                 padding: '0.875rem 1rem', borderRadius: '0.625rem',
-                background: 'rgba(163,230,53,0.03)', border: '1px solid rgba(163,230,53,0.1)',
+                background: 'rgba(83,58,253,0.04)', border: '1px solid rgba(196,188,255,0.40)',
                 marginBottom: '1.25rem',
               }}>
-                <p style={{ fontSize: '0.8125rem', color: '#64748b', margin: 0, lineHeight: 1.6 }}>
+                <p style={{ fontSize: '0.8125rem', color: 'var(--dp-ink-muted)', margin: 0, lineHeight: 1.6 }}>
                   This is a test payment — no real charge will be made.
                 </p>
               </div>
@@ -740,7 +741,7 @@ export default function BillingPage() {
               <button
                 onClick={handleCompletePayment}
                 disabled={paymentLoading}
-                className="btn-primary glow-button"
+                className="dp-btn-primary"
                 style={{ width: '100%', justifyContent: 'center', padding: '0.75rem', fontSize: '0.9375rem', opacity: paymentLoading ? 0.7 : 1 }}
               >
                 {paymentLoading ? (
@@ -761,7 +762,7 @@ export default function BillingPage() {
                 style={{
                   width: '100%', marginTop: '0.625rem',
                   background: 'none', border: 'none', cursor: 'pointer',
-                  fontSize: '0.8125rem', color: '#334155', padding: '0.5rem',
+                  fontSize: '0.8125rem', color: 'var(--dp-ink-muted)', padding: '0.5rem',
                   fontFamily: 'inherit',
                 }}
               >

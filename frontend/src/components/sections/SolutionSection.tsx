@@ -1,4 +1,4 @@
-import { Zap, FileText, Key, MessageSquare, Layout, ImageIcon } from 'lucide-react'
+﻿import { Zap, FileText, Key, MessageSquare, Layout, ImageIcon } from 'lucide-react'
 import AnimatedSection from '../ui/AnimatedSection'
 
 const features = [
@@ -28,7 +28,7 @@ const features = [
     title: 'Review Signal Extraction',
     body: 'Turn buyer feedback into conversion insights. Resolve hidden objections before they cost you sales.',
     gradient: 'linear-gradient(135deg, #3f6212, #a3e635)',
-    glow: 'rgba(163,230,53,0.22)',
+    glow: 'rgba(83,58,253,0.22)',
   },
   {
     icon: Layout,
@@ -66,7 +66,7 @@ export default function SolutionSection() {
             One AI platform.{' '}
             <span className="gradient-text">Every part of your listing.</span>
           </h2>
-          <p className="text-lg max-w-2xl mx-auto leading-relaxed" style={{ color: '#94a3b8' }}>
+          <p className="text-lg max-w-2xl mx-auto leading-relaxed" style={{ color: 'var(--dp-ink-muted)' }}>
             Sellio audits, upgrades, and helps you generate visuals for every element that drives Amazon sales.
           </p>
         </AnimatedSection>
@@ -86,10 +86,10 @@ export default function SolutionSection() {
                   >
                     <Icon size={20} color="white" />
                   </div>
-                  <h3 className="text-base font-bold mb-2.5" style={{ color: '#f1f5f9', letterSpacing: '-0.01em' }}>
+                  <h3 className="text-base font-bold mb-2.5" style={{ color: 'var(--dp-ink)', letterSpacing: '-0.01em' }}>
                     {feature.title}
                   </h3>
-                  <p className="text-sm leading-relaxed" style={{ color: '#64748b' }}>
+                  <p className="text-sm leading-relaxed" style={{ color: 'var(--dp-ink-muted)' }}>
                     {feature.body}
                   </p>
                 </div>

@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+﻿import { Link } from 'react-router-dom'
 import { ArrowRight } from 'lucide-react'
 import AnimatedSection from '../ui/AnimatedSection'
 
@@ -14,9 +14,9 @@ export default function FinalCtaSection() {
           <div
             className="relative rounded-3xl overflow-hidden text-center px-8 py-20"
             style={{
-              background: 'linear-gradient(135deg, rgba(52,211,153,0.07) 0%, rgba(163,230,53,0.05) 100%)',
-              border: '1px solid rgba(163,230,53,0.22)',
-              boxShadow: '0 0 120px rgba(52,211,153,0.06), 0 0 60px rgba(163,230,53,0.04)',
+              background: 'linear-gradient(135deg, rgba(52,211,153,0.07) 0%, rgba(83,58,253,0.05) 100%)',
+              border: '1px solid rgba(83,58,253,0.22)',
+              boxShadow: '0 0 120px rgba(52,211,153,0.06), 0 0 60px rgba(83,58,253,0.04)',
             }}
           >
             <div
@@ -29,14 +29,14 @@ export default function FinalCtaSection() {
             <div
               className="absolute inset-0 pointer-events-none"
               style={{
-                backgroundImage: 'radial-gradient(rgba(163,230,53,0.035) 1px, transparent 1px)',
+                backgroundImage: 'radial-gradient(rgba(83,58,253,0.035) 1px, transparent 1px)',
                 backgroundSize: '28px 28px',
               }}
             />
 
             <div
               className="absolute top-0 left-0 right-0 h-px"
-              style={{ background: 'linear-gradient(90deg, transparent, rgba(163,230,53,0.5), rgba(52,211,153,0.5), transparent)' }}
+              style={{ background: 'linear-gradient(90deg, transparent, rgba(83,58,253,0.5), rgba(52,211,153,0.5), transparent)' }}
             />
 
             <div className="relative z-10 max-w-2xl mx-auto">
@@ -47,13 +47,13 @@ export default function FinalCtaSection() {
 
               <h2
                 className="font-black tracking-tight mb-5"
-                style={{ fontSize: 'clamp(2.25rem, 5vw, 3.5rem)', letterSpacing: '-0.03em', color: '#f1f5f9' }}
+                style={{ fontSize: 'clamp(2.25rem, 5vw, 3.5rem)', letterSpacing: '-0.03em', color: 'var(--dp-ink)' }}
               >
                 Your next sale starts with a{' '}
                 <span className="gradient-text">better listing.</span>
               </h2>
 
-              <p className="text-lg leading-relaxed mb-10" style={{ color: '#94a3b8' }}>
+              <p className="text-lg leading-relaxed mb-10" style={{ color: 'var(--dp-ink-muted)' }}>
                 Run your first free audit in under 60 seconds. No credit card. No Amazon account needed.
               </p>
 
@@ -66,7 +66,7 @@ export default function FinalCtaSection() {
                 </button>
               </div>
 
-              <p className="text-xs mt-6" style={{ color: '#475569' }}>
+              <p className="text-xs mt-6" style={{ color: 'var(--dp-ink-muted)' }}>
                 No credit card required · Results in seconds · Cancel anytime
               </p>
             </div>

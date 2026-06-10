@@ -22,7 +22,7 @@ function formatDate(iso: string) {
 }
 
 function sc(score: number) {
-  return score >= 80 ? '#a3e635' : score >= 60 ? '#fbbf24' : '#f97316'
+  return score >= 80 ? 'var(--dp-score-hi)' : score >= 60 ? 'var(--dp-score-mid)' : 'var(--dp-score-low)'
 }
 
 function CopyButton({ text, label = 'Copy' }: { text: string; label?: string }) {
@@ -40,9 +40,9 @@ function CopyButton({ text, label = 'Copy' }: { text: string; label?: string }) 
       style={{
         display: 'inline-flex', alignItems: 'center', gap: '0.3125rem',
         padding: '0.3125rem 0.625rem', borderRadius: '0.375rem',
-        background: copied ? 'rgba(74,222,128,0.1)' : 'rgba(255,255,255,0.05)',
-        border: `1px solid ${copied ? 'rgba(74,222,128,0.25)' : 'rgba(255,255,255,0.1)'}`,
-        color: copied ? '#4ade80' : '#64748b',
+        background: copied ? 'rgba(22,163,74,0.08)' : 'rgba(83,58,253,0.05)',
+        border: `1px solid ${copied ? 'rgba(22,163,74,0.22)' : 'rgba(196,188,255,0.45)'}`,
+        color: copied ? '#16a34a' : 'var(--dp-ink-muted)',
         fontSize: '0.6875rem', fontWeight: 600,
         cursor: 'pointer', fontFamily: 'inherit',
         transition: 'all 0.15s', whiteSpace: 'nowrap', flexShrink: 0,
@@ -65,7 +65,7 @@ function ScoreRing({ score, size = 120 }: { score: number; size?: number }) {
   return (
     <div style={{ position: 'relative', width: size, height: size, flexShrink: 0 }}>
       <svg width={size} height={size} style={{ transform: 'rotate(-90deg)' }}>
-        <circle cx={cx} cy={cy} r={r} fill="none" stroke="rgba(255,255,255,0.07)" strokeWidth={sw} />
+        <circle cx={cx} cy={cy} r={r} fill="none" stroke="rgba(196,188,255,0.30)" strokeWidth={sw} />
         <circle
           cx={cx} cy={cy} r={r} fill="none"
           stroke={color} strokeWidth={sw}
@@ -84,7 +84,7 @@ function ScoreRing({ score, size = 120 }: { score: number; size?: number }) {
         }}>
           {score}
         </span>
-        <span style={{ fontSize: '0.5625rem', color: '#475569', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+        <span style={{ fontSize: '0.5625rem', color: 'var(--dp-ink-muted)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
           / 100
         </span>
       </div>
@@ -96,7 +96,8 @@ function Card({ children, style }: { children: React.ReactNode; style?: React.CS
   return (
     <div style={{
       borderRadius: '0.875rem', padding: '1.375rem 1.5rem',
-      background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(255,255,255,0.07)',
+      background: '#ffffff', border: '1px solid rgba(196,188,255,0.45)',
+      boxShadow: '0 2px 12px rgba(83,58,253,0.06)',
       ...style,
     }}>
       {children}
@@ -109,10 +110,10 @@ function SL({ children }: { children: React.ReactNode }) {
     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5625rem', marginBottom: '1rem' }}>
       <div style={{
         width: 3, height: 16, borderRadius: 2,
-        background: 'linear-gradient(180deg, #a3e635, #34d399)', flexShrink: 0,
+        background: 'linear-gradient(180deg, #6A55FE, #533AFD)', flexShrink: 0,
       }} />
       <span style={{
-        fontSize: '0.75rem', fontWeight: 800, color: '#94a3b8',
+        fontSize: '0.75rem', fontWeight: 800, color: 'var(--dp-ink-muted)',
         textTransform: 'uppercase', letterSpacing: '0.07em',
       }}>
         {children}
@@ -128,7 +129,7 @@ function PriorityBadge({ priority }: { priority: string }) {
       ? { color: '#f87171', bg: 'rgba(248,113,113,0.1)', border: 'rgba(248,113,113,0.2)' }
       : p === 'medium'
       ? { color: '#fbbf24', bg: 'rgba(251,191,36,0.1)', border: 'rgba(251,191,36,0.2)' }
-      : { color: '#64748b', bg: 'rgba(100,116,139,0.08)', border: 'rgba(100,116,139,0.18)' }
+      : { color: 'var(--dp-ink-muted)', bg: 'rgba(100,116,139,0.08)', border: 'rgba(100,116,139,0.18)' }
   return (
     <span style={{
       display: 'inline-flex', alignItems: 'center',
@@ -172,29 +173,29 @@ function ProUpgradePackCTA({
   return (
     <div style={{
       borderRadius: '1rem',
-      border: '1px solid rgba(163,230,53,0.28)',
-      background: 'rgba(163,230,53,0.025)',
+      border: '1px solid rgba(83,58,253,0.28)',
+      background: 'rgba(83,58,253,0.025)',
       overflow: 'hidden',
     }}>
       <div style={{
         padding: '1.25rem 1.5rem',
-        borderBottom: '1px solid rgba(163,230,53,0.12)',
-        background: 'linear-gradient(135deg, rgba(163,230,53,0.07), rgba(52,211,153,0.035))',
+        borderBottom: '1px solid rgba(83,58,253,0.12)',
+        background: 'linear-gradient(135deg, rgba(83,58,253,0.07), rgba(106,85,254,0.035))',
       }}>
         <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem', flexWrap: 'wrap' }}>
           <div style={{ flex: 1, minWidth: 200 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5625rem', flexWrap: 'wrap', marginBottom: '0.25rem' }}>
-              <Crown size={16} color="#a3e635" strokeWidth={2.5} />
+              <Crown size={16} color="var(--dp-primary)" strokeWidth={2.5} />
               <h3 style={{
-                fontSize: '1.0625rem', fontWeight: 900, color: '#f1f5f9',
+                fontSize: '1.0625rem', fontWeight: 900, color: 'var(--dp-ink)',
                 margin: 0, letterSpacing: '-0.025em',
               }}>
                 Pro Upgrade Pack ready
               </h3>
               {personaLabel && (
                 <span style={{
-                  fontSize: '0.5875rem', fontWeight: 700, color: '#a3e635',
-                  background: 'rgba(163,230,53,0.1)', border: '1px solid rgba(163,230,53,0.22)',
+                  fontSize: '0.5875rem', fontWeight: 700, color: 'var(--dp-primary)',
+                  background: 'rgba(83,58,253,0.1)', border: '1px solid rgba(83,58,253,0.22)',
                   padding: '0.125rem 0.5rem', borderRadius: '99px',
                   textTransform: 'uppercase', letterSpacing: '0.05em', whiteSpace: 'nowrap',
                 }}>
@@ -202,13 +203,13 @@ function ProUpgradePackCTA({
                 </span>
               )}
             </div>
-            <p style={{ fontSize: '0.8125rem', color: '#64748b', margin: 0, lineHeight: 1.5 }}>
+            <p style={{ fontSize: '0.8125rem', color: 'var(--dp-ink-muted)', margin: 0, lineHeight: 1.5 }}>
               Copy-ready title, 5 bullets, description, product detail fixes, and image briefs.
             </p>
           </div>
           <Link
             to={`/dashboard/audits/${auditId}/image-studio`}
-            className="btn-primary glow-button"
+            className="dp-btn-primary"
             style={{ padding: '0.375rem 0.75rem', fontSize: '0.75rem', flexShrink: 0 }}
           >
             <Layers size={12} />
@@ -222,10 +223,10 @@ function ProUpgradePackCTA({
           <div style={{
             position: 'relative', overflow: 'hidden',
             padding: '0.75rem 1rem', borderRadius: '0.625rem', marginBottom: '1rem',
-            background: 'rgba(163,230,53,0.04)', border: '1px solid rgba(163,230,53,0.12)',
+            background: 'rgba(83,58,253,0.04)', border: '1px solid rgba(83,58,253,0.12)',
           }}>
             <p style={{
-              fontSize: '0.875rem', color: '#f1f5f9', fontWeight: 600,
+              fontSize: '0.875rem', color: 'var(--dp-ink)', fontWeight: 600,
               margin: 0, lineHeight: 1.4,
               filter: 'blur(3px)', userSelect: 'none', pointerEvents: 'none',
             }}>
@@ -233,15 +234,15 @@ function ProUpgradePackCTA({
             </p>
             <div style={{
               position: 'absolute', inset: 0,
-              background: 'linear-gradient(90deg, transparent 30%, rgba(10,12,16,0.92) 80%)',
+              background: 'linear-gradient(90deg, transparent 30%, rgba(246,249,252,0.95) 80%)',
               display: 'flex', alignItems: 'center', justifyContent: 'flex-end',
               paddingRight: '1rem',
             }}>
               <span style={{
                 display: 'inline-flex', alignItems: 'center', gap: '0.3rem',
-                fontSize: '0.6875rem', fontWeight: 700, color: '#a3e635',
+                fontSize: '0.6875rem', fontWeight: 700, color: 'var(--dp-primary)',
               }}>
-                <Lock size={11} color="#a3e635" />
+                <Lock size={11} color="var(--dp-primary)" />
                 Locked
               </span>
             </div>
@@ -253,8 +254,8 @@ function ProUpgradePackCTA({
             <span key={item} style={{
               display: 'inline-flex', alignItems: 'center', gap: '0.25rem',
               padding: '0.25rem 0.625rem', borderRadius: '99px',
-              background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.09)',
-              fontSize: '0.6875rem', color: '#64748b', fontWeight: 600,
+              background: 'rgba(83,58,253,0.04)', border: '1px solid rgba(196,188,255,0.45)',
+              fontSize: '0.6875rem', color: 'var(--dp-ink-muted)', fontWeight: 600,
             }}>
               <Lock size={9} color="#475569" />
               {item}
@@ -264,7 +265,7 @@ function ProUpgradePackCTA({
 
         <Link
           to="/dashboard/billing"
-          className="btn-primary glow-button"
+          className="dp-btn-primary"
           style={{ display: 'inline-flex', padding: '0.5625rem 1.125rem', fontSize: '0.8125rem' }}
         >
           <Crown size={13} />
@@ -279,7 +280,7 @@ const DIAG = [
   { key: 'attention' as const, label: 'Attention', Icon: Eye, color: '#f97316', bg: 'rgba(249,115,22,0.04)', border: 'rgba(249,115,22,0.11)' },
   { key: 'trust' as const, label: 'Trust', Icon: Shield, color: '#34d399', bg: 'rgba(52,211,153,0.04)', border: 'rgba(52,211,153,0.11)' },
   { key: 'clarity' as const, label: 'Clarity', Icon: Target, color: '#60a5fa', bg: 'rgba(96,165,250,0.04)', border: 'rgba(96,165,250,0.11)' },
-  { key: 'conversion' as const, label: 'Conversion', Icon: TrendingUp, color: '#a3e635', bg: 'rgba(163,230,53,0.04)', border: 'rgba(163,230,53,0.11)' },
+  { key: 'conversion' as const, label: 'Conversion', Icon: TrendingUp, color: 'var(--dp-primary)', bg: 'rgba(163,230,53,0.04)', border: 'rgba(163,230,53,0.11)' },
 ]
 
 function ReportHeader({ audit, result }: { audit: AuditDetail; result: AuditResult }) {
@@ -287,7 +288,8 @@ function ReportHeader({ audit, result }: { audit: AuditDetail; result: AuditResu
   return (
     <div style={{
       borderRadius: '1rem', padding: '1.75rem 2rem',
-      background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(255,255,255,0.08)',
+      background: '#ffffff', border: '1px solid rgba(196,188,255,0.45)',
+      boxShadow: '0 4px 24px rgba(83,58,253,0.08)',
       marginBottom: '1.5rem', position: 'relative', overflow: 'hidden',
     }}>
       <div style={{
@@ -298,20 +300,20 @@ function ReportHeader({ audit, result }: { audit: AuditDetail; result: AuditResu
       <div style={{ display: 'flex', alignItems: 'flex-start', gap: '2rem', flexWrap: 'wrap', position: 'relative' }}>
         <div style={{ flex: 1, minWidth: 200 }}>
           <div style={{
-            fontSize: '0.5875rem', fontWeight: 700, color: 'rgba(52,211,153,0.55)',
+            fontSize: '0.5875rem', fontWeight: 700, color: 'rgba(83,58,253,0.55)',
             textTransform: 'uppercase', letterSpacing: '0.12em', marginBottom: '0.875rem',
           }}>
             Sellio AI Audit Report
           </div>
           <h1 style={{
             fontSize: 'clamp(1.25rem, 3vw, 1.75rem)',
-            fontWeight: 900, color: '#f1f5f9', letterSpacing: '-0.03em',
+            fontWeight: 900, color: 'var(--dp-ink)', letterSpacing: '-0.03em',
             margin: '0 0 0.4375rem', lineHeight: 1.2,
           }}>
             {audit.product_name || 'Untitled Audit'}
           </h1>
           {audit.category && (
-            <p style={{ fontSize: '0.9375rem', color: '#64748b', margin: '0 0 0.875rem', lineHeight: 1.4 }}>
+            <p style={{ fontSize: '0.9375rem', color: 'var(--dp-ink-muted)', margin: '0 0 0.875rem', lineHeight: 1.4 }}>
               {audit.category}
             </p>
           )}
@@ -319,23 +321,23 @@ function ReportHeader({ audit, result }: { audit: AuditDetail; result: AuditResu
             <StatusBadge status={audit.status} />
             <span style={{
               padding: '0.1875rem 0.5625rem', borderRadius: '99px',
-              background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.09)',
-              fontSize: '0.6875rem', fontWeight: 600, color: '#64748b',
+              background: 'rgba(83,58,253,0.05)', border: '1px solid rgba(196,188,255,0.45)',
+              fontSize: '0.6875rem', fontWeight: 600, color: 'var(--dp-ink-muted)',
             }}>
               {audit.entry_type === 'amazon_url' ? 'Amazon URL' : 'Product Photos'}
             </span>
             {audit.seller_persona && PERSONA_LABELS[audit.seller_persona] && (
               <span style={{
                 padding: '0.1875rem 0.5625rem', borderRadius: '99px',
-                background: 'rgba(163,230,53,0.07)', border: '1px solid rgba(163,230,53,0.2)',
-                fontSize: '0.6875rem', fontWeight: 700, color: '#a3e635',
+                background: 'rgba(83,58,253,0.07)', border: '1px solid rgba(83,58,253,0.2)',
+                fontSize: '0.6875rem', fontWeight: 700, color: 'var(--dp-primary)',
                 display: 'inline-flex', alignItems: 'center', gap: '0.3rem',
               }}>
                 <Crown size={10} />
                 {PERSONA_LABELS[audit.seller_persona]}
               </span>
             )}
-            <span style={{ fontSize: '0.6875rem', color: '#334155' }}>
+            <span style={{ fontSize: '0.6875rem', color: 'var(--dp-ink-muted)' }}>
               {formatDate(audit.created_at)}
             </span>
           </div>
@@ -346,7 +348,7 @@ function ReportHeader({ audit, result }: { audit: AuditDetail; result: AuditResu
               rel="noopener noreferrer"
               style={{
                 display: 'inline-flex', alignItems: 'center', gap: '0.3125rem',
-                fontSize: '0.8125rem', color: '#475569', textDecoration: 'none',
+                fontSize: '0.8125rem', color: 'var(--dp-ink-muted)', textDecoration: 'none',
                 marginBottom: '1.375rem', transition: 'color 0.15s',
               }}
               onMouseEnter={e => (e.currentTarget.style.color = '#a3e635')}
@@ -359,22 +361,15 @@ function ReportHeader({ audit, result }: { audit: AuditDetail; result: AuditResu
           <div style={{ display: 'flex', gap: '0.625rem', flexWrap: 'wrap', alignItems: 'center' }}>
             <Link
               to="/dashboard/audits"
-              style={{
-                display: 'inline-flex', alignItems: 'center', gap: '0.375rem',
-                padding: '0.5rem 1rem', borderRadius: '0.5rem',
-                background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.09)',
-                color: '#64748b', fontSize: '0.8125rem', fontWeight: 500,
-                textDecoration: 'none', transition: 'all 0.15s',
-              }}
-              onMouseEnter={e => { e.currentTarget.style.color = '#94a3b8'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.16)' }}
-              onMouseLeave={e => { e.currentTarget.style.color = '#64748b'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.09)' }}
+              className="dp-btn-ghost"
+              style={{ padding: '0.5rem 1rem', fontSize: '0.8125rem' }}
             >
               <ArrowLeft size={13} />
               All Audits
             </Link>
             <Link
               to={`/dashboard/audits/${audit.id}/image-studio`}
-              className="btn-primary glow-button"
+              className="dp-btn-primary"
               style={{ padding: '0.5rem 1rem', fontSize: '0.8125rem' }}
             >
               <Layers size={13} />
@@ -382,15 +377,8 @@ function ReportHeader({ audit, result }: { audit: AuditDetail; result: AuditResu
             </Link>
             <Link
               to="/dashboard/new-audit"
-              style={{
-                display: 'inline-flex', alignItems: 'center', gap: '0.375rem',
-                padding: '0.5rem 1rem', borderRadius: '0.5rem',
-                background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.09)',
-                color: '#64748b', fontSize: '0.8125rem', fontWeight: 500,
-                textDecoration: 'none', transition: 'all 0.15s',
-              }}
-              onMouseEnter={e => { e.currentTarget.style.color = '#94a3b8'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.16)' }}
-              onMouseLeave={e => { e.currentTarget.style.color = '#64748b'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.09)' }}
+              className="dp-btn-ghost"
+              style={{ padding: '0.5rem 1rem', fontSize: '0.8125rem' }}
             >
               <Zap size={13} />
               New Audit
@@ -424,7 +412,7 @@ function BuyerObjectionRadarBlock({ items }: { items?: BuyerObjectionRadarItem[]
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '1rem', marginBottom: '0.875rem', flexWrap: 'wrap' }}>
         <div>
           <SL>Buyer Objection Radar</SL>
-          <p style={{ fontSize: '0.8125rem', color: '#64748b', margin: 0, lineHeight: 1.5 }}>
+          <p style={{ fontSize: '0.8125rem', color: 'var(--dp-ink-muted)', margin: 0, lineHeight: 1.5 }}>
             What may stop buyers from purchasing вЂ” and how to fix it.
           </p>
         </div>
@@ -434,8 +422,8 @@ function BuyerObjectionRadarBlock({ items }: { items?: BuyerObjectionRadarItem[]
       {!hasItems ? (
         <div style={{
           padding: '1rem', borderRadius: '0.625rem',
-          background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)',
-          fontSize: '0.8125rem', color: '#475569', lineHeight: 1.6, textAlign: 'center',
+          background: 'rgba(83,58,253,0.03)', border: '1px solid rgba(196,188,255,0.35)',
+          fontSize: '0.8125rem', color: 'var(--dp-ink-muted)', lineHeight: 1.6, textAlign: 'center',
         }}>
           Add reviews or Q&A in your next audit to detect stronger buyer objections.
         </div>
@@ -461,13 +449,13 @@ function BuyerObjectionRadarBlock({ items }: { items?: BuyerObjectionRadarItem[]
                 }}>
                   Concern
                 </span>
-                <span style={{ fontSize: '0.875rem', fontWeight: 700, color: '#f1f5f9', flex: 1, lineHeight: 1.4 }}>
+                <span style={{ fontSize: '0.875rem', fontWeight: 700, color: 'var(--dp-ink)', flex: 1, lineHeight: 1.4 }}>
                   {item.objection}
                 </span>
               </div>
               {item.source_signal && (
                 <div style={{ padding: '0.375rem 0.875rem', borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
-                  <span style={{ fontSize: '0.6875rem', color: '#475569', fontStyle: 'italic' }}>
+                  <span style={{ fontSize: '0.6875rem', color: 'var(--dp-ink-muted)', fontStyle: 'italic' }}>
                     Source: {item.source_signal}
                   </span>
                 </div>
@@ -487,7 +475,7 @@ function BuyerObjectionRadarBlock({ items }: { items?: BuyerObjectionRadarItem[]
                     }}>
                       Why it hurts
                     </span>
-                    <p style={{ fontSize: '0.8125rem', color: '#94a3b8', margin: 0, lineHeight: 1.5 }}>
+                    <p style={{ fontSize: '0.8125rem', color: 'var(--dp-ink-muted)', margin: 0, lineHeight: 1.5 }}>
                       {item.why_it_hurts_conversion}
                     </p>
                   </div>
@@ -498,12 +486,12 @@ function BuyerObjectionRadarBlock({ items }: { items?: BuyerObjectionRadarItem[]
                       display: 'inline-flex', alignItems: 'center',
                       padding: '0.1rem 0.4rem', borderRadius: '99px',
                       background: 'rgba(163,230,53,0.1)', border: '1px solid rgba(163,230,53,0.2)',
-                      fontSize: '0.5rem', fontWeight: 700, color: '#a3e635',
+                      fontSize: '0.5rem', fontWeight: 700, color: 'var(--dp-primary)',
                       textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '0.25rem',
                     }}>
                       Fix
                     </span>
-                    <p style={{ fontSize: '0.8125rem', color: '#a3e635', margin: 0, lineHeight: 1.5 }}>
+                    <p style={{ fontSize: '0.8125rem', color: 'var(--dp-primary)', margin: 0, lineHeight: 1.5 }}>
                       {item.listing_fix}
                     </p>
                   </div>
@@ -554,7 +542,7 @@ function CompetitorAnalysisLiteBlock({ data }: { data?: CompetitorAnalysisLite }
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '1rem', marginBottom: '0.875rem', flexWrap: 'wrap' }}>
         <div>
           <SL>Competitor Analysis Lite</SL>
-          <p style={{ fontSize: '0.8125rem', color: '#64748b', margin: 0, lineHeight: 1.5 }}>
+          <p style={{ fontSize: '0.8125rem', color: 'var(--dp-ink-muted)', margin: 0, lineHeight: 1.5 }}>
             See where competitors look stronger and where your listing can win.
           </p>
         </div>
@@ -564,8 +552,8 @@ function CompetitorAnalysisLiteBlock({ data }: { data?: CompetitorAnalysisLite }
       {isEmpty ? (
         <div style={{
           padding: '1rem', borderRadius: '0.625rem',
-          background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)',
-          fontSize: '0.8125rem', color: '#475569', lineHeight: 1.6, textAlign: 'center',
+          background: 'rgba(83,58,253,0.03)', border: '1px solid rgba(196,188,255,0.35)',
+          fontSize: '0.8125rem', color: 'var(--dp-ink-muted)', lineHeight: 1.6, textAlign: 'center',
         }}>
           No competitor data was provided for this audit.
         </div>
@@ -591,10 +579,10 @@ function CompetitorAnalysisLiteBlock({ data }: { data?: CompetitorAnalysisLite }
                   }}>
                     {adv.competitor && (
                       <div>
-                        <div style={{ fontSize: '0.5rem', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.125rem' }}>
+                        <div style={{ fontSize: '0.5rem', fontWeight: 700, color: 'var(--dp-ink-muted)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.125rem' }}>
                           Competitor
                         </div>
-                        <p style={{ fontSize: '0.8125rem', fontWeight: 600, color: '#f1f5f9', margin: 0 }}>{adv.competitor}</p>
+                        <p style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--dp-ink)', margin: 0 }}>{adv.competitor}</p>
                       </div>
                     )}
                     <div>
@@ -605,10 +593,10 @@ function CompetitorAnalysisLiteBlock({ data }: { data?: CompetitorAnalysisLite }
                     </div>
                     {adv.why_it_matters && (
                       <div>
-                        <div style={{ fontSize: '0.5rem', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.125rem' }}>
+                        <div style={{ fontSize: '0.5rem', fontWeight: 700, color: 'var(--dp-ink-muted)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.125rem' }}>
                           Why it matters
                         </div>
-                        <p style={{ fontSize: '0.8125rem', color: '#94a3b8', margin: 0, lineHeight: 1.5 }}>{adv.why_it_matters}</p>
+                        <p style={{ fontSize: '0.8125rem', color: 'var(--dp-ink-muted)', margin: 0, lineHeight: 1.5 }}>{adv.why_it_matters}</p>
                       </div>
                     )}
                   </div>
@@ -619,7 +607,7 @@ function CompetitorAnalysisLiteBlock({ data }: { data?: CompetitorAnalysisLite }
 
           {Array.isArray(data!.where_we_can_win) && data!.where_we_can_win.length > 0 && (
             <div>
-              <div style={{ fontSize: '0.6875rem', fontWeight: 700, color: '#a3e635', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.5rem' }}>
+              <div style={{ fontSize: '0.6875rem', fontWeight: 700, color: 'var(--dp-primary)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.5rem' }}>
                 Where We Can Win
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3125rem' }}>
@@ -631,14 +619,14 @@ function CompetitorAnalysisLiteBlock({ data }: { data?: CompetitorAnalysisLite }
                   }}>
                     {win.area && (
                       <div>
-                        <div style={{ fontSize: '0.5rem', fontWeight: 700, color: '#a3e635', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.125rem' }}>
+                        <div style={{ fontSize: '0.5rem', fontWeight: 700, color: 'var(--dp-primary)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.125rem' }}>
                           Area
                         </div>
-                        <p style={{ fontSize: '0.8125rem', fontWeight: 700, color: '#a3e635', margin: 0 }}>{win.area}</p>
+                        <p style={{ fontSize: '0.8125rem', fontWeight: 700, color: 'var(--dp-primary)', margin: 0 }}>{win.area}</p>
                       </div>
                     )}
                     <div>
-                      <div style={{ fontSize: '0.5rem', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.125rem' }}>
+                      <div style={{ fontSize: '0.5rem', fontWeight: 700, color: 'var(--dp-ink-muted)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.125rem' }}>
                         Opportunity
                       </div>
                       <p style={{ fontSize: '0.8125rem', color: '#cbd5e1', margin: 0, lineHeight: 1.5 }}>{win.opportunity}</p>
@@ -711,7 +699,7 @@ function ConciseAuditReport({
               display: 'inline-flex', alignItems: 'center', gap: '0.375rem',
               padding: '0.3125rem 0.6875rem', borderRadius: '0.375rem',
               background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)',
-              color: '#64748b', fontSize: '0.75rem', fontWeight: 600,
+              color: 'var(--dp-ink-muted)', fontSize: '0.75rem', fontWeight: 600,
               cursor: regenerating ? 'not-allowed' : 'pointer',
               fontFamily: 'inherit', opacity: regenerating ? 0.6 : 1, transition: 'all 0.15s',
             }}
@@ -756,11 +744,11 @@ function ConciseAuditReport({
           {report.title_upgrade?.improved_title && (
             <div style={{ marginBottom: '1.25rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.75rem', marginBottom: '0.5rem', flexWrap: 'wrap' }}>
-                <span style={{ fontSize: '0.8125rem', fontWeight: 700, color: '#94a3b8' }}>Copy-ready Title</span>
+                <span style={{ fontSize: '0.8125rem', fontWeight: 700, color: 'var(--dp-ink-muted)' }}>Copy-ready Title</span>
                 <CopyButton text={report.title_upgrade.improved_title} label="Copy Title" />
               </div>
               <div style={{ padding: '0.875rem 1rem', borderRadius: '0.625rem', background: 'rgba(163,230,53,0.04)', border: '1px solid rgba(163,230,53,0.14)' }}>
-                <p style={{ fontSize: '0.9375rem', color: '#f1f5f9', lineHeight: 1.6, margin: 0, fontWeight: 600 }}>
+                <p style={{ fontSize: '0.9375rem', color: 'var(--dp-ink)', lineHeight: 1.6, margin: 0, fontWeight: 600 }}>
                   {report.title_upgrade.improved_title}
                 </p>
               </div>
@@ -770,7 +758,7 @@ function ConciseAuditReport({
           {Array.isArray(report.about_this_item_upgrade?.improved_bullets) && report.about_this_item_upgrade.improved_bullets.length > 0 && (
             <div style={{ marginBottom: '1.25rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.75rem', marginBottom: '0.5rem', flexWrap: 'wrap' }}>
-                <span style={{ fontSize: '0.8125rem', fontWeight: 700, color: '#94a3b8' }}>Copy-ready Bullets</span>
+                <span style={{ fontSize: '0.8125rem', fontWeight: 700, color: 'var(--dp-ink-muted)' }}>Copy-ready Bullets</span>
                 <CopyButton text={report.about_this_item_upgrade.improved_bullets.join('\n')} label="Copy All Bullets" />
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.375rem' }}>
@@ -778,12 +766,12 @@ function ConciseAuditReport({
                   <div key={i} style={{
                     display: 'flex', alignItems: 'flex-start', gap: '0.625rem',
                     padding: '0.625rem 0.875rem', borderRadius: '0.5rem',
-                    background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)',
+                    background: 'rgba(83,58,253,0.03)', border: '1px solid rgba(196,188,255,0.35)',
                   }}>
                     <span style={{
                       width: 20, height: 20, borderRadius: '50%',
                       background: 'rgba(163,230,53,0.1)', border: '1px solid rgba(163,230,53,0.2)',
-                      color: '#a3e635', fontSize: '0.625rem', fontWeight: 800,
+                      color: 'var(--dp-primary)', fontSize: '0.625rem', fontWeight: 800,
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
                       flexShrink: 0, marginTop: 1,
                     }}>
@@ -802,10 +790,10 @@ function ConciseAuditReport({
           {report.description_upgrade?.improved_description && (
             <div>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.75rem', marginBottom: '0.5rem', flexWrap: 'wrap' }}>
-                <span style={{ fontSize: '0.8125rem', fontWeight: 700, color: '#94a3b8' }}>Copy-ready Description</span>
+                <span style={{ fontSize: '0.8125rem', fontWeight: 700, color: 'var(--dp-ink-muted)' }}>Copy-ready Description</span>
                 <CopyButton text={report.description_upgrade.improved_description} label="Copy Description" />
               </div>
-              <div style={{ padding: '0.875rem 1rem', borderRadius: '0.625rem', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)' }}>
+              <div style={{ padding: '0.875rem 1rem', borderRadius: '0.625rem', background: 'rgba(83,58,253,0.03)', border: '1px solid rgba(196,188,255,0.35)' }}>
                 <p style={{ fontSize: '0.875rem', color: '#cbd5e1', lineHeight: 1.75, margin: 0, whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
                   {report.description_upgrade.improved_description}
                 </p>
@@ -824,18 +812,18 @@ function ConciseAuditReport({
               <div key={i} style={{
                 display: 'flex', alignItems: 'flex-start', gap: '0.75rem',
                 padding: '0.625rem 0.875rem', borderRadius: '0.5rem',
-                background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)',
+                background: 'rgba(83,58,253,0.03)', border: '1px solid rgba(196,188,255,0.35)',
                 flexWrap: 'wrap',
               }}>
                 <div style={{ flex: 1, minWidth: 0, display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '0.25rem 1rem' }}>
                   <div>
-                    <div style={{ fontSize: '0.5625rem', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.125rem' }}>Field</div>
-                    <p style={{ fontSize: '0.8125rem', fontWeight: 600, color: '#f1f5f9', margin: 0 }}>{fix.field}</p>
+                    <div style={{ fontSize: '0.5625rem', fontWeight: 700, color: 'var(--dp-ink-muted)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.125rem' }}>Field</div>
+                    <p style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--dp-ink)', margin: 0 }}>{fix.field}</p>
                   </div>
                   {fix.recommended_fix && (
                     <div>
-                      <div style={{ fontSize: '0.5625rem', fontWeight: 700, color: '#a3e635', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.125rem' }}>Fix</div>
-                      <p style={{ fontSize: '0.8125rem', color: '#a3e635', margin: 0, lineHeight: 1.5 }}>{fix.recommended_fix}</p>
+                      <div style={{ fontSize: '0.5625rem', fontWeight: 700, color: 'var(--dp-primary)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.125rem' }}>Fix</div>
+                      <p style={{ fontSize: '0.8125rem', color: 'var(--dp-primary)', margin: 0, lineHeight: 1.5 }}>{fix.recommended_fix}</p>
                     </div>
                   )}
                 </div>
@@ -853,7 +841,7 @@ function ConciseAuditReport({
             <SL>Image Plan вЂ” {report.image_gallery_plan.length} images</SL>
             <Link
               to={`/dashboard/audits/${audit.id}/image-studio`}
-              className="btn-primary glow-button"
+              className="dp-btn-primary"
               style={{ padding: '0.4375rem 0.875rem', fontSize: '0.8125rem', flexShrink: 0 }}
             >
               <Layers size={13} />
@@ -863,7 +851,7 @@ function ConciseAuditReport({
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4375rem' }}>
             {report.image_gallery_plan.slice(0, 6).map((img, i) => (
               <div key={i} style={{
-                borderRadius: '0.625rem', background: 'rgba(255,255,255,0.02)',
+                borderRadius: '0.625rem', background: 'rgba(83,58,253,0.03)',
                 border: '1px solid rgba(52,211,153,0.1)', overflow: 'hidden',
               }}>
                 <div style={{
@@ -879,7 +867,7 @@ function ConciseAuditReport({
                   }}>
                     {i + 1}
                   </span>
-                  <span style={{ fontSize: '0.875rem', fontWeight: 700, color: '#f1f5f9', flex: 1 }}>
+                  <span style={{ fontSize: '0.875rem', fontWeight: 700, color: 'var(--dp-ink)', flex: 1 }}>
                     {img.image_type}
                   </span>
                   <CopyButton text={formatImageBrief(img)} label="Copy Brief" />
@@ -891,19 +879,19 @@ function ConciseAuditReport({
                   {img.goal && (
                     <div>
                       <div style={{ fontSize: '0.5625rem', fontWeight: 700, color: '#34d399', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.1875rem', opacity: 0.7 }}>Goal</div>
-                      <p style={{ fontSize: '0.8125rem', color: '#94a3b8', margin: 0, lineHeight: 1.5 }}>{img.goal}</p>
+                      <p style={{ fontSize: '0.8125rem', color: 'var(--dp-ink-muted)', margin: 0, lineHeight: 1.5 }}>{img.goal}</p>
                     </div>
                   )}
                   {img.headline && (
                     <div>
-                      <div style={{ fontSize: '0.5625rem', fontWeight: 700, color: '#a3e635', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.1875rem', opacity: 0.7 }}>Headline</div>
-                      <p style={{ fontSize: '0.875rem', color: '#a3e635', margin: 0, fontWeight: 700 }}>"{img.headline}"</p>
+                      <div style={{ fontSize: '0.5625rem', fontWeight: 700, color: 'var(--dp-primary)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.1875rem', opacity: 0.7 }}>Headline</div>
+                      <p style={{ fontSize: '0.875rem', color: 'var(--dp-primary)', margin: 0, fontWeight: 700 }}>"{img.headline}"</p>
                     </div>
                   )}
                   {img.visual_direction && (
                     <div>
                       <div style={{ fontSize: '0.5625rem', fontWeight: 700, color: '#34d399', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.1875rem', opacity: 0.7 }}>Visual Direction</div>
-                      <p style={{ fontSize: '0.8125rem', color: '#94a3b8', margin: 0, lineHeight: 1.5 }}>{img.visual_direction}</p>
+                      <p style={{ fontSize: '0.8125rem', color: 'var(--dp-ink-muted)', margin: 0, lineHeight: 1.5 }}>{img.visual_direction}</p>
                     </div>
                   )}
                 </div>
@@ -927,7 +915,7 @@ function ConciseAuditReport({
                 <span style={{
                   width: 22, height: 22, borderRadius: '50%',
                   background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.09)',
-                  color: '#475569', fontSize: '0.625rem', fontWeight: 800,
+                  color: 'var(--dp-ink-muted)', fontSize: '0.625rem', fontWeight: 800,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   flexShrink: 0, marginTop: 1,
                 }}>
@@ -935,13 +923,13 @@ function ConciseAuditReport({
                 </span>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem', marginBottom: '0.1875rem', flexWrap: 'wrap' }}>
-                    <p style={{ fontSize: '0.875rem', fontWeight: 600, color: '#f1f5f9', margin: 0, lineHeight: 1.45, wordBreak: 'break-word' }}>
+                    <p style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--dp-ink)', margin: 0, lineHeight: 1.45, wordBreak: 'break-word' }}>
                       {item.task}
                     </p>
                     <PriorityBadge priority={item.priority} />
                   </div>
                   {item.reason && (
-                    <p style={{ fontSize: '0.8125rem', color: '#64748b', margin: 0, lineHeight: 1.5 }}>
+                    <p style={{ fontSize: '0.8125rem', color: 'var(--dp-ink-muted)', margin: 0, lineHeight: 1.5 }}>
                       {item.reason}
                     </p>
                   )}
@@ -961,7 +949,7 @@ function ConciseAuditReport({
             style={{
               display: 'flex', alignItems: 'center', gap: '0.5rem',
               background: 'none', border: 'none', cursor: 'pointer',
-              color: '#64748b', fontSize: '0.8125rem', fontWeight: 600,
+              color: 'var(--dp-ink-muted)', fontSize: '0.8125rem', fontWeight: 600,
               fontFamily: 'inherit', padding: 0, width: '100%', textAlign: 'left',
             }}
           >
@@ -976,7 +964,7 @@ function ConciseAuditReport({
 
               {Array.isArray(report.keyword_opportunities) && report.keyword_opportunities.length > 0 && (
                 <div>
-                  <div style={{ fontSize: '0.6875rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.5rem', paddingBottom: '0.5rem', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                  <div style={{ fontSize: '0.6875rem', fontWeight: 700, color: 'var(--dp-ink-muted)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.5rem', paddingBottom: '0.5rem', borderBottom: '1px solid rgba(196,188,255,0.25)' }}>
                     Keyword Opportunities вЂ” {report.keyword_opportunities.length}
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3125rem' }}>
@@ -984,18 +972,18 @@ function ConciseAuditReport({
                       <div key={i} style={{
                         display: 'flex', alignItems: 'flex-start', gap: '0.625rem',
                         padding: '0.5rem 0.75rem', borderRadius: '0.5rem',
-                        background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)',
+                        background: 'rgba(83,58,253,0.03)', border: '1px solid rgba(255,255,255,0.05)',
                         flexWrap: 'wrap',
                       }}>
                         <span style={{
                           padding: '0.1875rem 0.625rem', borderRadius: '99px',
                           background: 'rgba(163,230,53,0.08)', border: '1px solid rgba(163,230,53,0.15)',
-                          color: '#a3e635', fontSize: '0.8125rem', fontWeight: 700,
+                          color: 'var(--dp-primary)', fontSize: '0.8125rem', fontWeight: 700,
                           flexShrink: 0, whiteSpace: 'nowrap',
                         }}>
                           {kw.keyword}
                         </span>
-                        <span style={{ fontSize: '0.8125rem', color: '#94a3b8', lineHeight: 1.5, paddingTop: 2 }}>
+                        <span style={{ fontSize: '0.8125rem', color: 'var(--dp-ink-muted)', lineHeight: 1.5, paddingTop: 2 }}>
                           {kw.reason}
                         </span>
                       </div>
@@ -1006,7 +994,7 @@ function ConciseAuditReport({
 
               {Array.isArray(report.buyer_objections) && report.buyer_objections.length > 0 && (
                 <div>
-                  <div style={{ fontSize: '0.6875rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.5rem', paddingBottom: '0.5rem', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                  <div style={{ fontSize: '0.6875rem', fontWeight: 700, color: 'var(--dp-ink-muted)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.5rem', paddingBottom: '0.5rem', borderBottom: '1px solid rgba(196,188,255,0.25)' }}>
                     Buyer Objections
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3125rem' }}>
@@ -1014,14 +1002,14 @@ function ConciseAuditReport({
                       <div key={i} style={{
                         display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))',
                         gap: '0.375rem 1.25rem', padding: '0.625rem 0.75rem', borderRadius: '0.5rem',
-                        background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)',
+                        background: 'rgba(83,58,253,0.03)', border: '1px solid rgba(255,255,255,0.05)',
                       }}>
                         <div>
                           <div style={{ fontSize: '0.5625rem', fontWeight: 700, color: '#f97316', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.1875rem' }}>Objection</div>
                           <p style={{ fontSize: '0.8125rem', color: '#cbd5e1', margin: 0, lineHeight: 1.5 }}>{bo.objection}</p>
                         </div>
                         <div>
-                          <div style={{ fontSize: '0.5625rem', fontWeight: 700, color: '#a3e635', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.1875rem' }}>How to Address</div>
+                          <div style={{ fontSize: '0.5625rem', fontWeight: 700, color: 'var(--dp-primary)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.1875rem' }}>How to Address</div>
                           <p style={{ fontSize: '0.8125rem', color: '#cbd5e1', margin: 0, lineHeight: 1.5 }}>{bo.how_to_address}</p>
                         </div>
                       </div>
@@ -1032,24 +1020,24 @@ function ConciseAuditReport({
 
               {Array.isArray(report.a_plus_brand_plan) && report.a_plus_brand_plan.length > 0 && (
                 <div>
-                  <div style={{ fontSize: '0.6875rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.5rem', paddingBottom: '0.5rem', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                  <div style={{ fontSize: '0.6875rem', fontWeight: 700, color: 'var(--dp-ink-muted)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.5rem', paddingBottom: '0.5rem', borderBottom: '1px solid rgba(196,188,255,0.25)' }}>
                     A+ / Brand Content Plan
                   </div>
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '0.375rem' }}>
                     {report.a_plus_brand_plan.map((item, i) => (
                       <div key={i} style={{
                         padding: '0.625rem 0.75rem', borderRadius: '0.5rem',
-                        background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)',
+                        background: 'rgba(83,58,253,0.03)', border: '1px solid rgba(255,255,255,0.05)',
                       }}>
-                        <div style={{ fontSize: '0.5875rem', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.25rem' }}>
+                        <div style={{ fontSize: '0.5875rem', fontWeight: 700, color: 'var(--dp-ink-muted)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.25rem' }}>
                           {item.section}
                         </div>
                         {item.purpose && (
-                          <p style={{ fontSize: '0.75rem', color: '#a3e635', margin: '0 0 0.25rem', fontWeight: 600 }}>
+                          <p style={{ fontSize: '0.75rem', color: 'var(--dp-primary)', margin: '0 0 0.25rem', fontWeight: 600 }}>
                             {item.purpose}
                           </p>
                         )}
-                        <p style={{ fontSize: '0.8125rem', color: '#94a3b8', margin: 0, lineHeight: 1.5 }}>
+                        <p style={{ fontSize: '0.8125rem', color: 'var(--dp-ink-muted)', margin: 0, lineHeight: 1.5 }}>
                           {item.content_idea}
                         </p>
                       </div>
@@ -1060,16 +1048,16 @@ function ConciseAuditReport({
 
               {report.details != null && Object.keys(report.details).length > 0 && (
                 <div>
-                  <div style={{ fontSize: '0.6875rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.5rem', paddingBottom: '0.5rem', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                  <div style={{ fontSize: '0.6875rem', fontWeight: 700, color: 'var(--dp-ink-muted)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.5rem', paddingBottom: '0.5rem', borderBottom: '1px solid rgba(196,188,255,0.25)' }}>
                     Details
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                     {Object.entries(report.details).map(([key, value]) => (
                       <div key={key}>
-                        <div style={{ fontSize: '0.6875rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.25rem' }}>
+                        <div style={{ fontSize: '0.6875rem', fontWeight: 700, color: 'var(--dp-ink-muted)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.25rem' }}>
                           {key.replace(/_/g, ' ')}
                         </div>
-                        <p style={{ fontSize: '0.8125rem', color: '#94a3b8', margin: 0, lineHeight: 1.6, whiteSpace: 'pre-wrap' }}>
+                        <p style={{ fontSize: '0.8125rem', color: 'var(--dp-ink-muted)', margin: 0, lineHeight: 1.6, whiteSpace: 'pre-wrap' }}>
                           {typeof value === 'string' ? value : JSON.stringify(value, null, 2)}
                         </p>
                       </div>
@@ -1098,14 +1086,14 @@ function ConciseAuditReport({
           <Layers size={24} color="white" />
         </div>
         <div style={{ flex: 1, minWidth: 160 }}>
-          <h3 style={{ fontSize: '1rem', fontWeight: 800, color: '#f1f5f9', margin: '0 0 0.3125rem', letterSpacing: '-0.025em' }}>
+          <h3 style={{ fontSize: '1rem', fontWeight: 800, color: 'var(--dp-ink)', margin: '0 0 0.3125rem', letterSpacing: '-0.025em' }}>
             Ready to build your Image Pack?
           </h3>
-          <p style={{ fontSize: '0.8125rem', color: '#64748b', margin: 0, lineHeight: 1.5 }}>
+          <p style={{ fontSize: '0.8125rem', color: 'var(--dp-ink-muted)', margin: 0, lineHeight: 1.5 }}>
             Turn your audit insights into premium Amazon-ready visuals with Sellio Image Studio.
           </p>
         </div>
-        <Link to={`/dashboard/audits/${audit.id}/image-studio`} className="btn-primary glow-button" style={{ padding: '0.6875rem 1.25rem', fontSize: '0.875rem' }}>
+        <Link to={`/dashboard/audits/${audit.id}/image-studio`} className="dp-btn-primary" style={{ padding: '0.6875rem 1.25rem', fontSize: '0.875rem' }}>
           <Zap size={14} />
           Open Image Studio
         </Link>
@@ -1120,7 +1108,7 @@ function SubScoreBar({ label, score }: { label: string; score: number }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <span style={{ fontSize: '0.6875rem', fontWeight: 600, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+        <span style={{ fontSize: '0.6875rem', fontWeight: 600, color: 'var(--dp-ink-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
           {label}
         </span>
         <span style={{ fontSize: '0.75rem', fontWeight: 800, color }}>{score}</span>
@@ -1138,25 +1126,25 @@ function CompactFixTable({ rows }: { rows: CompactFixFirstRow[] }) {
       <div style={{ minWidth: 380 }}>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.4fr 1.4fr' }}>
           <div style={{ padding: '0.5rem 0.75rem', background: 'rgba(255,255,255,0.04)', borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
-            <span style={{ fontSize: '0.5625rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.07em' }}>Problem</span>
+            <span style={{ fontSize: '0.5625rem', fontWeight: 700, color: 'var(--dp-ink-muted)', textTransform: 'uppercase', letterSpacing: '0.07em' }}>Problem</span>
           </div>
           <div style={{ padding: '0.5rem 0.75rem', background: 'rgba(255,255,255,0.04)', borderBottom: '1px solid rgba(255,255,255,0.07)', borderLeft: '1px solid rgba(255,255,255,0.05)' }}>
-            <span style={{ fontSize: '0.5625rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.07em' }}>Why It Matters</span>
+            <span style={{ fontSize: '0.5625rem', fontWeight: 700, color: 'var(--dp-ink-muted)', textTransform: 'uppercase', letterSpacing: '0.07em' }}>Why It Matters</span>
           </div>
           <div style={{ padding: '0.5rem 0.75rem', background: 'rgba(255,255,255,0.04)', borderBottom: '1px solid rgba(255,255,255,0.07)', borderLeft: '1px solid rgba(255,255,255,0.05)' }}>
-            <span style={{ fontSize: '0.5625rem', fontWeight: 700, color: '#a3e635', textTransform: 'uppercase', letterSpacing: '0.07em' }}>Fix</span>
+            <span style={{ fontSize: '0.5625rem', fontWeight: 700, color: 'var(--dp-primary)', textTransform: 'uppercase', letterSpacing: '0.07em' }}>Fix</span>
           </div>
         </div>
         {rows.slice(0, 3).map((row, i) => (
-          <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr 1.4fr 1.4fr', borderTop: '1px solid rgba(255,255,255,0.05)', background: i % 2 === 0 ? 'transparent' : 'rgba(255,255,255,0.01)' }}>
+          <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr 1.4fr 1.4fr', borderTop: '1px solid rgba(196,188,255,0.25)', background: i % 2 === 0 ? 'transparent' : 'rgba(255,255,255,0.01)' }}>
             <div style={{ padding: '0.625rem 0.75rem' }}>
-              <p style={{ fontSize: '0.8125rem', fontWeight: 600, color: '#f1f5f9', margin: 0, lineHeight: 1.4 }}>{row.problem}</p>
+              <p style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--dp-ink)', margin: 0, lineHeight: 1.4 }}>{row.problem}</p>
             </div>
             <div style={{ padding: '0.625rem 0.75rem', borderLeft: '1px solid rgba(255,255,255,0.05)' }}>
-              <p style={{ fontSize: '0.8125rem', color: '#94a3b8', margin: 0, lineHeight: 1.4 }}>{row.why_it_matters}</p>
+              <p style={{ fontSize: '0.8125rem', color: 'var(--dp-ink-muted)', margin: 0, lineHeight: 1.4 }}>{row.why_it_matters}</p>
             </div>
             <div style={{ padding: '0.625rem 0.75rem', borderLeft: '1px solid rgba(255,255,255,0.05)' }}>
-              <p style={{ fontSize: '0.8125rem', color: '#a3e635', margin: 0, lineHeight: 1.4 }}>{row.fix}</p>
+              <p style={{ fontSize: '0.8125rem', color: 'var(--dp-primary)', margin: 0, lineHeight: 1.4 }}>{row.fix}</p>
             </div>
           </div>
         ))}
@@ -1177,14 +1165,14 @@ function CompactNextActionsList({ actions }: { actions: CompactNextAction[] }) {
           <span style={{
             width: 22, height: 22, borderRadius: '50%',
             background: 'rgba(163,230,53,0.1)', border: '1px solid rgba(163,230,53,0.22)',
-            color: '#a3e635', fontSize: '0.625rem', fontWeight: 800,
+            color: 'var(--dp-primary)', fontSize: '0.625rem', fontWeight: 800,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             flexShrink: 0, marginTop: 1,
           }}>
             {item.step}
           </span>
           <div style={{ flex: 1, minWidth: 0, display: 'flex', alignItems: 'flex-start', gap: '0.5rem', flexWrap: 'wrap' }}>
-            <p style={{ fontSize: '0.875rem', fontWeight: 600, color: '#f1f5f9', margin: 0, lineHeight: 1.45, flex: 1, minWidth: 0, wordBreak: 'break-word' }}>
+            <p style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--dp-ink)', margin: 0, lineHeight: 1.45, flex: 1, minWidth: 0, wordBreak: 'break-word' }}>
               {item.action}
             </p>
             <PriorityBadge priority={item.priority} />
@@ -1238,7 +1226,7 @@ function CompactAuditReport({
               display: 'inline-flex', alignItems: 'center', gap: '0.375rem',
               padding: '0.3125rem 0.6875rem', borderRadius: '0.375rem',
               background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)',
-              color: '#64748b', fontSize: '0.75rem', fontWeight: 600,
+              color: 'var(--dp-ink-muted)', fontSize: '0.75rem', fontWeight: 600,
               cursor: regenerating ? 'not-allowed' : 'pointer',
               fontFamily: 'inherit', opacity: regenerating ? 0.6 : 1, transition: 'all 0.15s',
             }}
@@ -1255,19 +1243,19 @@ function CompactAuditReport({
                 display: 'inline-flex', alignItems: 'center',
                 padding: '0.1875rem 0.625rem', borderRadius: '99px',
                 background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)',
-                fontSize: '0.6875rem', fontWeight: 700, color: '#94a3b8',
+                fontSize: '0.6875rem', fontWeight: 700, color: 'var(--dp-ink-muted)',
                 textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.625rem',
               }}>
                 {ss.status}
               </span>
             )}
             {ss.main_problem && (
-              <p style={{ fontSize: '0.9375rem', fontWeight: 600, color: '#f1f5f9', margin: '0 0 0.375rem', lineHeight: 1.4 }}>
+              <p style={{ fontSize: '0.9375rem', fontWeight: 600, color: 'var(--dp-ink)', margin: '0 0 0.375rem', lineHeight: 1.4 }}>
                 {ss.main_problem}
               </p>
             )}
             {ss.quick_win && (
-              <p style={{ fontSize: '0.875rem', color: '#a3e635', margin: 0, lineHeight: 1.5 }}>
+              <p style={{ fontSize: '0.875rem', color: 'var(--dp-primary)', margin: 0, lineHeight: 1.5 }}>
                 Quick win: {ss.quick_win}
               </p>
             )}
@@ -1277,7 +1265,7 @@ function CompactAuditReport({
         {ss.sub_scores && (
           <div style={{
             display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))',
-            gap: '0.875rem', paddingTop: '1rem', borderTop: '1px solid rgba(255,255,255,0.05)',
+            gap: '0.875rem', paddingTop: '1rem', borderTop: '1px solid rgba(196,188,255,0.25)',
           }}>
             {Object.entries(ss.sub_scores).map(([key, val]) => (
               <SubScoreBar key={key} label={SUB_SCORE_LABELS[key] ?? key} score={val as number} />
@@ -1324,7 +1312,7 @@ function CompactAuditReport({
                 <div style={{ borderRadius: '0.5rem', overflow: 'hidden', border: '1px solid rgba(249,115,22,0.14)' }}>
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', background: 'rgba(249,115,22,0.06)', borderBottom: '1px solid rgba(249,115,22,0.1)' }}>
                     <div style={{ padding: '0.375rem 0.625rem' }}><span style={{ fontSize: '0.5rem', fontWeight: 700, color: '#f97316', textTransform: 'uppercase', letterSpacing: '0.07em' }}>Buyer Concern</span></div>
-                    <div style={{ padding: '0.375rem 0.625rem', borderLeft: '1px solid rgba(249,115,22,0.09)' }}><span style={{ fontSize: '0.5rem', fontWeight: 700, color: '#a3e635', textTransform: 'uppercase', letterSpacing: '0.07em' }}>Fix</span></div>
+                    <div style={{ padding: '0.375rem 0.625rem', borderLeft: '1px solid rgba(249,115,22,0.09)' }}><span style={{ fontSize: '0.5rem', fontWeight: 700, color: 'var(--dp-primary)', textTransform: 'uppercase', letterSpacing: '0.07em' }}>Fix</span></div>
                   </div>
                   {buyer_and_competitor_insights.buyer_objections.slice(0, 3).map((item, i) => (
                     <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid rgba(249,115,22,0.07)', background: i % 2 === 0 ? 'transparent' : 'rgba(249,115,22,0.02)' }}>
@@ -1332,7 +1320,7 @@ function CompactAuditReport({
                         <p style={{ fontSize: '0.8125rem', color: '#f97316', margin: 0, lineHeight: 1.4 }}>{item.buyer_concern}</p>
                       </div>
                       <div style={{ padding: '0.5rem 0.625rem', borderLeft: '1px solid rgba(249,115,22,0.07)' }}>
-                        <p style={{ fontSize: '0.8125rem', color: '#a3e635', margin: 0, lineHeight: 1.4 }}>{item.fix}</p>
+                        <p style={{ fontSize: '0.8125rem', color: 'var(--dp-primary)', margin: 0, lineHeight: 1.4 }}>{item.fix}</p>
                       </div>
                     </div>
                   ))}
@@ -1348,7 +1336,7 @@ function CompactAuditReport({
                 <div style={{ borderRadius: '0.5rem', overflow: 'hidden', border: '1px solid rgba(96,165,250,0.14)' }}>
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', background: 'rgba(96,165,250,0.06)', borderBottom: '1px solid rgba(96,165,250,0.1)' }}>
                     <div style={{ padding: '0.375rem 0.625rem' }}><span style={{ fontSize: '0.5rem', fontWeight: 700, color: '#60a5fa', textTransform: 'uppercase', letterSpacing: '0.07em' }}>Competitor Wins In</span></div>
-                    <div style={{ padding: '0.375rem 0.625rem', borderLeft: '1px solid rgba(96,165,250,0.09)' }}><span style={{ fontSize: '0.5rem', fontWeight: 700, color: '#a3e635', textTransform: 'uppercase', letterSpacing: '0.07em' }}>Your Action</span></div>
+                    <div style={{ padding: '0.375rem 0.625rem', borderLeft: '1px solid rgba(96,165,250,0.09)' }}><span style={{ fontSize: '0.5rem', fontWeight: 700, color: 'var(--dp-primary)', textTransform: 'uppercase', letterSpacing: '0.07em' }}>Your Action</span></div>
                   </div>
                   {buyer_and_competitor_insights.competitor_actions.slice(0, 3).map((item, i) => (
                     <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid rgba(96,165,250,0.07)', background: i % 2 === 0 ? 'transparent' : 'rgba(96,165,250,0.02)' }}>
@@ -1356,7 +1344,7 @@ function CompactAuditReport({
                         <p style={{ fontSize: '0.8125rem', color: '#60a5fa', margin: 0, lineHeight: 1.4 }}>{item.competitor_wins_in}</p>
                       </div>
                       <div style={{ padding: '0.5rem 0.625rem', borderLeft: '1px solid rgba(96,165,250,0.07)' }}>
-                        <p style={{ fontSize: '0.8125rem', color: '#a3e635', margin: 0, lineHeight: 1.4 }}>{item.your_action}</p>
+                        <p style={{ fontSize: '0.8125rem', color: 'var(--dp-primary)', margin: 0, lineHeight: 1.4 }}>{item.your_action}</p>
                       </div>
                     </div>
                   ))}
@@ -1374,7 +1362,7 @@ function CompactAuditReport({
             <SL>Image Plan вЂ” {Math.min(imagePlan.length, 6)} images</SL>
             <Link
               to={`/dashboard/audits/${audit.id}/image-studio`}
-              className="btn-primary glow-button"
+              className="dp-btn-primary"
               style={{ padding: '0.4375rem 0.875rem', fontSize: '0.8125rem', flexShrink: 0 }}
             >
               <Layers size={13} />
@@ -1386,7 +1374,7 @@ function CompactAuditReport({
               <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.5fr 1.5fr 1fr', background: 'rgba(52,211,153,0.05)', borderBottom: '1px solid rgba(52,211,153,0.1)' }}>
                 <div style={{ padding: '0.5rem 0.75rem' }}><span style={{ fontSize: '0.5625rem', fontWeight: 700, color: '#34d399', textTransform: 'uppercase', letterSpacing: '0.07em' }}>Image</span></div>
                 <div style={{ padding: '0.5rem 0.75rem', borderLeft: '1px solid rgba(52,211,153,0.07)' }}><span style={{ fontSize: '0.5625rem', fontWeight: 700, color: '#34d399', textTransform: 'uppercase', letterSpacing: '0.07em' }}>Goal</span></div>
-                <div style={{ padding: '0.5rem 0.75rem', borderLeft: '1px solid rgba(52,211,153,0.07)' }}><span style={{ fontSize: '0.5625rem', fontWeight: 700, color: '#a3e635', textTransform: 'uppercase', letterSpacing: '0.07em' }}>Headline</span></div>
+                <div style={{ padding: '0.5rem 0.75rem', borderLeft: '1px solid rgba(52,211,153,0.07)' }}><span style={{ fontSize: '0.5625rem', fontWeight: 700, color: 'var(--dp-primary)', textTransform: 'uppercase', letterSpacing: '0.07em' }}>Headline</span></div>
                 <div style={{ padding: '0.5rem 0.75rem', borderLeft: '1px solid rgba(52,211,153,0.07)' }}><span style={{ fontSize: '0.5625rem', fontWeight: 700, color: '#34d399', textTransform: 'uppercase', letterSpacing: '0.07em' }}>Action</span></div>
               </div>
               {imagePlan.slice(0, 6).map((img, i) => (
@@ -1395,10 +1383,10 @@ function CompactAuditReport({
                     <p style={{ fontSize: '0.8125rem', fontWeight: 600, color: '#34d399', margin: 0, lineHeight: 1.4 }}>{img.image_type}</p>
                   </div>
                   <div style={{ padding: '0.625rem 0.75rem', borderLeft: '1px solid rgba(52,211,153,0.06)' }}>
-                    <p style={{ fontSize: '0.8125rem', color: '#94a3b8', margin: 0, lineHeight: 1.4 }}>{img.goal}</p>
+                    <p style={{ fontSize: '0.8125rem', color: 'var(--dp-ink-muted)', margin: 0, lineHeight: 1.4 }}>{img.goal}</p>
                   </div>
                   <div style={{ padding: '0.625rem 0.75rem', borderLeft: '1px solid rgba(52,211,153,0.06)' }}>
-                    <p style={{ fontSize: '0.8125rem', color: '#a3e635', margin: 0, lineHeight: 1.4, fontWeight: 600 }}>{img.headline ? `"${img.headline}"` : 'вЂ”'}</p>
+                    <p style={{ fontSize: '0.8125rem', color: 'var(--dp-primary)', margin: 0, lineHeight: 1.4, fontWeight: 600 }}>{img.headline ? `"${img.headline}"` : 'вЂ”'}</p>
                   </div>
                   <div style={{ padding: '0.625rem 0.75rem', borderLeft: '1px solid rgba(52,211,153,0.06)', display: 'flex', alignItems: 'flex-start' }}>
                     <CopyButton text={`${img.image_type}\nGoal: ${img.goal}\nHeadline: "${img.headline}"\nVisual: ${img.visual_direction}`} label="Copy" />
@@ -1425,7 +1413,7 @@ function CompactAuditReport({
             style={{
               display: 'flex', alignItems: 'center', gap: '0.5rem',
               background: 'none', border: 'none', cursor: 'pointer',
-              color: '#64748b', fontSize: '0.8125rem', fontWeight: 600,
+              color: 'var(--dp-ink-muted)', fontSize: '0.8125rem', fontWeight: 600,
               fontFamily: 'inherit', padding: 0, width: '100%', textAlign: 'left',
             }}
           >
@@ -1438,7 +1426,7 @@ function CompactAuditReport({
 
               {Array.isArray(advanced_details.keywords) && advanced_details.keywords.length > 0 && (
                 <div>
-                  <div style={{ fontSize: '0.6875rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.5rem', paddingBottom: '0.5rem', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                  <div style={{ fontSize: '0.6875rem', fontWeight: 700, color: 'var(--dp-ink-muted)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.5rem', paddingBottom: '0.5rem', borderBottom: '1px solid rgba(196,188,255,0.25)' }}>
                     Keywords
                   </div>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.375rem' }}>
@@ -1446,7 +1434,7 @@ function CompactAuditReport({
                       <span key={i} style={{
                         padding: '0.25rem 0.625rem', borderRadius: '99px',
                         background: 'rgba(163,230,53,0.08)', border: '1px solid rgba(163,230,53,0.15)',
-                        color: '#a3e635', fontSize: '0.8125rem', fontWeight: 600,
+                        color: 'var(--dp-primary)', fontSize: '0.8125rem', fontWeight: 600,
                       }}>
                         {kw}
                       </span>
@@ -1457,14 +1445,14 @@ function CompactAuditReport({
 
               {Array.isArray(advanced_details.a_plus_content_plan) && advanced_details.a_plus_content_plan.length > 0 && (
                 <div>
-                  <div style={{ fontSize: '0.6875rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.5rem', paddingBottom: '0.5rem', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                  <div style={{ fontSize: '0.6875rem', fontWeight: 700, color: 'var(--dp-ink-muted)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.5rem', paddingBottom: '0.5rem', borderBottom: '1px solid rgba(196,188,255,0.25)' }}>
                     A+ Content Plan
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
                     {advanced_details.a_plus_content_plan.map((item, i) => (
                       <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
-                        <span style={{ color: '#a3e635', fontSize: '0.75rem', fontWeight: 700, flexShrink: 0, marginTop: 2 }}>в†’</span>
-                        <p style={{ fontSize: '0.8125rem', color: '#94a3b8', margin: 0, lineHeight: 1.5 }}>{item}</p>
+                        <span style={{ color: 'var(--dp-primary)', fontSize: '0.75rem', fontWeight: 700, flexShrink: 0, marginTop: 2 }}>в†’</span>
+                        <p style={{ fontSize: '0.8125rem', color: 'var(--dp-ink-muted)', margin: 0, lineHeight: 1.5 }}>{item}</p>
                       </div>
                     ))}
                   </div>
@@ -1473,13 +1461,13 @@ function CompactAuditReport({
 
               {Array.isArray(advanced_details.detailed_notes) && advanced_details.detailed_notes.length > 0 && (
                 <div>
-                  <div style={{ fontSize: '0.6875rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.5rem', paddingBottom: '0.5rem', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                  <div style={{ fontSize: '0.6875rem', fontWeight: 700, color: 'var(--dp-ink-muted)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.5rem', paddingBottom: '0.5rem', borderBottom: '1px solid rgba(196,188,255,0.25)' }}>
                     Detailed Notes
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
                     {advanced_details.detailed_notes.map((note, i) => (
                       <p key={i} style={{
-                        fontSize: '0.8125rem', color: '#94a3b8', margin: 0, lineHeight: 1.55,
+                        fontSize: '0.8125rem', color: 'var(--dp-ink-muted)', margin: 0, lineHeight: 1.55,
                         paddingBottom: '0.375rem',
                         borderBottom: i < advanced_details.detailed_notes.length - 1 ? '1px solid rgba(255,255,255,0.04)' : 'none',
                       }}>
@@ -1509,14 +1497,14 @@ function CompactAuditReport({
           <Layers size={24} color="white" />
         </div>
         <div style={{ flex: 1, minWidth: 160 }}>
-          <h3 style={{ fontSize: '1rem', fontWeight: 800, color: '#f1f5f9', margin: '0 0 0.3125rem', letterSpacing: '-0.025em' }}>
+          <h3 style={{ fontSize: '1rem', fontWeight: 800, color: 'var(--dp-ink)', margin: '0 0 0.3125rem', letterSpacing: '-0.025em' }}>
             Ready to build your Image Pack?
           </h3>
-          <p style={{ fontSize: '0.8125rem', color: '#64748b', margin: 0, lineHeight: 1.5 }}>
+          <p style={{ fontSize: '0.8125rem', color: 'var(--dp-ink-muted)', margin: 0, lineHeight: 1.5 }}>
             Turn your audit insights into premium Amazon-ready visuals with Sellio Image Studio.
           </p>
         </div>
-        <Link to={`/dashboard/audits/${audit.id}/image-studio`} className="btn-primary glow-button" style={{ padding: '0.6875rem 1.25rem', fontSize: '0.875rem' }}>
+        <Link to={`/dashboard/audits/${audit.id}/image-studio`} className="dp-btn-primary" style={{ padding: '0.6875rem 1.25rem', fontSize: '0.875rem' }}>
           <Zap size={14} />
           Open Image Studio
         </Link>
@@ -1548,12 +1536,12 @@ function AuditReport({
             <span style={{ fontSize: '2.75rem', fontWeight: 900, color, letterSpacing: '-0.04em', lineHeight: 1 }}>
               {result.score}
             </span>
-            <span style={{ fontSize: '0.9375rem', color: '#475569', fontWeight: 600 }}>/100</span>
+            <span style={{ fontSize: '0.9375rem', color: 'var(--dp-ink-muted)', fontWeight: 600 }}>/100</span>
             <span style={{ fontSize: '1.0625rem', fontWeight: 700, color, marginLeft: '0.25rem', letterSpacing: '-0.02em' }}>
               вЂ” {result.score_label}
             </span>
           </div>
-          <p style={{ fontSize: '0.875rem', color: '#64748b', margin: '0 0 0.875rem', lineHeight: 1.65 }}>
+          <p style={{ fontSize: '0.875rem', color: 'var(--dp-ink-muted)', margin: '0 0 0.875rem', lineHeight: 1.65 }}>
             {result.score >= 80
               ? 'Your listing is performing well вЂ” copy, trust signals, and conversion are in strong shape.'
               : result.score >= 60
@@ -1565,7 +1553,7 @@ function AuditReport({
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
             {audit.submitted_at && (
-              <span style={{ fontSize: '0.75rem', color: '#475569' }}>
+              <span style={{ fontSize: '0.75rem', color: 'var(--dp-ink-muted)' }}>
                 Analyzed {formatDate(audit.submitted_at)}
               </span>
             )}
@@ -1577,7 +1565,7 @@ function AuditReport({
                 display: 'inline-flex', alignItems: 'center', gap: '0.375rem',
                 padding: '0.3125rem 0.6875rem', borderRadius: '0.375rem',
                 background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)',
-                color: '#64748b', fontSize: '0.75rem', fontWeight: 600,
+                color: 'var(--dp-ink-muted)', fontSize: '0.75rem', fontWeight: 600,
                 cursor: regenerating ? 'not-allowed' : 'pointer',
                 fontFamily: 'inherit', opacity: regenerating ? 0.6 : 1, transition: 'all 0.15s',
               }}
@@ -1600,7 +1588,7 @@ function AuditReport({
         {result.conversion_diagnosis && (
           <div style={{
             marginTop: '1.25rem', paddingTop: '1.125rem',
-            borderTop: '1px solid rgba(255,255,255,0.05)',
+            borderTop: '1px solid rgba(196,188,255,0.25)',
             display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(155px, 1fr))', gap: '0.625rem',
           }}>
             {DIAG.map(d => (
@@ -1614,7 +1602,7 @@ function AuditReport({
                     {d.label}
                   </span>
                 </div>
-                <p style={{ fontSize: '0.8rem', color: '#94a3b8', margin: 0, lineHeight: 1.55 }}>
+                <p style={{ fontSize: '0.8rem', color: 'var(--dp-ink-muted)', margin: 0, lineHeight: 1.55 }}>
                   {result.conversion_diagnosis[d.key]}
                 </p>
               </div>
@@ -1652,16 +1640,16 @@ function AuditReport({
                   </span>
                 </div>
                 <div style={{ padding: '0.875rem 1rem' }}>
-                  <p style={{ fontSize: '0.875rem', color: '#f1f5f9', fontWeight: 600, margin: '0 0 0.5rem', lineHeight: 1.5 }}>
+                  <p style={{ fontSize: '0.875rem', color: 'var(--dp-ink)', fontWeight: 600, margin: '0 0 0.5rem', lineHeight: 1.5 }}>
                     {wp.issue}
                   </p>
                   {wp.impact && (
-                    <p style={{ fontSize: '0.8125rem', color: '#94a3b8', margin: '0 0 0.4375rem', lineHeight: 1.5 }}>
+                    <p style={{ fontSize: '0.8125rem', color: 'var(--dp-ink-muted)', margin: '0 0 0.4375rem', lineHeight: 1.5 }}>
                       <span style={{ color: '#fbbf24', fontWeight: 600 }}>Why it hurts: </span>{wp.impact}
                     </p>
                   )}
                   {wp.fix && (
-                    <p style={{ fontSize: '0.8125rem', color: '#a3e635', margin: 0, lineHeight: 1.5 }}>
+                    <p style={{ fontSize: '0.8125rem', color: 'var(--dp-primary)', margin: 0, lineHeight: 1.5 }}>
                       <span style={{ fontWeight: 600 }}>Fix: </span>{wp.fix}
                     </p>
                   )}
@@ -1680,16 +1668,16 @@ function AuditReport({
           {result.improved_title && (
             <div style={{ marginBottom: '1.375rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.75rem', marginBottom: '0.625rem' }}>
-                <span style={{ fontSize: '0.8125rem', fontWeight: 700, color: '#94a3b8' }}>Improved Title</span>
+                <span style={{ fontSize: '0.8125rem', fontWeight: 700, color: 'var(--dp-ink-muted)' }}>Improved Title</span>
                 <CopyButton text={result.improved_title} label="Copy Title" />
               </div>
               <div style={{ padding: '1rem 1.125rem', borderRadius: '0.625rem', background: 'rgba(163,230,53,0.04)', border: '1px solid rgba(163,230,53,0.12)' }}>
-                <p style={{ fontSize: '0.9375rem', color: '#f1f5f9', lineHeight: 1.65, margin: 0, fontWeight: 500 }}>
+                <p style={{ fontSize: '0.9375rem', color: 'var(--dp-ink)', lineHeight: 1.65, margin: 0, fontWeight: 500 }}>
                   {result.improved_title}
                 </p>
               </div>
               {result.title_analysis?.strategy && (
-                <p style={{ fontSize: '0.8125rem', color: '#64748b', margin: '0.5rem 0 0', lineHeight: 1.55 }}>
+                <p style={{ fontSize: '0.8125rem', color: 'var(--dp-ink-muted)', margin: '0.5rem 0 0', lineHeight: 1.55 }}>
                   {result.title_analysis.strategy}
                 </p>
               )}
@@ -1699,7 +1687,7 @@ function AuditReport({
           {Array.isArray(result.improved_bullets) && result.improved_bullets.length > 0 && (
             <div style={{ marginBottom: '1.375rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.75rem', marginBottom: '0.625rem' }}>
-                <span style={{ fontSize: '0.8125rem', fontWeight: 700, color: '#94a3b8' }}>Improved Bullet Points</span>
+                <span style={{ fontSize: '0.8125rem', fontWeight: 700, color: 'var(--dp-ink-muted)' }}>Improved Bullet Points</span>
                 <CopyButton text={result.improved_bullets.join('\n')} label="Copy All" />
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4375rem' }}>
@@ -1707,12 +1695,12 @@ function AuditReport({
                   <div key={i} style={{
                     display: 'flex', alignItems: 'flex-start', gap: '0.75rem',
                     padding: '0.75rem 0.875rem', borderRadius: '0.5rem',
-                    background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)',
+                    background: 'rgba(83,58,253,0.03)', border: '1px solid rgba(196,188,255,0.35)',
                   }}>
                     <span style={{
                       width: 22, height: 22, borderRadius: '50%',
                       background: 'rgba(163,230,53,0.1)', border: '1px solid rgba(163,230,53,0.2)',
-                      color: '#a3e635', fontSize: '0.6875rem', fontWeight: 800,
+                      color: 'var(--dp-primary)', fontSize: '0.6875rem', fontWeight: 800,
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
                       flexShrink: 0, marginTop: 1,
                     }}>
@@ -1731,16 +1719,16 @@ function AuditReport({
           {result.improved_description && (
             <div>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.75rem', marginBottom: '0.625rem' }}>
-                <span style={{ fontSize: '0.8125rem', fontWeight: 700, color: '#94a3b8' }}>Improved Description</span>
+                <span style={{ fontSize: '0.8125rem', fontWeight: 700, color: 'var(--dp-ink-muted)' }}>Improved Description</span>
                 <CopyButton text={result.improved_description} label="Copy Description" />
               </div>
-              <div style={{ padding: '1rem 1.125rem', borderRadius: '0.625rem', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)' }}>
+              <div style={{ padding: '1rem 1.125rem', borderRadius: '0.625rem', background: 'rgba(83,58,253,0.03)', border: '1px solid rgba(196,188,255,0.35)' }}>
                 <p style={{ fontSize: '0.875rem', color: '#cbd5e1', lineHeight: 1.8, margin: 0, whiteSpace: 'pre-wrap' }}>
                   {result.improved_description}
                 </p>
               </div>
               {result.description_analysis?.improvement_strategy && (
-                <p style={{ fontSize: '0.8125rem', color: '#64748b', margin: '0.5rem 0 0', lineHeight: 1.55 }}>
+                <p style={{ fontSize: '0.8125rem', color: 'var(--dp-ink-muted)', margin: '0.5rem 0 0', lineHeight: 1.55 }}>
                   {result.description_analysis.improvement_strategy}
                 </p>
               )}
@@ -1758,17 +1746,17 @@ function AuditReport({
               <div key={i} style={{
                 display: 'flex', alignItems: 'flex-start', gap: '0.75rem',
                 padding: '0.625rem 0.875rem', borderRadius: '0.5rem',
-                background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)',
+                background: 'rgba(83,58,253,0.03)', border: '1px solid rgba(196,188,255,0.35)',
               }}>
                 <span style={{
                   padding: '0.25rem 0.75rem', borderRadius: '99px',
                   background: 'rgba(163,230,53,0.08)', border: '1px solid rgba(163,230,53,0.18)',
-                  color: '#a3e635', fontSize: '0.8125rem', fontWeight: 700,
+                  color: 'var(--dp-primary)', fontSize: '0.8125rem', fontWeight: 700,
                   flexShrink: 0, whiteSpace: 'nowrap',
                 }}>
                   {kw.keyword}
                 </span>
-                <span style={{ fontSize: '0.8125rem', color: '#94a3b8', lineHeight: 1.55, paddingTop: 3 }}>
+                <span style={{ fontSize: '0.8125rem', color: 'var(--dp-ink-muted)', lineHeight: 1.55, paddingTop: 3 }}>
                   {kw.reason}
                 </span>
               </div>
@@ -1785,18 +1773,18 @@ function AuditReport({
             {result.review_insights.map((ri, i) => (
               <div key={i} style={{
                 padding: '1rem', borderRadius: '0.625rem',
-                background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)',
+                background: 'rgba(83,58,253,0.03)', border: '1px solid rgba(196,188,255,0.35)',
               }}>
-                <p style={{ fontSize: '0.875rem', fontWeight: 700, color: '#f1f5f9', margin: '0 0 0.4375rem', lineHeight: 1.45 }}>
+                <p style={{ fontSize: '0.875rem', fontWeight: 700, color: 'var(--dp-ink)', margin: '0 0 0.4375rem', lineHeight: 1.45 }}>
                   {ri.signal}
                 </p>
                 {ri.what_it_means && (
-                  <p style={{ fontSize: '0.8125rem', color: '#94a3b8', margin: '0 0 0.375rem', lineHeight: 1.55 }}>
-                    <span style={{ color: '#64748b', fontWeight: 600 }}>What it means: </span>{ri.what_it_means}
+                  <p style={{ fontSize: '0.8125rem', color: 'var(--dp-ink-muted)', margin: '0 0 0.375rem', lineHeight: 1.55 }}>
+                    <span style={{ color: 'var(--dp-ink-muted)', fontWeight: 600 }}>What it means: </span>{ri.what_it_means}
                   </p>
                 )}
                 {ri.listing_fix && (
-                  <p style={{ fontSize: '0.8125rem', color: '#a3e635', margin: 0, lineHeight: 1.55 }}>
+                  <p style={{ fontSize: '0.8125rem', color: 'var(--dp-primary)', margin: 0, lineHeight: 1.55 }}>
                     <span style={{ fontWeight: 600 }}>Listing fix: </span>{ri.listing_fix}
                   </p>
                 )}
@@ -1815,7 +1803,7 @@ function AuditReport({
               <div key={i} style={{
                 display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
                 gap: '0.875rem 1.5rem', padding: '1rem', borderRadius: '0.625rem',
-                background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)',
+                background: 'rgba(83,58,253,0.03)', border: '1px solid rgba(196,188,255,0.35)',
               }}>
                 <div>
                   <div style={{ fontSize: '0.5875rem', fontWeight: 700, color: '#f97316', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.3125rem' }}>
@@ -1824,7 +1812,7 @@ function AuditReport({
                   <p style={{ fontSize: '0.8125rem', color: '#cbd5e1', margin: 0, lineHeight: 1.55 }}>{bo.objection}</p>
                 </div>
                 <div>
-                  <div style={{ fontSize: '0.5875rem', fontWeight: 700, color: '#a3e635', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.3125rem' }}>
+                  <div style={{ fontSize: '0.5875rem', fontWeight: 700, color: 'var(--dp-primary)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.3125rem' }}>
                     How to Address
                   </div>
                   <p style={{ fontSize: '0.8125rem', color: '#cbd5e1', margin: 0, lineHeight: 1.55 }}>{bo.how_to_address}</p>
@@ -1846,13 +1834,13 @@ function AuditReport({
                   Image Pack Plan вЂ” {result.image_pack_plan.length} images
                 </span>
               </div>
-              <p style={{ fontSize: '0.8125rem', color: '#475569', margin: '0 0 0.875rem', lineHeight: 1.5 }}>
+              <p style={{ fontSize: '0.8125rem', color: 'var(--dp-ink-muted)', margin: '0 0 0.875rem', lineHeight: 1.5 }}>
                 AI-generated creative briefs. Hand these directly to a designer or use Sellio Image Studio.
               </p>
             </div>
             <Link
               to={`/dashboard/audits/${audit.id}/image-studio`}
-              className="btn-primary glow-button"
+              className="dp-btn-primary"
               style={{ padding: '0.5rem 0.875rem', fontSize: '0.8125rem', flexShrink: 0 }}
             >
               <Layers size={13} />
@@ -1862,7 +1850,7 @@ function AuditReport({
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.875rem' }}>
             {result.image_pack_plan.map((img, i) => (
               <div key={i} style={{
-                borderRadius: '0.75rem', background: 'rgba(255,255,255,0.02)',
+                borderRadius: '0.75rem', background: 'rgba(83,58,253,0.03)',
                 border: '1px solid rgba(52,211,153,0.12)', overflow: 'hidden',
               }}>
                 <div style={{
@@ -1878,7 +1866,7 @@ function AuditReport({
                   }}>
                     {i + 1}
                   </span>
-                  <span style={{ fontSize: '1rem', fontWeight: 700, color: '#f1f5f9', letterSpacing: '-0.02em' }}>
+                  <span style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--dp-ink)', letterSpacing: '-0.02em' }}>
                     {img.image_type}
                   </span>
                 </div>
@@ -1889,13 +1877,13 @@ function AuditReport({
                   {img.goal && (
                     <div>
                       <div style={{ fontSize: '0.5625rem', fontWeight: 700, color: '#34d399', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.375rem', opacity: 0.7 }}>Goal</div>
-                      <p style={{ fontSize: '0.875rem', color: '#94a3b8', margin: 0, lineHeight: 1.6 }}>{img.goal}</p>
+                      <p style={{ fontSize: '0.875rem', color: 'var(--dp-ink-muted)', margin: 0, lineHeight: 1.6 }}>{img.goal}</p>
                     </div>
                   )}
                   {img.headline && (
                     <div>
-                      <div style={{ fontSize: '0.5625rem', fontWeight: 700, color: '#a3e635', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.375rem', opacity: 0.7 }}>Headline</div>
-                      <p style={{ fontSize: '0.9375rem', color: '#a3e635', margin: 0, lineHeight: 1.5, fontWeight: 700, letterSpacing: '-0.01em', wordBreak: 'break-word' }}>
+                      <div style={{ fontSize: '0.5625rem', fontWeight: 700, color: 'var(--dp-primary)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.375rem', opacity: 0.7 }}>Headline</div>
+                      <p style={{ fontSize: '0.9375rem', color: 'var(--dp-primary)', margin: 0, lineHeight: 1.5, fontWeight: 700, letterSpacing: '-0.01em', wordBreak: 'break-word' }}>
                         "{img.headline}"
                       </p>
                     </div>
@@ -1903,7 +1891,7 @@ function AuditReport({
                   {img.visual_direction && (
                     <div>
                       <div style={{ fontSize: '0.5625rem', fontWeight: 700, color: '#34d399', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.375rem', opacity: 0.7 }}>Visual Direction</div>
-                      <p style={{ fontSize: '0.8125rem', color: '#94a3b8', margin: 0, lineHeight: 1.6 }}>{img.visual_direction}</p>
+                      <p style={{ fontSize: '0.8125rem', color: 'var(--dp-ink-muted)', margin: 0, lineHeight: 1.6 }}>{img.visual_direction}</p>
                     </div>
                   )}
                   {Array.isArray(img.text_elements) && img.text_elements.length > 0 && (
@@ -1935,17 +1923,17 @@ function AuditReport({
             {result.a_plus_content_ideas.map((idea, i) => (
               <div key={i} style={{
                 padding: '1rem', borderRadius: '0.625rem',
-                background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)',
+                background: 'rgba(83,58,253,0.03)', border: '1px solid rgba(196,188,255,0.35)',
               }}>
-                <div style={{ fontSize: '0.5875rem', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.375rem' }}>
+                <div style={{ fontSize: '0.5875rem', fontWeight: 700, color: 'var(--dp-ink-muted)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.375rem' }}>
                   {idea.section}
                 </div>
                 {idea.purpose && (
-                  <p style={{ fontSize: '0.75rem', color: '#a3e635', margin: '0 0 0.5rem', fontWeight: 600 }}>
+                  <p style={{ fontSize: '0.75rem', color: 'var(--dp-primary)', margin: '0 0 0.5rem', fontWeight: 600 }}>
                     {idea.purpose}
                   </p>
                 )}
-                <p style={{ fontSize: '0.8125rem', color: '#94a3b8', margin: 0, lineHeight: 1.55 }}>
+                <p style={{ fontSize: '0.8125rem', color: 'var(--dp-ink-muted)', margin: 0, lineHeight: 1.55 }}>
                   {idea.content_idea}
                 </p>
               </div>
@@ -1968,7 +1956,7 @@ function AuditReport({
                 <span style={{
                   width: 22, height: 22, borderRadius: '50%',
                   background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.09)',
-                  color: '#475569', fontSize: '0.625rem', fontWeight: 800,
+                  color: 'var(--dp-ink-muted)', fontSize: '0.625rem', fontWeight: 800,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   flexShrink: 0, marginTop: 1,
                 }}>
@@ -1976,13 +1964,13 @@ function AuditReport({
                 </span>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem', marginBottom: '0.25rem', flexWrap: 'wrap' }}>
-                    <p style={{ fontSize: '0.875rem', fontWeight: 600, color: '#f1f5f9', margin: 0, lineHeight: 1.45, wordBreak: 'break-word' }}>
+                    <p style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--dp-ink)', margin: 0, lineHeight: 1.45, wordBreak: 'break-word' }}>
                       {item.task}
                     </p>
                     <PriorityBadge priority={item.priority} />
                   </div>
                   {item.reason && (
-                    <p style={{ fontSize: '0.8125rem', color: '#64748b', margin: 0, lineHeight: 1.55 }}>
+                    <p style={{ fontSize: '0.8125rem', color: 'var(--dp-ink-muted)', margin: 0, lineHeight: 1.55 }}>
                       {item.reason}
                     </p>
                   )}
@@ -2008,14 +1996,14 @@ function AuditReport({
           <Layers size={24} color="white" />
         </div>
         <div style={{ flex: 1, minWidth: 160 }}>
-          <h3 style={{ fontSize: '1rem', fontWeight: 800, color: '#f1f5f9', margin: '0 0 0.3125rem', letterSpacing: '-0.025em' }}>
+          <h3 style={{ fontSize: '1rem', fontWeight: 800, color: 'var(--dp-ink)', margin: '0 0 0.3125rem', letterSpacing: '-0.025em' }}>
             Ready to build your Image Pack?
           </h3>
-          <p style={{ fontSize: '0.8125rem', color: '#64748b', margin: 0, lineHeight: 1.5 }}>
+          <p style={{ fontSize: '0.8125rem', color: 'var(--dp-ink-muted)', margin: 0, lineHeight: 1.5 }}>
             Turn your audit insights into premium Amazon-ready visuals with Sellio Image Studio.
           </p>
         </div>
-        <Link to={`/dashboard/audits/${audit.id}/image-studio`} className="btn-primary glow-button" style={{ padding: '0.6875rem 1.25rem', fontSize: '0.875rem' }}>
+        <Link to={`/dashboard/audits/${audit.id}/image-studio`} className="dp-btn-primary" style={{ padding: '0.6875rem 1.25rem', fontSize: '0.875rem' }}>
           <Zap size={14} />
           Open Image Studio
         </Link>
@@ -2086,7 +2074,7 @@ export default function AuditDetailPage() {
       to="/dashboard/audits"
       style={{
         display: 'inline-flex', alignItems: 'center', gap: '0.375rem',
-        fontSize: '0.875rem', color: '#64748b', textDecoration: 'none',
+        fontSize: '0.875rem', color: 'var(--dp-ink-muted)', textDecoration: 'none',
         marginBottom: '1.5rem', transition: 'color 0.15s',
       }}
       onMouseEnter={e => (e.currentTarget.style.color = '#94a3b8')}
@@ -2101,7 +2089,7 @@ export default function AuditDetailPage() {
     return (
       <div style={{ maxWidth: 700 }}>
         {backLink}
-        <div style={{ textAlign: 'center', padding: '3rem 0', fontSize: '0.875rem', color: '#475569' }}>
+        <div style={{ textAlign: 'center', padding: '3rem 0', fontSize: '0.875rem', color: 'var(--dp-ink-muted)' }}>
           Loading audit...
         </div>
       </div>
@@ -2138,7 +2126,7 @@ export default function AuditDetailPage() {
         <div style={{ marginBottom: '1.5rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.625rem', flexWrap: 'wrap' }}>
             <StatusBadge status={audit.status} />
-            <span style={{ fontSize: '0.75rem', color: '#475569' }}>
+            <span style={{ fontSize: '0.75rem', color: 'var(--dp-ink-muted)' }}>
               {audit.entry_type === 'amazon_url' ? 'Amazon URL' : 'Product Photos'}
               {' В· '}
               {formatDate(audit.created_at)}
@@ -2146,12 +2134,12 @@ export default function AuditDetailPage() {
           </div>
           <h1 style={{
             fontSize: 'clamp(1.25rem, 3vw, 1.625rem)',
-            fontWeight: 900, color: '#f1f5f9', letterSpacing: '-0.03em', margin: 0,
+            fontWeight: 900, color: 'var(--dp-ink)', letterSpacing: '-0.03em', margin: 0,
           }}>
             {audit.product_name || 'Untitled Audit'}
           </h1>
           {audit.category && (
-            <p style={{ fontSize: '0.875rem', color: '#64748b', margin: '0.375rem 0 0' }}>{audit.category}</p>
+            <p style={{ fontSize: '0.875rem', color: 'var(--dp-ink-muted)', margin: '0.375rem 0 0' }}>{audit.category}</p>
           )}
           {audit.amazon_url && (
             <a
@@ -2160,7 +2148,7 @@ export default function AuditDetailPage() {
               rel="noopener noreferrer"
               style={{
                 display: 'inline-flex', alignItems: 'center', gap: '0.3125rem',
-                fontSize: '0.8125rem', color: '#475569', textDecoration: 'none',
+                fontSize: '0.8125rem', color: 'var(--dp-ink-muted)', textDecoration: 'none',
                 marginTop: '0.375rem', transition: 'color 0.15s',
               }}
               onMouseEnter={e => (e.currentTarget.style.color = '#a3e635')}
@@ -2192,10 +2180,10 @@ export default function AuditDetailPage() {
             animation: 'spin 1s linear infinite',
             margin: '0 auto 1.5rem',
           }} />
-          <h3 style={{ fontSize: '1.0625rem', fontWeight: 700, color: '#f1f5f9', margin: '0 0 0.625rem', letterSpacing: '-0.02em' }}>
+          <h3 style={{ fontSize: '1.0625rem', fontWeight: 700, color: 'var(--dp-ink)', margin: '0 0 0.625rem', letterSpacing: '-0.02em' }}>
             Analyzing your Amazon listing...
           </h3>
-          <p style={{ fontSize: '0.875rem', color: '#64748b', margin: 0, lineHeight: 1.7 }}>
+          <p style={{ fontSize: '0.875rem', color: 'var(--dp-ink-muted)', margin: 0, lineHeight: 1.7 }}>
             Reviewing copy, buyer signals, SEO gaps, and visual opportunities.
             <br />
             This page will update automatically.
@@ -2217,7 +2205,7 @@ export default function AuditDetailPage() {
                 <div style={{ fontSize: '0.875rem', fontWeight: 700, color: '#f87171', marginBottom: '0.25rem' }}>
                   Analysis could not be completed.
                 </div>
-                <p style={{ fontSize: '0.8125rem', color: '#94a3b8', margin: 0, lineHeight: 1.6 }}>
+                <p style={{ fontSize: '0.8125rem', color: 'var(--dp-ink-muted)', margin: 0, lineHeight: 1.6 }}>
                   Gemini is temporarily busy or encountered an error. Please try again in a moment.
                 </p>
               </div>
@@ -2237,13 +2225,13 @@ export default function AuditDetailPage() {
               type="button"
               onClick={handleSubmit}
               disabled={submitting}
-              className="btn-primary glow-button"
+              className="dp-btn-primary"
               style={{ padding: '0.625rem 1.125rem', fontSize: '0.875rem', opacity: submitting ? 0.7 : 1 }}
             >
               <RefreshCw size={14} style={{ animation: submitting ? 'spin 1s linear infinite' : 'none' }} />
               {submitting ? 'Analyzing...' : 'Try Again'}
             </button>
-            <Link to="/dashboard/new-audit" className="btn-secondary" style={{ padding: '0.625rem 1.125rem', fontSize: '0.875rem' }}>
+            <Link to="/dashboard/new-audit" className="dp-btn-ghost" style={{ padding: '0.625rem 1.125rem', fontSize: '0.875rem' }}>
               New Audit
             </Link>
           </div>
@@ -2257,10 +2245,10 @@ export default function AuditDetailPage() {
           background: 'rgba(163,230,53,0.04)', border: '1px solid rgba(163,230,53,0.12)',
           marginBottom: '1.5rem',
         }}>
-          <div style={{ fontSize: '0.8125rem', fontWeight: 700, color: '#a3e635', marginBottom: '0.25rem' }}>
+          <div style={{ fontSize: '0.8125rem', fontWeight: 700, color: 'var(--dp-primary)', marginBottom: '0.25rem' }}>
             Ready for analysis
           </div>
-          <p style={{ fontSize: '0.8125rem', color: '#64748b', lineHeight: 1.6, margin: '0 0 0.875rem' }}>
+          <p style={{ fontSize: '0.8125rem', color: 'var(--dp-ink-muted)', lineHeight: 1.6, margin: '0 0 0.875rem' }}>
             Your listing details are saved. Run the AI audit to get your full report.
           </p>
           {submitError && (
@@ -2276,7 +2264,7 @@ export default function AuditDetailPage() {
             type="button"
             onClick={handleSubmit}
             disabled={submitting}
-            className="btn-primary glow-button"
+            className="dp-btn-primary"
             style={{ padding: '0.625rem 1.125rem', fontSize: '0.875rem', opacity: submitting ? 0.7 : 1 }}
           >
             {submitting ? (
@@ -2344,7 +2332,7 @@ export default function AuditDetailPage() {
             onClick={handleRegenerate}
             disabled={regenerating}
             style={{
-              background: 'transparent', border: 'none', color: '#a3e635',
+              background: 'transparent', border: 'none', color: 'var(--dp-primary)',
               fontSize: '0.875rem', fontWeight: 600, cursor: 'pointer',
               fontFamily: 'inherit', textDecoration: 'underline',
             }}
@@ -2357,11 +2345,11 @@ export default function AuditDetailPage() {
       {/* Bottom CTAs for non-completed */}
       {!isCompleted && (
         <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', marginTop: '1.5rem' }}>
-          <Link to="/dashboard" className="btn-secondary" style={{ padding: '0.6875rem 1.25rem', fontSize: '0.875rem' }}>
+          <Link to="/dashboard" className="dp-btn-ghost" style={{ padding: '0.6875rem 1.25rem', fontSize: '0.875rem' }}>
             <ArrowLeft size={14} />
             Dashboard
           </Link>
-          <Link to="/dashboard/new-audit" className="btn-primary glow-button" style={{ padding: '0.6875rem 1.25rem', fontSize: '0.875rem' }}>
+          <Link to="/dashboard/new-audit" className="dp-btn-primary" style={{ padding: '0.6875rem 1.25rem', fontSize: '0.875rem' }}>
             <Zap size={14} />
             New Audit
           </Link>

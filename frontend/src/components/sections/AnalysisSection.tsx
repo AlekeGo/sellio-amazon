@@ -1,4 +1,4 @@
-import { Type, List, AlignLeft, Key, Star, Layout, ImageIcon, BarChart2, Camera } from 'lucide-react'
+﻿import { Type, List, AlignLeft, Key, Star, Layout, ImageIcon, BarChart2, Camera } from 'lucide-react'
 import AnimatedSection from '../ui/AnimatedSection'
 
 const analyses = [
@@ -6,7 +6,7 @@ const analyses = [
     icon: Type,
     title: 'Title',
     body: 'Keyword density, character count, hook effectiveness, and mobile preview scoring.',
-    color: '#a3e635',
+    color: 'var(--dp-primary)',
   },
   {
     icon: List,
@@ -48,7 +48,7 @@ const analyses = [
     icon: BarChart2,
     title: 'Infographic Slides',
     body: 'Information density, readability scoring, and benefit communication clarity.',
-    color: '#a3e635',
+    color: 'var(--dp-primary)',
   },
   {
     icon: Camera,
@@ -78,7 +78,7 @@ export default function AnalysisSection() {
             Sellio looks at{' '}
             <span className="gradient-text">everything.</span>
           </h2>
-          <p className="text-lg max-w-2xl mx-auto leading-relaxed" style={{ color: '#94a3b8' }}>
+          <p className="text-lg max-w-2xl mx-auto leading-relaxed" style={{ color: 'var(--dp-ink-muted)' }}>
             From your title to your thumbnail, separate AI models examine each element with Amazon conversion data as the benchmark.
           </p>
         </AnimatedSection>
@@ -99,8 +99,8 @@ export default function AnalysisSection() {
                     <Icon size={16} style={{ color: item.color }} />
                   </div>
                   <div>
-                    <h3 className="text-sm font-bold mb-1.5" style={{ color: '#f1f5f9' }}>{item.title}</h3>
-                    <p className="text-xs leading-relaxed" style={{ color: '#64748b' }}>{item.body}</p>
+                    <h3 className="text-sm font-bold mb-1.5" style={{ color: 'var(--dp-ink)' }}>{item.title}</h3>
+                    <p className="text-xs leading-relaxed" style={{ color: 'var(--dp-ink-muted)' }}>{item.body}</p>
                   </div>
                 </div>
               </AnimatedSection>

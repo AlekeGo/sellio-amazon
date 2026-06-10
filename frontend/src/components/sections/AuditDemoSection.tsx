@@ -1,4 +1,4 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { TrendingUp, AlertTriangle, CheckCircle, ArrowRight, ChevronDown } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -28,7 +28,7 @@ const subScores = [
 const severityColors: Record<string, { color: string; bg: string; border: string }> = {
   high: { color: '#f87171', bg: 'rgba(248,113,113,0.08)', border: 'rgba(248,113,113,0.2)' },
   medium: { color: '#fbbf24', bg: 'rgba(251,191,36,0.08)', border: 'rgba(251,191,36,0.2)' },
-  low: { color: '#94a3b8', bg: 'rgba(148,163,184,0.06)', border: 'rgba(148,163,184,0.15)' },
+  low: { color: 'var(--dp-ink-muted)', bg: 'rgba(148,163,184,0.06)', border: 'rgba(148,163,184,0.15)' },
   ok: { color: '#4ade80', bg: 'rgba(74,222,128,0.08)', border: 'rgba(74,222,128,0.2)' },
 }
 
@@ -42,8 +42,8 @@ function ScoreGauge({ score, potential }: { score: number; potential: number }) 
     <div className="flex flex-col items-center">
       <div className="relative">
         <svg width="144" height="144" viewBox="0 0 144 144">
-          <circle cx="72" cy="72" r={r} fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="10" />
-          <circle cx="72" cy="72" r={r} fill="none" stroke="rgba(163,230,53,0.1)" strokeWidth="10"
+          <circle cx="72" cy="72" r={r} fill="none" stroke="rgba(83,58,253,0.05)" strokeWidth="10" />
+          <circle cx="72" cy="72" r={r} fill="none" stroke="rgba(83,58,253,0.1)" strokeWidth="10"
             strokeLinecap="round" strokeDasharray={circ} strokeDashoffset={potOffset}
             transform="rotate(-90 72 72)" />
           <circle cx="72" cy="72" r={r} fill="none" stroke="url(#gaugeGrad)" strokeWidth="10"
@@ -59,10 +59,10 @@ function ScoreGauge({ score, potential }: { score: number; potential: number }) 
           <text x="72" y="82" textAnchor="middle" fill="#64748b" fontSize="11">/100</text>
         </svg>
       </div>
-      <p className="text-xs mt-1" style={{ color: '#64748b' }}>Listing Score</p>
+      <p className="text-xs mt-1" style={{ color: 'var(--dp-ink-muted)' }}>Listing Score</p>
       <div className="flex items-center gap-1 mt-1">
-        <TrendingUp size={12} style={{ color: '#a3e635' }} />
-        <span className="text-xs font-semibold" style={{ color: '#a3e635' }}>Potential: {potential}/100</span>
+        <TrendingUp size={12} style={{ color: 'var(--dp-primary)' }} />
+        <span className="text-xs font-semibold" style={{ color: 'var(--dp-primary)' }}>Potential: {potential}/100</span>
       </div>
     </div>
   )
@@ -72,7 +72,7 @@ function TabOverview() {
   return (
     <div className="grid md:grid-cols-2 gap-6">
       <div>
-        <h4 className="text-xs font-semibold uppercase tracking-widest mb-4" style={{ color: '#64748b' }}>Issues Found</h4>
+        <h4 className="text-xs font-semibold uppercase tracking-widest mb-4" style={{ color: 'var(--dp-ink-muted)' }}>Issues Found</h4>
         <div className="space-y-2.5">
           {issues.map((issue) => {
             const { color, bg, border } = severityColors[issue.severity]
@@ -93,12 +93,12 @@ function TabOverview() {
       </div>
 
       <div>
-        <h4 className="text-xs font-semibold uppercase tracking-widest mb-4" style={{ color: '#64748b' }}>Score Breakdown</h4>
+        <h4 className="text-xs font-semibold uppercase tracking-widest mb-4" style={{ color: 'var(--dp-ink-muted)' }}>Score Breakdown</h4>
         <div className="space-y-3.5">
           {subScores.map(s => (
             <div key={s.label}>
               <div className="flex items-center justify-between mb-1.5">
-                <span className="text-xs" style={{ color: '#94a3b8' }}>{s.label}</span>
+                <span className="text-xs" style={{ color: 'var(--dp-ink-muted)' }}>{s.label}</span>
                 <span className="text-xs font-bold tabular-nums" style={{ color: s.color }}>{s.value}</span>
               </div>
               <div className="score-bar-track">
@@ -126,7 +126,7 @@ function TabTitle() {
           <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: '#f87171' }}>Current Title</span>
           <span className="text-xs px-2 py-0.5 rounded-full font-bold" style={{ background: 'rgba(248,113,113,0.12)', color: '#f87171' }}>44/100</span>
         </div>
-        <p className="text-sm leading-relaxed" style={{ color: '#94a3b8' }}>
+        <p className="text-sm leading-relaxed" style={{ color: 'var(--dp-ink-muted)' }}>
           "Vitamin C Serum for Face - Anti-Aging Serum with Vitamin E"
         </p>
         <div className="mt-3 flex flex-wrap gap-2">
@@ -136,17 +136,17 @@ function TabTitle() {
         </div>
       </div>
 
-      <div className="p-4 rounded-xl" style={{ background: 'rgba(163,230,53,0.05)', border: '1px solid rgba(163,230,53,0.18)' }}>
+      <div className="p-4 rounded-xl" style={{ background: 'rgba(83,58,253,0.05)', border: '1px solid rgba(83,58,253,0.18)' }}>
         <div className="flex items-center gap-2 mb-2">
-          <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: '#a3e635' }}>AI-Upgraded Title</span>
-          <span className="text-xs px-2 py-0.5 rounded-full font-bold" style={{ background: 'rgba(163,230,53,0.1)', color: '#a3e635' }}>94/100</span>
+          <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: 'var(--dp-primary)' }}>AI-Upgraded Title</span>
+          <span className="text-xs px-2 py-0.5 rounded-full font-bold" style={{ background: 'rgba(83,58,253,0.1)', color: 'var(--dp-primary)' }}>94/100</span>
         </div>
-        <p className="text-sm leading-relaxed font-medium" style={{ color: '#f1f5f9' }}>
+        <p className="text-sm leading-relaxed font-medium" style={{ color: 'var(--dp-ink)' }}>
           "ProGlow Vitamin C Serum 30ml | 20% L-Ascorbic Acid + Hyaluronic Acid | Brightening Anti-Aging Face Serum for Glowing Skin | Dermatologist-Tested, Fragrance-Free"
         </p>
         <div className="mt-3 flex flex-wrap gap-2">
           {['Category anchor added', 'Size included', '5 high-volume keywords', 'Trust signals'].map(tag => (
-            <span key={tag} className="text-xs px-2 py-1 rounded-md" style={{ background: 'rgba(163,230,53,0.08)', color: '#a3e635' }}>✓ {tag}</span>
+            <span key={tag} className="text-xs px-2 py-1 rounded-md" style={{ background: 'rgba(83,58,253,0.08)', color: 'var(--dp-primary)' }}>✓ {tag}</span>
           ))}
         </div>
       </div>
@@ -170,15 +170,15 @@ function TabBullets() {
   return (
     <div className="space-y-5">
       {bullets.map((b, i) => (
-        <div key={i} className="rounded-xl overflow-hidden" style={{ border: '1px solid rgba(255,255,255,0.07)' }}>
+        <div key={i} className="rounded-xl overflow-hidden" style={{ border: '1px solid rgba(196,188,255,0.40)' }}>
           <div className="p-4" style={{ background: 'rgba(248,113,113,0.06)' }}>
             <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: '#f87171' }}>Before</span>
-            <p className="text-sm mt-2 leading-relaxed" style={{ color: '#94a3b8' }}>• {b.before}</p>
+            <p className="text-sm mt-2 leading-relaxed" style={{ color: 'var(--dp-ink-muted)' }}>• {b.before}</p>
           </div>
-          <div className="p-4" style={{ background: 'rgba(163,230,53,0.05)' }}>
-            <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: '#a3e635' }}>After</span>
-            <p className="text-sm mt-2 leading-relaxed font-medium" style={{ color: '#f1f5f9' }}>• {b.after}</p>
-            <p className="text-xs mt-2" style={{ color: '#64748b' }}>↑ {b.impact}</p>
+          <div className="p-4" style={{ background: 'rgba(83,58,253,0.05)' }}>
+            <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: 'var(--dp-primary)' }}>After</span>
+            <p className="text-sm mt-2 leading-relaxed font-medium" style={{ color: 'var(--dp-ink)' }}>• {b.after}</p>
+            <p className="text-xs mt-2" style={{ color: 'var(--dp-ink-muted)' }}>↑ {b.impact}</p>
           </div>
         </div>
       ))}
@@ -197,16 +197,16 @@ function TabKeywords() {
   ]
   return (
     <div>
-      <p className="text-xs mb-4" style={{ color: '#64748b' }}>
+      <p className="text-xs mb-4" style={{ color: 'var(--dp-ink-muted)' }}>
         12 high-volume buyer search terms currently missing from your listing. Adding these could capture an estimated +9,800 additional searches/month.
       </p>
       <div className="space-y-2">
         {keywords.map(k => (
-          <div key={k.kw} className="flex items-center gap-3 p-3 rounded-xl" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}>
+          <div key={k.kw} className="flex items-center gap-3 p-3 rounded-xl" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(196,188,255,0.40)' }}>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium truncate" style={{ color: '#f1f5f9' }}>{k.kw}</p>
+              <p className="text-sm font-medium truncate" style={{ color: 'var(--dp-ink)' }}>{k.kw}</p>
             </div>
-            <span className="text-xs shrink-0 font-semibold tabular-nums" style={{ color: '#a3e635' }}>{k.volume}</span>
+            <span className="text-xs shrink-0 font-semibold tabular-nums" style={{ color: 'var(--dp-primary)' }}>{k.volume}</span>
             <span className="text-xs shrink-0 px-2 py-0.5 rounded-full"
               style={{
                 color: k.opportunity === 'Very High' ? '#4ade80' : '#fbbf24',
@@ -227,13 +227,13 @@ function TabReviews() {
     <div className="space-y-4">
       <div className="p-4 rounded-xl" style={{ background: 'rgba(251,191,36,0.06)', border: '1px solid rgba(251,191,36,0.15)' }}>
         <h4 className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: '#fbbf24' }}>Top Buyer Objection Detected</h4>
-        <p className="text-sm font-medium mb-1" style={{ color: '#f1f5f9' }}>"Results took longer than expected"</p>
-        <p className="text-xs leading-relaxed" style={{ color: '#64748b' }}>Found in 23% of 1-3 star reviews. Buyers expected results within a few days — the listing sets no clear timeline.</p>
+        <p className="text-sm font-medium mb-1" style={{ color: 'var(--dp-ink)' }}>"Results took longer than expected"</p>
+        <p className="text-xs leading-relaxed" style={{ color: 'var(--dp-ink-muted)' }}>Found in 23% of 1-3 star reviews. Buyers expected results within a few days — the listing sets no clear timeline.</p>
       </div>
 
-      <div className="p-4 rounded-xl" style={{ background: 'rgba(163,230,53,0.05)', border: '1px solid rgba(163,230,53,0.18)' }}>
-        <h4 className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: '#a3e635' }}>Recommended Fix</h4>
-        <p className="text-sm leading-relaxed" style={{ color: '#f1f5f9' }}>Add "visible results in 14 days" to bullet 2 and "noticeable improvement within 2–4 weeks of daily use" to the description. Set expectations before the objection forms.</p>
+      <div className="p-4 rounded-xl" style={{ background: 'rgba(83,58,253,0.05)', border: '1px solid rgba(83,58,253,0.18)' }}>
+        <h4 className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: 'var(--dp-primary)' }}>Recommended Fix</h4>
+        <p className="text-sm leading-relaxed" style={{ color: 'var(--dp-ink)' }}>Add "visible results in 14 days" to bullet 2 and "noticeable improvement within 2–4 weeks of daily use" to the description. Set expectations before the objection forms.</p>
       </div>
 
       <div className="grid grid-cols-3 gap-3">
@@ -242,9 +242,9 @@ function TabReviews() {
           { label: 'Recurring Objections', value: '4', color: '#fbbf24' },
           { label: 'Unmet Needs', value: '2', color: '#f87171' },
         ].map(s => (
-          <div key={s.label} className="p-3 rounded-xl text-center" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}>
+          <div key={s.label} className="p-3 rounded-xl text-center" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(196,188,255,0.40)' }}>
             <p className="text-xl font-black mb-1" style={{ color: s.color }}>{s.value}</p>
-            <p className="text-xs" style={{ color: '#64748b' }}>{s.label}</p>
+            <p className="text-xs" style={{ color: 'var(--dp-ink-muted)' }}>{s.label}</p>
           </div>
         ))}
       </div>
@@ -282,7 +282,7 @@ export default function AuditDemoSection() {
             See what a real{' '}
             <span className="gradient-text">Sellio audit</span> looks like.
           </h2>
-          <p className="text-lg max-w-2xl mx-auto leading-relaxed" style={{ color: '#94a3b8' }}>
+          <p className="text-lg max-w-2xl mx-auto leading-relaxed" style={{ color: 'var(--dp-ink-muted)' }}>
             A real sample for a skincare product — the kind of insight your listing could be getting today.
           </p>
         </AnimatedSection>
@@ -298,7 +298,7 @@ export default function AuditDemoSection() {
           >
             <div
               className="px-6 py-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
-              style={{ borderBottom: '1px solid rgba(255,255,255,0.07)', background: 'rgba(255,255,255,0.025)' }}
+              style={{ borderBottom: '1px solid rgba(196,188,255,0.40)', background: '#ffffff' }}
             >
               <div className="flex items-center gap-3">
                 <div className="flex gap-1.5">
@@ -306,11 +306,11 @@ export default function AuditDemoSection() {
                   <div className="w-3 h-3 rounded-full" style={{ background: '#fbbf24' }} />
                   <div className="w-3 h-3 rounded-full" style={{ background: '#4ade80' }} />
                 </div>
-                <span className="text-sm font-medium" style={{ color: '#94a3b8' }}>Audit Report — ProGlow Vitamin C Serum 30ml</span>
+                <span className="text-sm font-medium" style={{ color: 'var(--dp-ink-muted)' }}>Audit Report — ProGlow Vitamin C Serum 30ml</span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="text-xs px-2.5 py-1 rounded-full font-medium"
-                  style={{ background: 'rgba(163,230,53,0.09)', color: '#a3e635', border: '1px solid rgba(163,230,53,0.22)' }}>
+                  style={{ background: 'rgba(83,58,253,0.09)', color: 'var(--dp-primary)', border: '1px solid rgba(83,58,253,0.22)' }}>
                   ● Audit Complete
                 </span>
               </div>
@@ -319,12 +319,12 @@ export default function AuditDemoSection() {
             <div className="audit-grid">
               <div
                 className="p-6 flex flex-col items-center justify-start gap-6"
-                style={{ borderRight: '1px solid rgba(255,255,255,0.05)' }}
+                style={{ borderRight: '1px solid rgba(83,58,253,0.05)' }}
               >
                 <ScoreGauge score={67} potential={94} />
 
                 <div className="w-full">
-                  <p className="text-xs font-semibold uppercase tracking-widest mb-3 text-center" style={{ color: '#475569' }}>Jump to</p>
+                  <p className="text-xs font-semibold uppercase tracking-widest mb-3 text-center" style={{ color: 'var(--dp-ink-muted)' }}>Jump to</p>
                   <div className="space-y-1">
                     {TABS.map(tab => (
                       <button
@@ -332,9 +332,9 @@ export default function AuditDemoSection() {
                         onClick={() => setActiveTab(tab)}
                         className="w-full text-left px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all flex items-center justify-between"
                         style={{
-                          background: activeTab === tab ? 'rgba(163,230,53,0.09)' : 'transparent',
-                          color: activeTab === tab ? '#a3e635' : '#64748b',
-                          border: activeTab === tab ? '1px solid rgba(163,230,53,0.22)' : '1px solid transparent',
+                          background: activeTab === tab ? 'rgba(83,58,253,0.09)' : 'transparent',
+                          color: activeTab === tab ? 'var(--dp-primary)' : '#64748b',
+                          border: activeTab === tab ? '1px solid rgba(83,58,253,0.22)' : '1px solid transparent',
                           cursor: 'pointer',
                         }}
                       >
@@ -355,7 +355,7 @@ export default function AuditDemoSection() {
                     exit={{ opacity: 0, y: -10 }}
                     transition={{ duration: 0.25, ease: 'easeOut' }}
                   >
-                    <h3 className="text-lg font-bold mb-5" style={{ color: '#f1f5f9' }}>{activeTab}</h3>
+                    <h3 className="text-lg font-bold mb-5" style={{ color: 'var(--dp-ink)' }}>{activeTab}</h3>
                     {tabContent[activeTab]}
                   </motion.div>
                 </AnimatePresence>
@@ -368,7 +368,7 @@ export default function AuditDemoSection() {
           <Link to="/dashboard/new-audit" className="btn-primary">
             Run Your Free Audit <ArrowRight size={16} />
           </Link>
-          <p className="text-xs mt-3" style={{ color: '#475569' }}>No credit card · No Amazon API needed · Results in seconds</p>
+          <p className="text-xs mt-3" style={{ color: 'var(--dp-ink-muted)' }}>No credit card · No Amazon API needed · Results in seconds</p>
         </AnimatedSection>
       </div>
     </section>

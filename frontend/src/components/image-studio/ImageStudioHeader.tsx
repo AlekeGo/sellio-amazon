@@ -1,10 +1,10 @@
-import { ArrowLeft, LayoutDashboard } from 'lucide-react'
+﻿import { ArrowLeft, LayoutDashboard } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import StatusBadge from '../ui/StatusBadge'
 import type { AuditDetail, AuditResult } from '../../types/audit'
 
 function sc(score: number) {
-  return score >= 80 ? '#a3e635' : score >= 60 ? '#fbbf24' : '#f97316'
+  return score >= 80 ? 'var(--dp-primary)' : score >= 60 ? '#fbbf24' : '#f97316'
 }
 
 interface Props {
@@ -20,7 +20,7 @@ export default function ImageStudioHeader({ audit, result }: Props) {
   return (
     <div style={{
       borderRadius: '1rem', padding: '1.5rem 1.75rem',
-      background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.07)',
+      background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(196,188,255,0.40)',
       marginBottom: '1.5rem', position: 'relative', overflow: 'hidden',
     }}>
       {result && (
@@ -36,13 +36,13 @@ export default function ImageStudioHeader({ audit, result }: Props) {
           to="/dashboard"
           style={{
             display: 'inline-flex', alignItems: 'center', gap: '0.3125rem',
-            fontSize: '0.8125rem', color: '#475569', textDecoration: 'none',
+            fontSize: '0.8125rem', color: 'var(--dp-ink-muted)', textDecoration: 'none',
             padding: '0.3125rem 0.625rem', borderRadius: '0.375rem',
-            background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)',
+            background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(196,188,255,0.40)',
             transition: 'all 0.15s',
           }}
           onMouseEnter={e => { e.currentTarget.style.color = '#94a3b8'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.12)' }}
-          onMouseLeave={e => { e.currentTarget.style.color = '#475569'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.07)' }}
+          onMouseLeave={e => { e.currentTarget.style.color = '#475569'; e.currentTarget.style.borderColor = 'rgba(196,188,255,0.40)' }}
         >
           <LayoutDashboard size={12} />
           Dashboard
@@ -52,13 +52,13 @@ export default function ImageStudioHeader({ audit, result }: Props) {
           to="/dashboard/audits"
           style={{
             display: 'inline-flex', alignItems: 'center', gap: '0.3125rem',
-            fontSize: '0.8125rem', color: '#475569', textDecoration: 'none',
+            fontSize: '0.8125rem', color: 'var(--dp-ink-muted)', textDecoration: 'none',
             padding: '0.3125rem 0.625rem', borderRadius: '0.375rem',
-            background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)',
+            background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(196,188,255,0.40)',
             transition: 'all 0.15s',
           }}
           onMouseEnter={e => { e.currentTarget.style.color = '#94a3b8'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.12)' }}
-          onMouseLeave={e => { e.currentTarget.style.color = '#475569'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.07)' }}
+          onMouseLeave={e => { e.currentTarget.style.color = '#475569'; e.currentTarget.style.borderColor = 'rgba(196,188,255,0.40)' }}
         >
           Audits
         </Link>
@@ -67,13 +67,13 @@ export default function ImageStudioHeader({ audit, result }: Props) {
           to={`/dashboard/audits/${audit.id}`}
           style={{
             display: 'inline-flex', alignItems: 'center', gap: '0.3125rem',
-            fontSize: '0.8125rem', color: '#475569', textDecoration: 'none',
+            fontSize: '0.8125rem', color: 'var(--dp-ink-muted)', textDecoration: 'none',
             padding: '0.3125rem 0.625rem', borderRadius: '0.375rem',
-            background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)',
+            background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(196,188,255,0.40)',
             transition: 'all 0.15s',
           }}
           onMouseEnter={e => { e.currentTarget.style.color = '#94a3b8'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.12)' }}
-          onMouseLeave={e => { e.currentTarget.style.color = '#475569'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.07)' }}
+          onMouseLeave={e => { e.currentTarget.style.color = '#475569'; e.currentTarget.style.borderColor = 'rgba(196,188,255,0.40)' }}
         >
           <ArrowLeft size={12} />
           Report
@@ -90,12 +90,12 @@ export default function ImageStudioHeader({ audit, result }: Props) {
           </div>
           <h1 style={{
             fontSize: 'clamp(1.25rem, 3vw, 1.625rem)', fontWeight: 900,
-            color: '#f1f5f9', letterSpacing: '-0.03em', margin: '0 0 0.25rem', lineHeight: 1.2,
+            color: 'var(--dp-ink)', letterSpacing: '-0.03em', margin: '0 0 0.25rem', lineHeight: 1.2,
           }}>
             {audit.product_name || 'Untitled Audit'}
           </h1>
           {audit.category && (
-            <p style={{ fontSize: '0.875rem', color: '#64748b', margin: '0 0 0.75rem', lineHeight: 1.4 }}>
+            <p style={{ fontSize: '0.875rem', color: 'var(--dp-ink-muted)', margin: '0 0 0.75rem', lineHeight: 1.4 }}>
               {audit.category}
             </p>
           )}
@@ -117,7 +117,7 @@ export default function ImageStudioHeader({ audit, result }: Props) {
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.375rem', flexShrink: 0 }}>
             <div style={{ position: 'relative', width: 72, height: 72 }}>
               <svg width={72} height={72} style={{ transform: 'rotate(-90deg)' }}>
-                <circle cx={36} cy={36} r={r} fill="none" stroke="rgba(255,255,255,0.07)" strokeWidth={7} />
+                <circle cx={36} cy={36} r={r} fill="none" stroke="rgba(196,188,255,0.40)" strokeWidth={7} />
                 <circle
                   cx={36} cy={36} r={r} fill="none"
                   stroke={color} strokeWidth={7}

@@ -144,9 +144,9 @@ const inputStyle: React.CSSProperties = {
   borderRadius: '0.5rem',
   padding: '0.625rem 0.875rem',
   fontSize: '0.875rem',
-  background: 'rgba(255,255,255,0.04)',
-  border: '1px solid rgba(255,255,255,0.1)',
-  color: '#f1f5f9',
+  background: '#F6F9FC',
+  border: '1.5px solid rgba(196,188,255,0.55)',
+  color: 'var(--dp-ink)',
   outline: 'none',
   boxSizing: 'border-box',
   fontFamily: 'inherit',
@@ -163,7 +163,7 @@ const labelStyle: React.CSSProperties = {
   display: 'block',
   fontSize: '0.6875rem',
   fontWeight: 600,
-  color: '#64748b',
+  color: 'var(--dp-ink-muted)',
   marginBottom: '0.375rem',
   textTransform: 'uppercase',
   letterSpacing: '0.06em',
@@ -171,7 +171,7 @@ const labelStyle: React.CSSProperties = {
 
 const helperStyle: React.CSSProperties = {
   fontSize: '0.75rem',
-  color: '#475569',
+  color: 'var(--dp-ink-muted)',
   marginTop: '0.375rem',
   lineHeight: 1.5,
 }
@@ -180,8 +180,8 @@ const backBtnStyle: React.CSSProperties = {
   padding: '0.5625rem 1rem',
   borderRadius: '0.5rem',
   background: 'transparent',
-  border: '1px solid rgba(255,255,255,0.1)',
-  color: '#94a3b8',
+  border: '1.5px solid rgba(196,188,255,0.55)',
+  color: 'var(--dp-ink-muted)',
   fontSize: '0.875rem',
   fontWeight: 500,
   cursor: 'pointer',
@@ -277,12 +277,12 @@ function FileUploadZone({
         onDragLeave={() => setDragOver(false)}
         onDrop={e => { e.preventDefault(); setDragOver(false); addFiles(e.dataTransfer.files) }}
         style={{
-          border: `1.5px dashed ${dragOver ? 'rgba(163,230,53,0.5)' : 'rgba(255,255,255,0.1)'}`,
+          border: `1.5px dashed ${dragOver ? 'rgba(83,58,253,0.5)' : 'rgba(255,255,255,0.1)'}`,
           borderRadius: '0.875rem',
           padding: '2rem 1.5rem',
           textAlign: 'center',
           cursor: 'pointer',
-          background: dragOver ? 'rgba(163,230,53,0.04)' : 'rgba(255,255,255,0.02)',
+          background: dragOver ? 'rgba(83,58,253,0.05)' : 'rgba(255,255,255,0.02)',
           transition: 'all 0.2s ease',
           outline: 'none',
         }}
@@ -301,11 +301,11 @@ function FileUploadZone({
         >
           <Upload size={20} color="#475569" />
         </div>
-        <p style={{ fontSize: '0.875rem', color: '#64748b', margin: '0 0 0.25rem' }}>
+        <p style={{ fontSize: '0.875rem', color: 'var(--dp-ink-muted)', margin: '0 0 0.25rem' }}>
           Drop images here, or{' '}
-          <span style={{ color: '#a3e635' }}>click to browse</span>
+          <span style={{ color: 'var(--dp-primary)' }}>click to browse</span>
         </p>
-        <p style={{ fontSize: '0.75rem', color: '#334155', margin: 0 }}>
+        <p style={{ fontSize: '0.75rem', color: 'var(--dp-ink-muted)', margin: 0 }}>
           JPG, PNG, WebP — up to 10 images
         </p>
         <input
@@ -357,7 +357,7 @@ function FileUploadZone({
                   background: 'rgba(0,0,0,0.75)',
                   border: 'none',
                   cursor: 'pointer',
-                  color: '#f1f5f9',
+                  color: 'var(--dp-ink)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -401,10 +401,10 @@ function InfoNote({ children }: { children: React.ReactNode }) {
       style={{
         padding: '0.75rem 1rem',
         borderRadius: '0.625rem',
-        background: 'rgba(163,230,53,0.04)',
-        border: '1px solid rgba(163,230,53,0.1)',
+        background: 'rgba(83,58,253,0.05)',
+        border: '1px solid rgba(83,58,253,0.1)',
         fontSize: '0.8125rem',
-        color: '#64748b',
+        color: 'var(--dp-ink-muted)',
         lineHeight: 1.6,
       }}
     >
@@ -461,9 +461,9 @@ function CollapsibleSection({
               style={{
                 fontSize: '0.5875rem',
                 fontWeight: 700,
-                color: '#a3e635',
-                background: 'rgba(163,230,53,0.08)',
-                border: '1px solid rgba(163,230,53,0.18)',
+                color: 'var(--dp-primary)',
+                background: 'rgba(83,58,253,0.08)',
+                border: '1px solid rgba(83,58,253,0.18)',
                 padding: '0.125rem 0.4375rem',
                 borderRadius: '99px',
                 textTransform: 'uppercase',
@@ -505,17 +505,17 @@ function SellerPersonaPicker({ value, onChange }: { value: string; onChange: (v:
   return (
     <div>
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem', marginBottom: '0.4375rem' }}>
-        <span style={{ fontSize: '0.875rem', fontWeight: 700, color: '#f1f5f9' }}>Seller Persona Mode</span>
+        <span style={{ fontSize: '0.875rem', fontWeight: 700, color: 'var(--dp-ink)' }}>Seller Persona Mode</span>
         <span style={{
-          fontSize: '0.5625rem', fontWeight: 700, color: '#a3e635',
-          background: 'rgba(163,230,53,0.08)', border: '1px solid rgba(163,230,53,0.2)',
+          fontSize: '0.5625rem', fontWeight: 700, color: 'var(--dp-primary)',
+          background: 'rgba(83,58,253,0.08)', border: '1px solid rgba(83,58,253,0.2)',
           padding: '0.125rem 0.4375rem', borderRadius: '99px',
           textTransform: 'uppercase', letterSpacing: '0.06em',
         }}>
           AI Powered
         </span>
       </div>
-      <p style={{ fontSize: '0.75rem', color: '#64748b', margin: '0 0 0.875rem', lineHeight: 1.55 }}>
+      <p style={{ fontSize: '0.75rem', color: 'var(--dp-ink-muted)', margin: '0 0 0.875rem', lineHeight: 1.55 }}>
         Choose how Sellio should position and rewrite your listing.
       </p>
       <div style={{
@@ -533,8 +533,8 @@ function SellerPersonaPicker({ value, onChange }: { value: string; onChange: (v:
               style={{
                 borderRadius: '0.625rem',
                 padding: '0.625rem 0.75rem',
-                background: selected ? 'rgba(163,230,53,0.07)' : 'rgba(255,255,255,0.025)',
-                border: `1px solid ${selected ? 'rgba(163,230,53,0.35)' : 'rgba(255,255,255,0.08)'}`,
+                background: selected ? 'rgba(83,58,253,0.07)' : 'rgba(255,255,255,0.025)',
+                border: `1px solid ${selected ? 'rgba(83,58,253,0.35)' : 'rgba(196,188,255,0.40)'}`,
                 cursor: 'pointer',
                 textAlign: 'left',
                 fontFamily: 'inherit',
@@ -544,7 +544,7 @@ function SellerPersonaPicker({ value, onChange }: { value: string; onChange: (v:
             >
               <div style={{
                 fontSize: '0.8125rem', fontWeight: 700,
-                color: selected ? '#a3e635' : '#cbd5e1',
+                color: selected ? 'var(--dp-primary)' : 'var(--dp-ink-muted)',
                 marginBottom: '0.1875rem',
               }}>
                 {opt.label}
@@ -584,7 +584,7 @@ function CompetitorSection({
       onChange={e => onUpdate(i, field, e.target.value)}
       placeholder={placeholder}
       style={inputStyle}
-      onFocus={e => (e.currentTarget.style.border = '1px solid rgba(163,230,53,0.4)')}
+      onFocus={e => (e.currentTarget.style.border = '1px solid rgba(83,58,253,0.4)')}
       onBlur={e => (e.currentTarget.style.border = '1px solid rgba(255,255,255,0.1)')}
     />
   )
@@ -596,7 +596,7 @@ function CompetitorSection({
       placeholder={placeholder}
       rows={rows}
       style={textareaStyle}
-      onFocus={e => (e.currentTarget.style.border = '1px solid rgba(163,230,53,0.4)')}
+      onFocus={e => (e.currentTarget.style.border = '1px solid rgba(83,58,253,0.4)')}
       onBlur={e => (e.currentTarget.style.border = '1px solid rgba(255,255,255,0.1)')}
     />
   )
@@ -619,8 +619,8 @@ function CompetitorSection({
             Competitor Analysis Lite
           </span>
           <span style={{
-            fontSize: '0.5875rem', fontWeight: 700, color: '#a3e635',
-            background: 'rgba(163,230,53,0.08)', border: '1px solid rgba(163,230,53,0.18)',
+            fontSize: '0.5875rem', fontWeight: 700, color: 'var(--dp-primary)',
+            background: 'rgba(83,58,253,0.08)', border: '1px solid rgba(83,58,253,0.18)',
             padding: '0.125rem 0.4375rem', borderRadius: '99px',
             textTransform: 'uppercase', letterSpacing: '0.05em',
           }}>
@@ -651,8 +651,8 @@ function CompetitorSection({
 
           {competitors.map((_comp, i) => (
             <div key={i} style={{
-              borderRadius: '0.625rem', border: '1px solid rgba(255,255,255,0.08)',
-              overflow: 'hidden', background: 'rgba(255,255,255,0.02)',
+              borderRadius: '0.625rem', border: '1px solid rgba(196,188,255,0.40)',
+              overflow: 'hidden', background: 'rgba(83,58,253,0.03)',
             }}>
               <div style={{
                 display: 'flex', alignItems: 'center', justifyContent: 'space-between',
@@ -667,7 +667,7 @@ function CompetitorSection({
                   onClick={() => onRemove(i)}
                   style={{
                     background: 'none', border: 'none', cursor: 'pointer',
-                    color: '#475569', padding: '0.125rem', display: 'flex', alignItems: 'center',
+                    color: 'var(--dp-ink-muted)', padding: '0.125rem', display: 'flex', alignItems: 'center',
                   }}
                 >
                   <X size={14} />
@@ -676,16 +676,16 @@ function CompetitorSection({
               <div style={{ padding: '0.75rem', display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '0.625rem' }}>
                   <div>
-                    <label style={labelStyle}>Name <span style={{ color: '#334155', fontWeight: 400 }}>(optional)</span></label>
+                    <label style={labelStyle}>Name <span style={{ color: 'var(--dp-ink-muted)', fontWeight: 400 }}>(optional)</span></label>
                     {compInp(i, 'name', 'e.g. BrandX Premium Bamboo Board')}
                   </div>
                   <div>
-                    <label style={labelStyle}>Amazon URL <span style={{ color: '#334155', fontWeight: 400 }}>(optional)</span></label>
+                    <label style={labelStyle}>Amazon URL <span style={{ color: 'var(--dp-ink-muted)', fontWeight: 400 }}>(optional)</span></label>
                     {compInp(i, 'url', 'https://amazon.com/dp/...')}
                   </div>
                 </div>
                 <div>
-                  <label style={labelStyle}>Listing Title <span style={{ color: '#334155', fontWeight: 400 }}>(optional)</span></label>
+                  <label style={labelStyle}>Listing Title <span style={{ color: 'var(--dp-ink-muted)', fontWeight: 400 }}>(optional)</span></label>
                   {compInp(i, 'title', 'Their product title...')}
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(90px, 1fr))', gap: '0.625rem' }}>
@@ -703,15 +703,15 @@ function CompetitorSection({
                   </div>
                 </div>
                 <div>
-                  <label style={labelStyle}>Bullets / About This Item <span style={{ color: '#334155', fontWeight: 400 }}>(optional)</span></label>
+                  <label style={labelStyle}>Bullets / About This Item <span style={{ color: 'var(--dp-ink-muted)', fontWeight: 400 }}>(optional)</span></label>
                   {compTxta(i, 'bullets', 'Paste their key bullet points...', 3)}
                 </div>
                 <div>
-                  <label style={labelStyle}>Image Notes <span style={{ color: '#334155', fontWeight: 400 }}>(optional)</span></label>
+                  <label style={labelStyle}>Image Notes <span style={{ color: 'var(--dp-ink-muted)', fontWeight: 400 }}>(optional)</span></label>
                   {compTxta(i, 'image_notes', 'What do their main images show?', 2)}
                 </div>
                 <div>
-                  <label style={labelStyle}>Strengths / Notes <span style={{ color: '#334155', fontWeight: 400 }}>(optional)</span></label>
+                  <label style={labelStyle}>Strengths / Notes <span style={{ color: 'var(--dp-ink-muted)', fontWeight: 400 }}>(optional)</span></label>
                   {compTxta(i, 'strengths', 'What do they do well? What stands out?', 2)}
                 </div>
               </div>
@@ -739,14 +739,14 @@ function CompetitorSection({
 
           {competitors.length > 0 && (
             <div>
-              <label style={labelStyle}>General Competitor Notes <span style={{ color: '#334155', fontWeight: 400 }}>(optional)</span></label>
+              <label style={labelStyle}>General Competitor Notes <span style={{ color: 'var(--dp-ink-muted)', fontWeight: 400 }}>(optional)</span></label>
               <textarea
                 value={competitorNotes}
                 onChange={e => onNotesChange(e.target.value)}
                 placeholder="Any additional observations about the competitive landscape..."
                 rows={2}
                 style={textareaStyle}
-                onFocus={e => (e.currentTarget.style.border = '1px solid rgba(163,230,53,0.4)')}
+                onFocus={e => (e.currentTarget.style.border = '1px solid rgba(83,58,253,0.4)')}
                 onBlur={e => (e.currentTarget.style.border = '1px solid rgba(255,255,255,0.1)')}
               />
             </div>
@@ -837,7 +837,7 @@ export default function NewAuditPage() {
     setForm(f => ({ ...f, [field]: e.target.value }))
 
   const focusOn = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) =>
-    (e.currentTarget.style.border = '1px solid rgba(163,230,53,0.4)')
+    (e.currentTarget.style.border = '1px solid rgba(83,58,253,0.4)')
   const blurOff = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     (e.currentTarget.style.border = '1px solid rgba(255,255,255,0.1)')
 
@@ -869,7 +869,7 @@ export default function NewAuditPage() {
     <div>
       <label style={labelStyle}>
         {label}
-        {optional && <span style={{ color: '#334155', fontWeight: 400, marginLeft: 4 }}>(optional)</span>}
+        {optional && <span style={{ color: 'var(--dp-ink-muted)', fontWeight: 400, marginLeft: 4 }}>(optional)</span>}
       </label>
       {inp(field, placeholder)}
       {helper && <p style={helperStyle}>{helper}</p>}
@@ -880,7 +880,7 @@ export default function NewAuditPage() {
     <div>
       <label style={labelStyle}>
         {label}
-        {optional && <span style={{ color: '#334155', fontWeight: 400, marginLeft: 4 }}>(optional)</span>}
+        {optional && <span style={{ color: 'var(--dp-ink-muted)', fontWeight: 400, marginLeft: 4 }}>(optional)</span>}
       </label>
       {txta(field, placeholder, rows)}
       {helper && <p style={helperStyle}>{helper}</p>}
@@ -976,8 +976,8 @@ export default function NewAuditPage() {
   const cardStyle = (active?: boolean): React.CSSProperties => ({
     borderRadius: '0.875rem',
     padding: '1.5rem',
-    background: active ? 'rgba(163,230,53,0.04)' : 'rgba(255,255,255,0.025)',
-    border: `1px solid ${active ? 'rgba(163,230,53,0.25)' : 'rgba(255,255,255,0.08)'}`,
+    background: active ? 'rgba(83,58,253,0.05)' : 'rgba(255,255,255,0.025)',
+    border: `1px solid ${active ? 'rgba(83,58,253,0.25)' : 'rgba(196,188,255,0.40)'}`,
     cursor: 'pointer',
     transition: 'all 0.2s ease',
     display: 'flex',
@@ -989,8 +989,8 @@ export default function NewAuditPage() {
   const formCard: React.CSSProperties = {
     borderRadius: '0.875rem',
     padding: '1.5rem',
-    background: 'rgba(255,255,255,0.025)',
-    border: '1px solid rgba(255,255,255,0.08)',
+    background: '#ffffff',
+    border: '1px solid rgba(196,188,255,0.40)',
   }
 
   return (
@@ -1002,7 +1002,7 @@ export default function NewAuditPage() {
           alignItems: 'center',
           gap: '0.375rem',
           fontSize: '0.875rem',
-          color: '#64748b',
+          color: 'var(--dp-ink-muted)',
           textDecoration: 'none',
           marginBottom: '1.5rem',
           transition: 'color 0.15s',
@@ -1022,7 +1022,7 @@ export default function NewAuditPage() {
           style={{
             fontSize: 'clamp(1.375rem, 3vw, 1.75rem)',
             fontWeight: 900,
-            color: '#f1f5f9',
+            color: 'var(--dp-ink)',
             letterSpacing: '-0.03em',
             margin: '0 0 0.5rem',
           }}
@@ -1031,7 +1031,7 @@ export default function NewAuditPage() {
           <br />
           <span className="gradient-text">or product photos.</span>
         </h1>
-        <p style={{ fontSize: '0.9375rem', color: '#64748b', margin: 0 }}>
+        <p style={{ fontSize: '0.9375rem', color: 'var(--dp-ink-muted)', margin: 0 }}>
           Sellio will do the rest — audit your listing, score it, and generate premium visuals.
         </p>
       </div>
@@ -1041,19 +1041,19 @@ export default function NewAuditPage() {
           style={{
             padding: '0.875rem 1rem',
             borderRadius: '0.625rem',
-            background: 'rgba(163,230,53,0.06)',
-            border: '1px solid rgba(163,230,53,0.2)',
+            background: 'rgba(83,58,253,0.06)',
+            border: '1px solid rgba(83,58,253,0.2)',
             marginBottom: '1.25rem',
             display: 'flex',
             flexDirection: 'column',
             gap: '0.75rem',
           }}
         >
-          <p style={{ margin: 0, fontSize: '0.875rem', color: '#a3e635', fontWeight: 600 }}>
+          <p style={{ margin: 0, fontSize: '0.875rem', color: 'var(--dp-primary)', fontWeight: 600 }}>
             Your audit draft was restored. Continue where you left off.
           </p>
           {entryType === 'product_photos' && (
-            <p style={{ margin: 0, fontSize: '0.8125rem', color: '#94a3b8' }}>
+            <p style={{ margin: 0, fontSize: '0.8125rem', color: 'var(--dp-ink-muted)' }}>
               Please re-upload product images after login.
             </p>
           )}
@@ -1064,9 +1064,9 @@ export default function NewAuditPage() {
               style={{
                 padding: '0.4375rem 0.875rem',
                 borderRadius: '0.5rem',
-                background: 'rgba(163,230,53,0.1)',
+                background: 'rgba(83,58,253,0.1)',
                 border: '1px solid rgba(163,230,53,0.3)',
-                color: '#a3e635',
+                color: 'var(--dp-primary)',
                 fontSize: '0.8125rem',
                 fontWeight: 600,
                 cursor: 'pointer',
@@ -1090,8 +1090,8 @@ export default function NewAuditPage() {
                 padding: '0.4375rem 0.875rem',
                 borderRadius: '0.5rem',
                 background: 'transparent',
-                border: '1px solid rgba(255,255,255,0.1)',
-                color: '#64748b',
+                border: '1.5px solid rgba(196,188,255,0.55)',
+                color: 'var(--dp-ink-muted)',
                 fontSize: '0.8125rem',
                 fontWeight: 500,
                 cursor: 'pointer',
@@ -1116,11 +1116,11 @@ export default function NewAuditPage() {
             onKeyDown={e => e.key === 'Enter' && selectEntryType('amazon_url')}
             style={cardStyle()}
             onMouseEnter={e => {
-              e.currentTarget.style.borderColor = 'rgba(163,230,53,0.25)'
-              e.currentTarget.style.background = 'rgba(163,230,53,0.04)'
+              e.currentTarget.style.borderColor = 'rgba(83,58,253,0.25)'
+              e.currentTarget.style.background = 'rgba(83,58,253,0.05)'
             }}
             onMouseLeave={e => {
-              e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'
+              e.currentTarget.style.borderColor = 'rgba(196,188,255,0.40)'
               e.currentTarget.style.background = 'rgba(255,255,255,0.025)'
             }}
           >
@@ -1143,17 +1143,17 @@ export default function NewAuditPage() {
                 style={{
                   fontSize: '1rem',
                   fontWeight: 700,
-                  color: '#f1f5f9',
+                  color: 'var(--dp-ink)',
                   margin: '0 0 0.25rem',
                   letterSpacing: '-0.02em',
                 }}
               >
                 Paste Amazon URL
               </h3>
-              <p style={{ fontSize: '0.875rem', color: '#64748b', margin: '0 0 0.5rem' }}>
+              <p style={{ fontSize: '0.875rem', color: 'var(--dp-ink-muted)', margin: '0 0 0.5rem' }}>
                 For sellers with an existing listing.
               </p>
-              <p style={{ fontSize: '0.8125rem', color: '#475569', margin: 0, lineHeight: 1.6 }}>
+              <p style={{ fontSize: '0.8125rem', color: 'var(--dp-ink-muted)', margin: 0, lineHeight: 1.6 }}>
                 Paste your Amazon product URL and confirm the listing details before analysis.
               </p>
             </div>
@@ -1167,11 +1167,11 @@ export default function NewAuditPage() {
             onKeyDown={e => e.key === 'Enter' && selectEntryType('product_photos')}
             style={cardStyle()}
             onMouseEnter={e => {
-              e.currentTarget.style.borderColor = 'rgba(163,230,53,0.25)'
-              e.currentTarget.style.background = 'rgba(163,230,53,0.04)'
+              e.currentTarget.style.borderColor = 'rgba(83,58,253,0.25)'
+              e.currentTarget.style.background = 'rgba(83,58,253,0.05)'
             }}
             onMouseLeave={e => {
-              e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'
+              e.currentTarget.style.borderColor = 'rgba(196,188,255,0.40)'
               e.currentTarget.style.background = 'rgba(255,255,255,0.025)'
             }}
           >
@@ -1194,17 +1194,17 @@ export default function NewAuditPage() {
                 style={{
                   fontSize: '1rem',
                   fontWeight: 700,
-                  color: '#f1f5f9',
+                  color: 'var(--dp-ink)',
                   margin: '0 0 0.25rem',
                   letterSpacing: '-0.02em',
                 }}
               >
                 Upload Product Photos
               </h3>
-              <p style={{ fontSize: '0.875rem', color: '#64748b', margin: '0 0 0.5rem' }}>
+              <p style={{ fontSize: '0.875rem', color: 'var(--dp-ink-muted)', margin: '0 0 0.5rem' }}>
                 For sellers starting from product images.
               </p>
-              <p style={{ fontSize: '0.8125rem', color: '#475569', margin: 0, lineHeight: 1.6 }}>
+              <p style={{ fontSize: '0.8125rem', color: 'var(--dp-ink-muted)', margin: 0, lineHeight: 1.6 }}>
                 Upload product photos and add the basic details. Sellio will prepare the audit foundation.
               </p>
             </div>
@@ -1220,14 +1220,14 @@ export default function NewAuditPage() {
             style={{
               fontSize: '1rem',
               fontWeight: 700,
-              color: '#f1f5f9',
+              color: 'var(--dp-ink)',
               margin: '0 0 0.25rem',
               letterSpacing: '-0.02em',
             }}
           >
             Enter your Amazon product URL
           </h2>
-          <p style={{ fontSize: '0.875rem', color: '#64748b', margin: '0 0 1.5rem' }}>
+          <p style={{ fontSize: '0.875rem', color: 'var(--dp-ink-muted)', margin: '0 0 1.5rem' }}>
             Paste the full URL of your Amazon listing.
           </p>
 
@@ -1267,14 +1267,14 @@ export default function NewAuditPage() {
             style={{
               fontSize: '1rem',
               fontWeight: 700,
-              color: '#f1f5f9',
+              color: 'var(--dp-ink)',
               margin: '0 0 0.25rem',
               letterSpacing: '-0.02em',
             }}
           >
             Upload your product photos
           </h2>
-          <p style={{ fontSize: '0.875rem', color: '#64748b', margin: '0 0 1.5rem' }}>
+          <p style={{ fontSize: '0.875rem', color: 'var(--dp-ink-muted)', margin: '0 0 1.5rem' }}>
             Add images and enter your basic product details to continue.
           </p>
 
@@ -1310,7 +1310,7 @@ export default function NewAuditPage() {
         <div style={{
           borderRadius: '0.875rem',
           padding: '2.75rem 1.5rem',
-          background: 'rgba(255,255,255,0.025)',
+          background: '#ffffff',
           border: '1px solid rgba(163,230,53,0.12)',
           textAlign: 'center',
         }}>
@@ -1326,13 +1326,13 @@ export default function NewAuditPage() {
           <h3 style={{
             fontSize: '1.0625rem',
             fontWeight: 700,
-            color: '#f1f5f9',
+            color: 'var(--dp-ink)',
             margin: '0 0 0.625rem',
             letterSpacing: '-0.02em',
           }}>
             Generating AI audit...
           </h3>
-          <p style={{ fontSize: '0.875rem', color: '#64748b', margin: 0, lineHeight: 1.7 }}>
+          <p style={{ fontSize: '0.875rem', color: 'var(--dp-ink-muted)', margin: 0, lineHeight: 1.7 }}>
             Analyzing your Amazon listing...
             <br />
             Reviewing copy, buyer signals, SEO gaps, and visual opportunities.
@@ -1348,14 +1348,14 @@ export default function NewAuditPage() {
               style={{
                 fontSize: '1rem',
                 fontWeight: 700,
-                color: '#f1f5f9',
+                color: 'var(--dp-ink)',
                 margin: '0 0 0.25rem',
                 letterSpacing: '-0.02em',
               }}
             >
               Confirm your listing details
             </h2>
-            <p style={{ fontSize: '0.875rem', color: '#64748b', margin: '0 0 1rem' }}>
+            <p style={{ fontSize: '0.875rem', color: 'var(--dp-ink-muted)', margin: '0 0 1rem' }}>
               Review and fill in the listing information before analysis. The more you add, the better the audit.
             </p>
             <InfoNote>
@@ -1366,7 +1366,7 @@ export default function NewAuditPage() {
           {/* Seller Persona Mode */}
           <div style={{
             borderRadius: '0.875rem', padding: '1.25rem 1.375rem',
-            background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(255,255,255,0.08)',
+            background: '#ffffff', border: '1px solid rgba(196,188,255,0.40)',
           }}>
             <SellerPersonaPicker
               value={form.sellerPersona}
@@ -1526,7 +1526,7 @@ export default function NewAuditPage() {
               <button
                 type="button"
                 onClick={handleSubmit}
-                className="btn-primary glow-button"
+                className="dp-btn-primary"
                 style={{
                   flex: 1,
                   justifyContent: 'center',
@@ -1549,14 +1549,14 @@ export default function NewAuditPage() {
             style={{
               fontSize: '1rem',
               fontWeight: 700,
-              color: '#f1f5f9',
+              color: 'var(--dp-ink)',
               margin: '0 0 0.25rem',
               letterSpacing: '-0.02em',
             }}
           >
             Confirm your product details
           </h2>
-          <p style={{ fontSize: '0.875rem', color: '#64748b', margin: '0 0 1.25rem' }}>
+          <p style={{ fontSize: '0.875rem', color: 'var(--dp-ink-muted)', margin: '0 0 1.25rem' }}>
             Add any optional context to help Sellio build a stronger audit.
           </p>
 
@@ -1680,7 +1680,7 @@ export default function NewAuditPage() {
               <button
                 type="button"
                 onClick={handleSubmit}
-                className="btn-primary glow-button"
+                className="dp-btn-primary"
                 style={{
                   flex: 1,
                   justifyContent: 'center',

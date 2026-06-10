@@ -1,0 +1,360 @@
+warning: in the working copy of 'frontend/src/components/image-studio/GeneratedImageSlots.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/src/components/image-studio/ImageBriefPanel.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/src/components/image-studio/ImagePackCard.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/src/components/image-studio/ImagePreviewModal.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/src/components/image-studio/ImageStudioHeader.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/src/components/image-studio/ProductReferenceStatus.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/src/components/layout/DashboardLayout.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/src/components/layout/Footer.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/src/components/layout/Navbar.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/src/components/sections/AnalysisSection.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/src/components/sections/AuditDemoSection.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/src/components/sections/FaqSection.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/src/components/sections/FinalCtaSection.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/src/components/sections/HeroSection.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/src/components/sections/HowItWorksSection.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/src/components/sections/ImageStudioSection.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/src/components/sections/PricingSection.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/src/components/sections/ProblemSection.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/src/components/sections/SolutionSection.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/src/components/ui/PaywallBlock.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/src/index.css', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/src/pages/AuditDetailPage.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/src/pages/AuditImageStudioPage.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/src/pages/BillingPage.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/src/pages/DashboardPage.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/src/pages/LandingPage.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/src/pages/LoginPage.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/src/pages/NewAuditPage.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/src/pages/SettingsPage.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/src/pages/SignupPage.tsx', LF will be replaced by CRLF the next time Git touches it
+[1mdiff --git a/frontend/src/components/image-studio/GeneratedImageSlots.tsx b/frontend/src/components/image-studio/GeneratedImageSlots.tsx[m
+[1mindex 31a6cab..3062aae 100644[m
+[1m--- a/frontend/src/components/image-studio/GeneratedImageSlots.tsx[m
+[1m+++ b/frontend/src/components/image-studio/GeneratedImageSlots.tsx[m
+[36m@@ -1,4 +1,4 @@[m
+[31m-import { useState } from 'react'[m
+[32m+[m[32m﻿import { useState } from 'react'[m
+ import {[m
+   ImageIcon, ExternalLink, Download, Copy, Check, AlertTriangle,[m
+   RefreshCw, Trash2, Loader2, Eye, ChevronDown, ChevronUp,[m
+[36m@@ -140,7 +140,7 @@[m [mfunction GeneratedCard({ gen, isRegenerating, onDelete, onRegenerate, onPreview[m
+           background: 'rgba(255,255,255,0.015)', padding: '1.25rem',[m
+         }}>[m
+           <ImageIcon size={26} color="rgba(148,163,184,0.3)" />[m
+[31m-          <div style={{ fontSize: '0.6875rem', color: '#475569', textAlign: 'center' }}>[m
+[32m+[m[32m          <div style={{ fontSize: '0.6875rem', color: 'var(--dp-ink-muted)', textAlign: 'center' }}>[m
+             Preview unavailable[m
+           </div>[m
+           <a[m
+[36m@@ -150,8 +150,8 @@[m [mfunction GeneratedCard({ gen, isRegenerating, onDelete, onRegenerate, onPreview[m
+             onClick={e => e.stopPropagation()}[m
+             style={{[m
+               ...btnBase,[m
+[31m-              background: 'rgba(163,230,53,0.08)', borderColor: 'rgba(163,230,53,0.2)',[m
+[31m-              color: '#a3e635', textDecoration: 'none',[m
+[32m+[m[32m              background: 'rgba(83,58,253,0.08)', borderColor: 'rgba(83,58,253,0.2)',[m
+[32m+[m[32m              color: 'var(--dp-primary)', textDecoration: 'none',[m
+             }}[m
+           >[m
+             <ExternalLink size={11} />[m
+[36m@@ -165,7 +165,7 @@[m [mfunction GeneratedCard({ gen, isRegenerating, onDelete, onRegenerate, onPreview[m
+           background: 'rgba(255,255,255,0.015)', padding: '1.25rem',[m
+         }}>[m
+           <ImageIcon size={26} color="rgba(148,163,184,0.3)" />[m
+[31m-          <div style={{ fontSize: '0.6875rem', color: '#475569', textAlign: 'center' }}>[m
+[32m+[m[32m          <div style={{ fontSize: '0.6875rem', color: 'var(--dp-ink-muted)', textAlign: 'center' }}>[m
+             Image not available[m
+           </div>[m
+         </div>[m
+[36m@@ -174,7 +174,7 @@[m [mfunction GeneratedCard({ gen, isRegenerating, onDelete, onRegenerate, onPreview[m
+       <div style={{ padding: '0.875rem', flex: 1, display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>[m
+         <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '0.5rem' }}>[m
+           <div style={{[m
+[31m-            fontSize: '0.8125rem', fontWeight: 700, color: '#f1f5f9',[m
+[32m+[m[32m            fontSize: '0.8125rem', fontWeight: 700, color: 'var(--dp-ink)',[m
+             lineHeight: 1.35, letterSpacing: '-0.01em', flex: 1, minWidth: 0,[m
+           }}>[m
+             {gen.image_type}[m
+[36m@@ -182,13 +182,13 @@[m [mfunction GeneratedCard({ gen, isRegenerating, onDelete, onRegenerate, onPreview[m
+           <GenStatusBadge status={gen.status} />[m
+         </div>[m
+ [m
+[31m-        <div style={{ fontSize: '0.6875rem', color: '#475569' }}>[m
+[32m+[m[32m        <div style={{ fontSize: '0.6875rem', color: 'var(--dp-ink-muted)' }}>[m
+           {formatDate(gen.created_at)}[m
+         </div>[m
+ [m
+         {gen.model_name && ([m
+           <div style={{[m
+[31m-            fontSize: '0.625rem', color: '#334155',[m
+[32m+[m[32m            fontSize: '0.625rem', color: 'var(--dp-ink-muted)',[m
+             overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',[m
+           }}>[m
+             {gen.provider} · {gen.model_name}[m
+[36m@@ -222,9 +222,9 @@[m [mfunction GeneratedCard({ gen, isRegenerating, onDelete, onRegenerate, onPreview[m
+             display: 'inline-flex', alignItems: 'center', gap: '0.1875rem',[m
+             padding: '0.125rem 0.4375rem', borderRadius: '99px',[m
+             background: gen.product_locked ? 'rgba(163,230,53,0.06)' : 'rgba(255,255,255,0.03)',[m
+[31m-            border: `1px solid ${gen.product_locked ? 'rgba(163,230,53,0.15)' : 'rgba(255,255,255,0.07)'}`,[m
+[32m+[m[32m            border: `1px solid ${gen.product_locked ? 'rgba(163,230,53,0.15)' : 'rgba(196,188,255,0.40)'}`,[m
+             fontSize: '0.5625rem', fontWeight: 700,[m
+[31m-            color: gen.product_locked ? '#a3e635' : '#475569',[m
+[32m+[m[32m            color: gen.product_locked ? 'var(--dp-primary)' : '#475569',[m
+             textTransform: 'uppercase' as const, letterSpacing: '0.05em',[m
+           }}>[m
+             Product locked: {gen.product_locked ? 'Yes' : 'No'}[m
+[36m@@ -251,11 +251,11 @@[m [mfunction GeneratedCard({ gen, isRegenerating, onDelete, onRegenerate, onPreview[m
+               onClick={() => onPreview(gen)}[m
+               style={{[m
+                 ...btnBase,[m
+[31m-                background: 'rgba(255,255,255,0.04)', borderColor: 'rgba(255,255,255,0.1)',[m
+[31m-                color: '#94a3b8',[m
+[32m+[m[32m                background: 'rgba(83,58,253,0.04)', borderColor: 'rgba(255,255,255,0.1)',[m
+[32m+[m[32m                color: 'var(--dp-ink-muted)',[m
+               }}[m
+               onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.08)' }}[m
+[31m-              onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.04)' }}[m
+[32m+[m[32m              onMouseLeave={e => { e.currentTarget.style.background = 'rgba(83,58,253,0.04)' }}[m
+             >[m
+               <Eye size={11} />[m
+               Preview[m
+[36m@@ -269,13 +269,13 @@[m [mfunction GeneratedCard({ gen, isRegenerating, onDelete, onRegenerate, onPreview[m
+               disabled={downloading}[m
+               style={{[m
+                 ...btnBase,[m
+[31m-                background: downloading ? 'rgba(163,230,53,0.04)' : 'rgba(163,230,53,0.08)',[m
+[31m-                borderColor: 'rgba(163,230,53,0.2)',[m
+[31m-                color: '#a3e635',[m
+[32m+[m[32m                background: downloading ? 'rgba(163,230,53,0.04)' : 'rgba(83,58,253,0.08)',[m
+[32m+[m[32m                borderColor: 'rgba(83,58,253,0.2)',[m
+[32m+[m[32m                color: 'var(--dp-primary)',[m
+                 opacity: downloading ? 0.7 : 1,[m
+               }}[m
+               onMouseEnter={e => { if (!downloading) e.currentTarget.style.background = 'rgba(163,230,53,0.14)' }}[m
+[31m-              onMouseLeave={e => { e.currentTarget.style.background = downloading ? 'rgba(163,230,53,0.04)' : 'rgba(163,230,53,0.08)' }}[m
+[32m+[m[32m              onMouseLeave={e => { e.currentTarget.style.background = downloading ? 'rgba(163,230,53,0.04)' : 'rgba(83,58,253,0.08)' }}[m
+             >[m
+               {downloading[m
+                 ? <Loader2 size={11} style={{ animation: 'spin 1s linear infinite' }} />[m
+[36m@@ -292,10 +292,10 @@[m [mfunction GeneratedCard({ gen, isRegenerating, onDelete, onRegenerate, onPreview[m
+             style={{[m
+               ...btnBase,[m
+               background: 'rgba(255,255,255,0.03)', borderColor: 'rgba(255,255,255,0.08)',[m
+[31m-              color: '#64748b',[m
+[32m+[m[32m              color: 'var(--dp-ink-muted)',[m
+               opacity: isRegenerating ? 0.5 : 1,[m
+             }}[m
+[31m-            onMouseEnter={e => { if (!isRegenerating) e.currentTarget.style.background = 'rgba(255,255,255,0.07)' }}[m
+[32m+[m[32m            onMouseEnter={e => { if (!isRegenerating) e.currentTarget.style.background = 'rgba(196,188,255,0.40)' }}[m
+             onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.03)' }}[m
+           >[m
+             {isRegenerating[m
+[36m@@ -357,8 +357,8 @@[m [mfunction GeneratedCard({ gen, isRegenerating, onDelete, onRegenerate, onPreview[m
+                 onClick={e => { e.stopPropagation(); setConfirmDelete(false) }}[m
+                 style={{[m
+                   ...btnBase,[m
+[31m-                  background: 'rgba(255,255,255,0.04)', borderColor: 'rgba(255,255,255,0.09)',[m
+[31m-                  color: '#64748b',[m
+[32m+[m[32m                  background: 'rgba(83,58,253,0.04)', borderColor: 'rgba(255,255,255,0.09)',[m
+[32m+[m[32m                  color: 'var(--dp-ink-muted)',[m
+                 }}[m
+               >[m
+                 No[m
+[36m@@ -413,7 +413,7 @@[m [mfunction FailedRow({ gen, isRegenerating, onDelete, onRegenerate }: FailedRowPro[m
+       <AlertTriangle size={13} color="rgba(248,113,113,0.5)" style={{ flexShrink: 0 }} />[m
+ [m
+       <div style={{[m
+[31m-        fontSize: '0.75rem', fontWeight: 600, color: '#94a3b8',[m
+[32m+[m[32m        fontSize: '0.75rem', fontWeight: 600, color: 'var(--dp-ink-muted)',[m
+         flexShrink: 0, minWidth: 0,[m
+       }}>[m
+         {gen.image_type}[m
+[36m@@ -421,12 +421,12 @@[m [mfunction FailedRow({ gen, isRegenerating, onDelete, onRegenerate }: FailedRowPro[m
+ [m
+       <GenStatusBadge status="failed" />[m
+ [m
+[31m-      <div style={{ fontSize: '0.6875rem', color: '#475569', flexShrink: 0 }}>[m
+[32m+[m[32m      <div style={{ fontSize: '0.6875rem', color: 'var(--dp-ink-muted)', flexShrink: 0 }}>[m
+         {formatDate(gen.created_at)}[m
+       </div>[m
+ [m
+       <div style={{[m
+[31m-        fontSize: '0.6875rem', color: '#64748b', flex: 1,[m
+[32m+[m[32m        fontSize: '0.6875rem', color: 'var(--dp-ink-muted)', flex: 1,[m
+         minWidth: '6rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',[m
+       }}[m
+         title={rawError}[m
+[36m@@ -441,12 +441,12 @@[m [mfunction FailedRow({ gen, isRegenerating, onDelete, onRegenerate }: FailedRowPro[m
+           disabled={isRegenerating}[m
+           style={{[m
+             ...btnBase,[m
+[31m-            background: 'rgba(255,255,255,0.04)', borderColor: 'rgba(255,255,255,0.1)',[m
+[31m-            color: '#94a3b8',[m
+[32m+[m[32m            background: 'rgba(83,58,253,0.04)', borderColor: 'rgba(255,255,255,0.1)',[m
+[32m+[m[32m            color: 'var(--dp-ink-muted)',[m
+             opacity: isRegenerating ? 0.5 : 1,[m
+           }}[m
+           onMouseEnter={e => { if (!isRegenerating) e.currentTarget.style.background = 'rgba(255,255,255,0.08)' }}[m
+[31m-          onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.04)' }}[m
+[32m+[m[32m          onMouseLeave={e => { e.currentTarget.style.background = 'rgba(83,58,253,0.04)' }}[m
+         >[m
+           {isRegenerating[m
+             ? <Loader2 size={11} style={{ animation: 'spin 1s linear infinite' }} />[m
+[36m@@ -491,8 +491,8 @@[m [mfunction FailedRow({ gen, isRegenerating, onDelete, onRegenerate }: FailedRowPro[m
+               onClick={e => { e.stopPropagation(); setConfirmDelete(false) }}[m
+               style={{[m
+                 ...btnBase,[m
+[31m-                background: 'rgba(255,255,255,0.04)', borderColor: 'rgba(255,255,255,0.09)',[m
+[31m-                color: '#64748b',[m
+[32m+[m[32m                background: 'rgba(83,58,253,0.04)', borderColor: 'rgba(255,255,255,0.09)',[m
+[32m+[m[32m                color: 'var(--dp-ink-muted)',[m
+               }}[m
+             >[m
+               No[m
+[36m@@ -543,21 +543,21 @@[m [mexport default function GeneratedImageSlots({[m
+       {completed.length === 0 && failed.length === 0 ? ([m
+         <div style={{[m
+           borderRadius: '0.875rem', padding: '2rem 1.5rem',[m
+[31m-          border: '1px dashed rgba(255,255,255,0.07)',[m
+[32m+[m[32m          border: '1px dashed rgba(196,188,255,0.40)',[m
+           background: 'rgba(255,255,255,0.01)',[m
+           display: 'flex', flexDirection: 'column', alignItems: 'center',[m
+           gap: '0.625rem', textAlign: 'center',[m
+         }}>[m
+           <div style={{[m
+             width: 40, height: 40, borderRadius: '0.625rem',[m
+[31m-            background: 'rgba(163,230,53,0.04)', border: '1px solid rgba(163,230,53,0.1)',[m
+[32m+[m[32m            background: 'rgba(163,230,53,0.04)', border: '1px solid rgba(83,58,253,0.1)',[m
+             display: 'flex', alignItems: 'center', justifyContent: 'center',[m
+           }}>[m
+             <ImageIcon size={18} color="rgba(163,230,53,0.3)" />[m
+           </div>[m
+[31m-          <div style={{ fontSize: '0.8125rem', color: '#475569', lineHeight: 1.6 }}>[m
+[32m+[m[32m          <div style={{ fontSize: '0.8125rem', color: 'var(--dp-ink-muted)', lineHeight: 1.6 }}>[m
+             No images generated yet.[m
+[31m-            <br />Select a type below and click <strong style={{ color: '#a3e635' }}>Generate Image</strong>.[m
+[32m+[m[32m            <br />Select a type below and click <strong style={{ color: 'var(--dp-primary)' }}>Generate Image</strong>.[m
+           </div>[m
+         </div>[m
+       ) : ([m
+[36m@@ -565,7 +565,7 @@[m [mexport default function GeneratedImageSlots({[m
+           {completed.length === 0 && failed.length > 0 && ([m
+             <div style={{[m
+               borderRadius: '0.875rem', padding: '1.25rem 1.5rem',[m
+[31m-              border: '1px dashed rgba(255,255,255,0.07)',[m
+[32m+[m[32m              border: '1px dashed rgba(196,188,255,0.40)',[m
+               background: 'rgba(255,255,255,0.01)',[m
+               display: 'flex', flexDirection: 'column', alignItems: 'center',[m
+               gap: '0.5rem', textAlign: 'center', marginBottom: '1.25rem',[m
+[36m@@ -577,7 +577,7 @@[m [mexport default function GeneratedImageSlots({[m
+               }}>[m
+                 <AlertTriangle size={16} color="rgba(248,113,113,0.45)" />[m
+               </div>[m
+[31m-              <div style={{ fontSize: '0.8125rem', color: '#475569', lineHeight: 1.6 }}>[m
+[32m+[m[32m              <div style={{ fontSize: '0.8125rem', color: 'var(--dp-ink-muted)', lineHeight: 1.6 }}>[m
+                 No generated images yet.[m
+                 <br />Some attempts failed. You can retry or delete them below.[m
+               </div>[m
+[36m@@ -586,7 +586,7 @@[m [mexport default function GeneratedImageSlots({[m
+ [m
+           {completed.length > 0 && ([m
+             <>[m
+[31m-              <p style={{ fontSize: '0.8125rem', color: '#475569', margin: '0 0 1.125rem', lineHeight: 1.6 }}>[m
+[32m+[m[32m              <p style={{ fontSize: '0.8125rem', color: 'var(--dp-ink-muted)', margin: '0 0 1.125rem', lineHeight: 1.6 }}>[m
+                 Click any image to preview, download, or manage.[m
+               </p>[m
+               <div className="gen-images-grid">[m
+[36m@@ -623,7 +623,7 @@[m [mexport default function GeneratedImageSlots({[m
+                   : <ChevronDown size={13} color="#6b7280" />[m
+                 }[m
+                 <span style={{[m
+[31m-                  fontSize: '0.6875rem', color: '#475569', fontWeight: 400,[m
+[32m+[m[32m                  fontSize: '0.6875rem', color: 'var(--dp-ink-muted)', fontWeight: 400,[m
+                   textTransform: 'none', letterSpacing: 0,[m
+                 }}>[m
+                   {failedOpen ? 'Hide failed attempts' : 'Show failed attempts'}[m
+[1mdiff --git a/frontend/src/components/image-studio/ImageBriefPanel.tsx b/frontend/src/components/image-studio/ImageBriefPanel.tsx[m
+[1mindex 7134b12..300787f 100644[m
+[1m--- a/frontend/src/components/image-studio/ImageBriefPanel.tsx[m
+[1m+++ b/frontend/src/components/image-studio/ImageBriefPanel.tsx[m
+[36m@@ -1,4 +1,4 @@[m
+[31m-import { useState } from 'react'[m
+[32m+[m[32m﻿import { useState } from 'react'[m
+ import { Copy, Check, Layers, Zap, Loader2, Camera, AlertTriangle } from 'lucide-react'[m
+ import type { ImagePackPlanItem } from '../../types/audit'[m
+ import type { ImageGeneration, QualityOptions } from '../../types/imageGeneration'[m
+[36m@@ -103,7 +103,7 @@[m [mfunction FieldRow({ label, children }: { label: string; children: React.ReactNod[m
+ const selectStyle: React.CSSProperties = {[m
+   width: '100%', boxSizing: 'border-box',[m
+   padding: '0.5rem 0.75rem', borderRadius: '0.5rem',[m
+[31m-  background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)',[m
+[32m+[m[32m  background: 'rgba(83,58,253,0.04)', border: '1px solid rgba(255,255,255,0.1)',[m
+   color: '#e2e8f0', fontSize: '0.8125rem',[m
+   fontFamily: 'inherit', outline: 'none',[m
+   appearance: 'none', WebkitAppearance: 'none',[m
+[36m@@ -154,7 +154,7 @@[m [mexport default function ImageBriefPanel({[m
+     <div style={{[m
+       borderRadius: '0.875rem',[m
+       background: 'rgba(255,255,255,0.02)',[m
+[31m-      border: '1px solid rgba(163,230,53,0.2)',[m
+[32m+[m[32m      border: '1px solid rgba(83,58,253,0.2)',[m
+       overflow: 'hidden',[m
+     }}>[m
+       <div style={{[m
+[36m@@ -177,14 +177,14 @@[m [mexport default function ImageBriefPanel({[m
+           }}>[m
+             Creative Brief[m
+           </div>[m
+[31m-          <div style={{ fontSize: '1rem', fontWeight: 700, color: '#f1f5f9', letterSpacing: '-0.02em' }}>[m
+[32m+[m[32m          <div style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--dp-ink)', letterSpacing: '-0.02em' }}>[m
+             {item.image_type}[m
+           </div>[m
+         </div>[m
+         <span style={{[m
+           display: 'inline-flex', alignItems: 'center', gap: '0.3125rem',[m
+           padding: '0.25rem 0.5625rem', borderRadius: '99px', flexShrink: 0,[m
+[31m-          background: hasReference ? 'rgba(52,211,153,0.08)' : 'rgba(255,255,255,0.04)',[m
+[32m+[m[32m          background: hasReference ? 'rgba(52,211,153,0.08)' : 'rgba(83,58,253,0.04)',[m
+           border: `1px solid ${hasReference ? 'rgba(52,211,153,0.2)' : 'rgba(255,255,255,0.08)'}`,[m
+           fontSize: '0.5625rem', fontWeight: 700,[m
+           color: hasReference ? '#34d399' : '#64748b',[m
+[36m@@ -206,8 +206,8 @@[m [mexport default function ImageBriefPanel({[m
+           <FieldRow label="Headline">[m
+             <div style={{[m
+               padding: '0.625rem 0.875rem', borderRadius: '0.5rem',[m
+[31m-              background: 'rgba(163,230,53,0.04)', border: '1px solid rgba(163,230,53,0.12)',[m
+[31m-              fontSize: '0.9375rem', fontWeight: 700, color: '#a3e635',[m
+[32m+[m[32m              background: 'rgba(163,230,53,0.04)', border: '1px solid rgba(83,58,253,0.12)',[m
+[32m+[m[32m              fontSize: '0.9375rem', fontWeight: 700, color: 'var(--dp-primary)',[m
+               letterSpacing: '-0.01em', wordBreak: 'break-word',[m
+             }}>[m
+               &ldquo;{item.headline}&rdquo;[m
+[36m@@ -228,7 +228,7 @@[m [mexport default function ImageBriefPanel({[m
+                 <span key={i} style={{[m
+                   padding: '0.25rem 0.625rem', borderRadius: '0.375rem',[m
+                   background: 'rgba(52,211,153,0.06)', border: '1px solid rgba(52,211,153,0.14)',[m
+[31m-                  fontSize: '0.75rem', color: '#94a3b8',[m
+[32m+[m[32m                  fontSize: '0.75rem', color: 'var(--dp-ink-muted)',[m
+                 }}>[m
+                   {el}[m
+                 </span>[m
+[36m@@ -259,7 +259,7 @@[m [mexport default function ImageBriefPanel({[m
+         padding: '1rem 1.125rem',[m
+         borderRadius: '0.625rem',[m
+         background: 'rgba(163,230,53,0.025)',[m
+[31m-        border: '1px solid rgba(163,230,53,0.1)',[m
+[32m+[m[32m        border: '1px solid rgba(83,58,253,0.1)',[m
+         marginBottom: '1rem',[m
+       }}>[m
+         <div style={{[m
+[36m@@ -279,7 +279,7 @@[m [mexport default function ImageBriefPanel({[m
+               style={{[m
+                 width: '100%', boxSizing: 'border-box',[m
+                 padding: '0.625rem 0.75rem', borderRadius: '0.5rem',[m
+[31m-                background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)',[m
+[32m+[m[32m                background: 'rgba(83,58,253,0.04)', border: '1px solid rgba(255,255,255,0.1)',[m
+                 color: '#e2e8f0', fontSize: '0.8125rem', lineHeight: 1.6,[m
+                 fontFamily: 'inherit', resize: 'vertical',[m
+                 outline: 'none', transition: 'border-color 0.15s',[m
+[36m@@ -287,7 +287,7 @@[m 
