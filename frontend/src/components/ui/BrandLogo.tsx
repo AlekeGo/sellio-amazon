@@ -14,7 +14,7 @@ export default function BrandLogo({ small }: BrandLogoProps) {
         alt=""
         width={iconSize}
         height={iconSize}
-        style={{ display: 'block', borderRadius: small ? 7 : 9, flexShrink: 0 }}
+        style={{ display: 'block', flexShrink: 0 }}
         aria-hidden="true"
       />
       <span

@@ -1,5 +1,5 @@
 import { Link, useNavigate, useLocation } from 'react-router-dom'
-import { Zap, BarChart2 } from 'lucide-react'
+import { Zap } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
 import Footer from '../components/layout/Footer'
 import HeroSection from '../components/sections/HeroSection'
@@ -33,14 +33,7 @@ function SellioWordmark() {
       onClick={handleClick}
       style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', textDecoration: 'none', flexShrink: 0 }}
     >
-      <div style={{
-        width: 32, height: 32, borderRadius: 9,
-        background: 'linear-gradient(135deg, #6A55FE 0%, #533AFD 100%)',
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        boxShadow: '0 2px 8px rgba(83,58,253,0.28)',
-      }}>
-        <BarChart2 size={16} color="#fff" />
-      </div>
+      <img src="/brand/logo-icon.svg" alt="Sellio" style={{ width: 40, height: 40, flexShrink: 0 }} />
       <span style={{ fontWeight: 800, fontSize: '1.0625rem', color: 'var(--dp-ink)', letterSpacing: '-0.03em' }}>
         Sellio
       </span>
