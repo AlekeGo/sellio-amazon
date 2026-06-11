@@ -33,6 +33,48 @@
   .dp-mobile-only { display: none !important; }
 }
 
+/* Landing page navbar pill — responsive padding/gap */
+.landing-navbar-inner {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 1rem 1.75rem;
+  min-height: 72px;
+}
+@media (max-width: 767px) {
+  .landing-navbar-inner {
+    gap: 0.625rem;
+    padding: 0.875rem 1rem;
+    min-height: 60px;
+  }
+}
+
+/* Global mobile safety */
+img, video, iframe, embed, object {
+  max-width: 100%;
+}
+
+/* Auth pages: prevent flex centering from clipping content on very short viewports */
+.auth-page-outer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 2rem 1.5rem;
+}
+@media (max-width: 480px) {
+  .auth-page-outer {
+    padding: 2rem 1rem;
+  }
+}
+@media (max-height: 640px) {
+  .auth-page-outer {
+    justify-content: flex-start;
+    padding-top: 1.5rem;
+  }
+}
+
 html {
   scroll-behavior: smooth;
 }
@@ -49,6 +91,7 @@ body {
 
 #root {
   min-height: 100svh;
+  overflow-x: hidden;
 }
 
 .gradient-text {

@@ -68,15 +68,13 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <div style={{
-      minHeight: '100vh',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      padding: '1.5rem',
-      background: 'linear-gradient(145deg, #F0EDFF 0%, #F6F9FC 50%, #EDF3FF 100%)',
-      position: 'relative',
-    }}>
+    <div
+      className="auth-page-outer"
+      style={{
+        background: 'linear-gradient(145deg, #F0EDFF 0%, #F6F9FC 50%, #EDF3FF 100%)',
+        position: 'relative',
+      }}
+    >
       <div style={{
         position: 'absolute', inset: 0, pointerEvents: 'none',
         backgroundImage: 'radial-gradient(ellipse 70% 50% at 50% 0%, rgba(83,58,253,0.07) 0%, transparent 65%)',
