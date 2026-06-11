@@ -65,6 +65,8 @@ class CreditTransaction(models.Model):
     credit_type = models.CharField(max_length=30, choices=CREDIT_TYPE_CHOICES)
     amount = models.IntegerField()
     reason = models.CharField(max_length=255)
+    # Stable external reference (e.g. "polar_sub_<id>") used for idempotency — prevents double grants
+    external_ref = models.CharField(max_length=255, blank=True, default='', db_index=True)
     metadata = models.JSONField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -106,3 +108,23 @@ class Payment(models.Model):
 
     def __str__(self):
         return f"{self.user.email} {self.plan_key} {self.status}"
+
+
+class PolarWebhookEvent(models.Model):
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('processed', 'Processed'),
+        ('failed', 'Failed'),
+        ('skipped', 'Skipped'),
+    ]
+
+    event_id = models.CharField(max_length=255, unique=True)
+    event_type = models.CharField(max_length=100)
+    processed_at = models.DateTimeField(null=True, blank=True)
+    raw_payload = models.JSONField()
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    error_message = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.event_type} {self.event_id} ({self.status})"

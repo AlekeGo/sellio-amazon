@@ -6,7 +6,7 @@ import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-load_dotenv(BASE_DIR / '.env')
+load_dotenv(BASE_DIR / '.env', override=True)
 
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
@@ -108,6 +108,19 @@ CSRF_TRUSTED_ORIGINS = os.getenv('CSRF_TRUSTED_ORIGINS', 'http://localhost:5173'
 PAYMENT_PROVIDER = os.getenv('PAYMENT_PROVIDER', 'mock')
 FRONTEND_URL = os.getenv('FRONTEND_URL', 'http://localhost:5173')
 
+POLAR_ACCESS_TOKEN = os.getenv('POLAR_ACCESS_TOKEN', '').strip()
+POLAR_SERVER = os.getenv('POLAR_SERVER', 'sandbox').strip()
+POLAR_ENV = os.getenv('POLAR_ENV', 'sandbox').strip()
+POLAR_PRODUCT_IDS = {
+    'launch': os.getenv('POLAR_LAUNCH_PRODUCT_ID', '').strip(),
+    'pro': os.getenv('POLAR_PRO_PRODUCT_ID', '').strip(),
+    'growth': os.getenv('POLAR_GROWTH_PRODUCT_ID', '').strip(),
+    'agency': os.getenv('POLAR_AGENCY_PRODUCT_ID', '').strip(),
+}
+POLAR_SUCCESS_URL = os.getenv('POLAR_SUCCESS_URL', 'http://localhost:5173/billing/success').strip()
+POLAR_CANCEL_URL = os.getenv('POLAR_CANCEL_URL', 'http://localhost:5173/billing/cancel').strip()
+POLAR_WEBHOOK_SECRET = os.getenv('POLAR_WEBHOOK_SECRET', '').strip()
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -122,6 +135,27 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
     'ROTATE_REFRESH_TOKENS': False,
     'AUTH_HEADER_TYPES': ('Bearer',),
+}
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'WARNING',
+    },
+    'loggers': {
+        'billing': {
+            'handlers': ['console'],
+            'level': 'DEBUG' if DEBUG else 'INFO',
+            'propagate': False,
+        },
+    },
 }
 
 if not DEBUG:
