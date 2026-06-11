@@ -25,6 +25,14 @@
   box-sizing: border-box;
 }
 
+/* Navbar responsive helpers — used instead of Tailwind to guarantee production correctness */
+.dp-desktop-only { display: none !important; }
+.dp-mobile-only { display: flex !important; }
+@media (min-width: 768px) {
+  .dp-desktop-only { display: flex !important; }
+  .dp-mobile-only { display: none !important; }
+}
+
 html {
   scroll-behavior: smooth;
 }

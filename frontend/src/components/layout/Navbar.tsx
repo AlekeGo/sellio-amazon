@@ -92,7 +92,7 @@ export default function Navbar() {
       >
         <LogoLink />
 
-        <nav style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }} className="hidden md:flex">
+        <nav style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }} className="dp-desktop-only">
           {navLinks.map((link) =>
             link.href.startsWith('/#') ? (
               <button
@@ -124,7 +124,7 @@ export default function Navbar() {
           )}
         </nav>
 
-        <div className="hidden md:flex" style={{ alignItems: 'center', gap: '0.625rem' }}>
+        <div className="dp-desktop-only" style={{ alignItems: 'center', gap: '0.625rem' }}>
           {!isAuthenticated && (
             <Link to="/login" className="dp-btn-ghost" style={{ fontSize: '0.875rem', padding: '0.5rem 0.875rem' }}>
               Sign in
@@ -136,7 +136,7 @@ export default function Navbar() {
         </div>
 
         <button
-          className="md:hidden"
+          className="dp-mobile-only"
           onClick={() => setMobileOpen(!mobileOpen)}
           style={{
             background: 'rgba(83,58,253,0.06)', border: '1px solid rgba(196,188,255,0.5)',

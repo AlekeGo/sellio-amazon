@@ -20,6 +20,7 @@ import DesignPreviewPage from './pages/DesignPreviewPage'
 import BillingSuccessPage from './pages/BillingSuccessPage'
 import BillingCancelPage from './pages/BillingCancelPage'
 import VerifyEmailPage from './pages/VerifyEmailPage'
+import ForgotPasswordPage from './pages/ForgotPasswordPage'
 
 const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID as string | undefined
 
@@ -36,6 +37,7 @@ function AppRoutes() {
           <Route path="/billing/success" element={<BillingSuccessPage />} />
           <Route path="/billing/cancel" element={<BillingCancelPage />} />
           <Route path="/verify-email" element={<VerifyEmailPage />} />
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route element={<ProtectedRoute />}>
             <Route element={<DashboardLayout />}>
               <Route path="/dashboard" element={<DashboardPage />} />

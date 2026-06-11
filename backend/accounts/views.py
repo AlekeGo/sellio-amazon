@@ -13,7 +13,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from .models import EmailVerification, User
+from .models import EmailVerification, PasswordResetCode, User
 from .serializers import LoginSerializer, ProfileUpdateSerializer, RegisterSerializer, UserSerializer
 
 logger = logging.getLogger(__name__)
@@ -32,6 +32,21 @@ def _send_verification_email(user, code):
             f'Your verification code is: {code}\n\n'
             f'This code expires in 10 minutes.\n\n'
             f'If you did not create a Sellio account, you can ignore this email.'
+        ),
+        from_email=django_settings.DEFAULT_FROM_EMAIL,
+        recipient_list=[user.email],
+        fail_silently=False,
+    )
+
+
+def _send_password_reset_email(user, code):
+    send_mail(
+        subject='Reset your Sellio password',
+        message=(
+            f'Hi {user.full_name},\n\n'
+            f'Your password reset code is: {code}\n\n'
+            f'This code expires in 10 minutes.\n\n'
+            f'If you did not request a password reset, you can ignore this email.'
         ),
         from_email=django_settings.DEFAULT_FROM_EMAIL,
         recipient_list=[user.email],
@@ -188,3 +203,70 @@ class GoogleAuthView(APIView):
                 user.save(update_fields=update_fields)
         access, refresh = _tokens_for_user(user)
         return Response({'user': UserSerializer(user).data, 'access': access, 'refresh': refresh})
+
+
+class RequestPasswordResetView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        email = request.data.get('email', '').strip().lower()
+        if not email:
+            return Response({'detail': 'Email is required.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            return Response({'detail': 'If that email exists, a reset code has been sent.'})
+
+        one_minute_ago = timezone.now() - timedelta(minutes=1)
+        if PasswordResetCode.objects.filter(user=user, created_at__gt=one_minute_ago).exists():
+            return Response(
+                {'detail': 'Please wait before requesting another code.'},
+                status=status.HTTP_429_TOO_MANY_REQUESTS,
+            )
+
+        code = PasswordResetCode.create_for_user(user)
+        try:
+            _send_password_reset_email(user, code)
+        except Exception as exc:
+            logger.error('Failed to send password reset email to %s: %s', email, exc)
+
+        return Response({'detail': 'If that email exists, a reset code has been sent.'})
+
+
+class ResetPasswordView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        email = request.data.get('email', '').strip().lower()
+        code = request.data.get('code', '').strip()
+        new_password = request.data.get('new_password', '')
+
+        if not email or not code or not new_password:
+            return Response(
+                {'detail': 'email, code, and new_password are required.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if len(new_password) < 8:
+            return Response(
+                {'detail': 'Password must be at least 8 characters.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            return Response({'detail': 'Invalid or expired code.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        reset = PasswordResetCode.verify(user, code)
+        if not reset:
+            return Response({'detail': 'Invalid or expired code.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        reset.is_used = True
+        reset.save(update_fields=['is_used'])
+
+        user.set_password(new_password)
+        user.save(update_fields=['password'])
+
+        return Response({'detail': 'Password reset successfully.'})
