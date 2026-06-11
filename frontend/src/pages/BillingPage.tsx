@@ -4,7 +4,7 @@ import {
   Crown, Zap, Star, X, AlertCircle, ArrowRight,
   CreditCard, Check, Loader2, CheckCircle2, Package, Receipt,
 } from 'lucide-react'
-import { getMyBilling, getBillingPlans, createPolarCheckout, createCheckoutSession, mockCompletePayment } from '../lib/billingApi'
+import { getMyBilling, getBillingPlans, createPolarCheckout, mockCompletePayment } from '../lib/billingApi'
 import type { BillingMeResponse, BillingPlan, CreditTransaction, Payment } from '../types/billing'
 
 const SUBSCRIPTION_KEYS = ['launch', 'pro', 'growth', 'agency']
