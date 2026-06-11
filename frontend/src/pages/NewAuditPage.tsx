@@ -220,7 +220,7 @@ function StepIndicator({ current }: { current: 1 | 2 | 3 }) {
               <span
                 style={{
                   fontSize: '0.8125rem',
-                  color: active ? '#f1f5f9' : done ? '#64748b' : '#334155',
+                  color: active ? '#1e293b' : done ? '#64748b' : '#94a3b8',
                   fontWeight: active ? 600 : 400,
                   whiteSpace: 'nowrap',
                 }}
