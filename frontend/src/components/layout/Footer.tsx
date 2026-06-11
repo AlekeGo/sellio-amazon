@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { BarChart2 } from 'lucide-react'
+import BrandLogo from '../ui/BrandLogo'
 
 const footerLinks = [
   { label: 'Features', href: '/#features' },
@@ -101,17 +101,8 @@ export default function Footer() {
         <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', justifyContent: 'space-between', gap: '2rem', marginBottom: '2rem' }}>
           {/* Logo + description */}
           <div>
-            <Link to="/" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', textDecoration: 'none', marginBottom: '0.625rem' }}>
-              <div style={{
-                width: 28, height: 28, borderRadius: 8,
-                background: 'linear-gradient(135deg, #6A55FE 0%, #533AFD 100%)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-              }}>
-                <BarChart2 size={15} color="#fff" />
-              </div>
-              <span style={{ fontWeight: 700, fontSize: '1rem', color: 'var(--dp-ink)', letterSpacing: '-0.02em' }}>
-                Sellio
-              </span>
+            <Link to="/" style={{ display: 'inline-flex', alignItems: 'center', textDecoration: 'none', marginBottom: '0.625rem' }}>
+              <BrandLogo small />
             </Link>
             <p style={{ fontSize: '0.8125rem', color: 'var(--dp-ink-muted)', lineHeight: 1.6, maxWidth: 220 }}>
               AI-powered Amazon listing audits. Improve your score, boost conversions.

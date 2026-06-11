@@ -12,8 +12,8 @@ import {
   Menu,
   X,
   Home,
-  BarChart2,
 } from 'lucide-react'
+import BrandLogo from '../ui/BrandLogo'
 
 const NAV_ITEMS = [
   { icon: Home, label: 'Home', path: '/', end: true },
@@ -72,26 +72,6 @@ function NavItem({
   )
 }
 
-function SellioLogo({ small }: { small?: boolean }) {
-  const wh = small ? 26 : 28
-  const r = small ? 7 : 8
-  const fs = small ? '0.9375rem' : '1rem'
-
-  return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-      <div style={{
-        width: wh, height: wh, borderRadius: r,
-        background: 'linear-gradient(135deg, #6A55FE 0%, #533AFD 100%)',
-        display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-      }}>
-        <BarChart2 size={small ? 13 : 15} color="#fff" />
-      </div>
-      <span style={{ fontSize: fs, fontWeight: 700, color: 'var(--dp-ink)', letterSpacing: '-0.02em' }}>
-        Sellio
-      </span>
-    </div>
-  )
-}
 
 function SidebarContent({ onClose }: { onClose: () => void }) {
   const { user, logout } = useAuth()
@@ -112,7 +92,7 @@ function SidebarContent({ onClose }: { onClose: () => void }) {
         alignItems: 'center',
         justifyContent: 'space-between',
       }}>
-        <SellioLogo />
+        <BrandLogo />
         <button
           onClick={onClose}
           className="dashboard-topbar-only"
@@ -230,7 +210,7 @@ export default function DashboardLayout() {
             zIndex: 30,
           }}
         >
-          <SellioLogo small />
+          <BrandLogo small />
           <button
             onClick={() => setSidebarOpen(true)}
             style={{

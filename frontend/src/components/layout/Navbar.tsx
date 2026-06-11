@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { Menu, X, BarChart2 } from 'lucide-react'
+import { Menu, X } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAuth } from '../../contexts/AuthContext'
+import BrandLogo from '../ui/BrandLogo'
 
 const guestLinks = [
   { label: 'Features', href: '/#features' },
@@ -16,7 +17,7 @@ const authLinks = [
   { label: 'Billing', href: '/dashboard/billing' },
 ]
 
-function SellioLogo() {
+function LogoLink() {
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -30,18 +31,8 @@ function SellioLogo() {
   }
 
   return (
-    <a href="/" onClick={handleClick} style={{ display: 'flex', alignItems: 'center', gap: '0.5625rem', textDecoration: 'none' }}>
-      <div style={{
-        width: 34, height: 34, borderRadius: 10,
-        background: 'linear-gradient(135deg, #6A55FE 0%, #533AFD 100%)',
-        display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-        boxShadow: '0 2px 10px rgba(83,58,253,0.28)',
-      }}>
-        <BarChart2 size={17} color="#fff" />
-      </div>
-      <span style={{ fontWeight: 800, fontSize: '1.125rem', color: 'var(--dp-ink)', letterSpacing: '-0.03em' }}>
-        Sellio
-      </span>
+    <a href="/" onClick={handleClick} style={{ textDecoration: 'none' }}>
+      <BrandLogo />
     </a>
   )
 }
@@ -99,7 +90,7 @@ export default function Navbar() {
           transition: 'box-shadow 0.25s ease, border-color 0.25s ease, background 0.25s ease',
         }}
       >
-        <SellioLogo />
+        <LogoLink />
 
         <nav style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }} className="hidden md:flex">
           {navLinks.map((link) =>
@@ -187,7 +178,7 @@ export default function Navbar() {
                 borderBottom: '1px solid rgba(196,188,255,0.38)',
                 background: 'rgba(238,240,255,0.35)',
               }}>
-                <SellioLogo />
+                <LogoLink />
                 <button
                   onClick={() => setMobileOpen(false)}
                   style={{
