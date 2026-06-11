@@ -90,6 +90,11 @@ class CreateCheckoutSessionView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
+        if not getattr(request.user, 'email_verified', False):
+            return Response(
+                {'detail': 'Please verify your email before purchasing a plan.'},
+                status=status.HTTP_403_FORBIDDEN,
+            )
         plan_key = request.data.get('plan_key')
         if not plan_key or plan_key not in PLAN_KEYS:
             return Response({'detail': 'Invalid plan_key.'}, status=status.HTTP_400_BAD_REQUEST)
@@ -123,6 +128,11 @@ class PolarCreateCheckoutView(APIView):
     _VALID_PLANS = ('launch', 'pro', 'growth', 'agency')
 
     def post(self, request):
+        if not getattr(request.user, 'email_verified', False):
+            return Response(
+                {'detail': 'Please verify your email before purchasing a plan.'},
+                status=status.HTTP_403_FORBIDDEN,
+            )
         plan = request.data.get('plan')
         logger.info('[Polar checkout] plan=%s user=%s', plan, request.user.email)
 
@@ -177,7 +187,7 @@ class PolarCreateCheckoutView(APIView):
         }
         if request.user.email:
             payload['customer_email'] = request.user.email
-        full_name = (getattr(request.user, 'get_full_name', None) or (lambda: ''))()
+        full_name = getattr(request.user, 'full_name', '') or ''
         if full_name:
             payload['customer_name'] = full_name
 

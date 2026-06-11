@@ -333,9 +333,6 @@ export default function BillingPage() {
                       color={subStatusStyle(profile.subscription_status)[0]}
                       bg={subStatusStyle(profile.subscription_status)[1]}
                     />
-                    {profile.payment_provider === 'mock' && (
-                      <span style={{ fontSize: '0.6875rem', color: 'var(--dp-ink-muted)' }}>Test mode</span>
-                    )}
                   </div>
                 )}
               </div>
@@ -589,7 +586,7 @@ export default function BillingPage() {
             display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap',
           }}>
             <p style={{ fontSize: '0.8125rem', color: 'var(--dp-ink-muted)', margin: 0 }}>
-              All plans include a free first audit. Payments are currently in test mode — no real charges.
+              All plans include a free first audit.
             </p>
             <Link to="/pricing" style={{ fontSize: '0.8125rem', color: 'var(--dp-ink-muted)', textDecoration: 'none', fontWeight: 500, flexShrink: 0 }}>
               View full pricing

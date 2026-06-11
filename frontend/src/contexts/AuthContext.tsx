@@ -8,6 +8,7 @@ interface User {
   avatar_url: string | null
   provider: string | null
   created_at: string
+  email_verified: boolean
 }
 
 interface AuthContextValue {
@@ -19,6 +20,8 @@ interface AuthContextValue {
   logout: () => void
   googleLogin: (credential: string) => Promise<void>
   updateProfile: (data: { full_name: string }) => Promise<void>
+  verifyEmail: (code: string) => Promise<void>
+  resendVerification: () => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null)
@@ -84,9 +87,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(data)
   }
 
+  const verifyEmail = async (code: string) => {
+    await api.post('/auth/verify-email/', { code })
+    await fetchMe()
+  }
+
+  const resendVerification = async () => {
+    await api.post('/auth/resend-verification/')
+  }
+
   return (
     <AuthContext.Provider
-      value={{ user, isAuthenticated: !!user, loading, login, register, logout, googleLogin, updateProfile }}
+      value={{
+        user, isAuthenticated: !!user, loading,
+        login, register, logout, googleLogin, updateProfile,
+        verifyEmail, resendVerification,
+      }}
     >
       {children}
     </AuthContext.Provider>

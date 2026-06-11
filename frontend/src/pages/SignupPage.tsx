@@ -51,7 +51,7 @@ export default function SignupPage() {
     setError('')
     try {
       await register(email, password, fullName)
-      navigate(next)
+      navigate('/verify-email')
     } catch (err) {
       setError(extractError(err))
     } finally {
