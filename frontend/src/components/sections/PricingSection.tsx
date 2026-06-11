@@ -1,7 +1,9 @@
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Check, Zap } from 'lucide-react'
 import AnimatedSection from '../ui/AnimatedSection'
 import { useAuth } from '../../contexts/AuthContext'
+import { createPolarCheckout } from '../../lib/billingApi'
 
 const freeTrialFeatures = [
   '1 limited audit',
@@ -109,8 +111,9 @@ function FeatureItem({ text, highlighted }: { text: string; highlighted?: boolea
 export default function PricingSection() {
   const { isAuthenticated } = useAuth()
   const navigate = useNavigate()
+  const [loadingPlan, setLoadingPlan] = useState<string | null>(null)
 
-  const handlePlanClick = (planKey: string) => {
+  const handlePlanClick = async (planKey: string) => {
     if (!isAuthenticated) {
       navigate(planKey === 'free_trial' ? '/signup' : '/login')
       return
@@ -119,7 +122,14 @@ export default function PricingSection() {
       navigate('/dashboard/new-audit')
       return
     }
-    navigate(`/dashboard/billing?plan=${planKey}`)
+    setLoadingPlan(planKey)
+    try {
+      const res = await createPolarCheckout(planKey)
+      window.location.href = res.data.checkout_url
+    } catch (err: unknown) {
+      console.error('[Polar checkout] failed:', (err as { response?: { status?: number; data?: unknown } })?.response?.status, (err as { response?: { data?: unknown } })?.response?.data)
+      setLoadingPlan(null)
+    }
   }
 
   return (
@@ -306,10 +316,11 @@ export default function PricingSection() {
 
                 <button
                   onClick={() => handlePlanClick(plan.key)}
+                  disabled={loadingPlan === plan.key}
                   className={plan.ctaVariant === 'primary' ? 'btn-primary justify-center' : 'btn-secondary justify-center'}
-                  style={{ padding: '0.6rem 0.875rem', fontSize: '0.8125rem', width: '100%', fontFamily: 'inherit' }}
+                  style={{ padding: '0.6rem 0.875rem', fontSize: '0.8125rem', width: '100%', fontFamily: 'inherit', opacity: loadingPlan === plan.key ? 0.7 : 1 }}
                 >
-                  {plan.cta}
+                  {loadingPlan === plan.key ? 'Loading…' : plan.cta}
                 </button>
               </div>
             ))}

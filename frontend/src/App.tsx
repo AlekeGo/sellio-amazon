@@ -17,6 +17,8 @@ import ImageStudioPage from './pages/ImageStudioPage'
 import BillingPage from './pages/BillingPage'
 import SettingsPage from './pages/SettingsPage'
 import DesignPreviewPage from './pages/DesignPreviewPage'
+import BillingSuccessPage from './pages/BillingSuccessPage'
+import BillingCancelPage from './pages/BillingCancelPage'
 
 const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID as string | undefined
 
@@ -30,6 +32,8 @@ function AppRoutes() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/pricing" element={<PricingPage />} />
+          <Route path="/billing/success" element={<BillingSuccessPage />} />
+          <Route path="/billing/cancel" element={<BillingCancelPage />} />
           <Route element={<ProtectedRoute />}>
             <Route element={<DashboardLayout />}>
               <Route path="/dashboard" element={<DashboardPage />} />

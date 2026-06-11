@@ -4,7 +4,7 @@ import {
   Crown, Zap, Star, X, AlertCircle, ArrowRight,
   CreditCard, Check, Loader2, CheckCircle2, Package, Receipt,
 } from 'lucide-react'
-import { getMyBilling, getBillingPlans, createCheckoutSession, mockCompletePayment } from '../lib/billingApi'
+import { getMyBilling, getBillingPlans, createPolarCheckout, createCheckoutSession, mockCompletePayment } from '../lib/billingApi'
 import type { BillingMeResponse, BillingPlan, CreditTransaction, Payment } from '../types/billing'
 
 const SUBSCRIPTION_KEYS = ['launch', 'pro', 'growth', 'agency']
@@ -160,24 +160,27 @@ export default function BillingPage() {
       if (!plan || plan.mode === 'free') return
       autoCheckoutFired.current = true
       setCheckoutLoading(true)
-      createCheckoutSession(planParam)
-        .then(res => setCheckoutState({ planKey: planParam, paymentId: res.data.payment_id, plan }))
-        .catch(() => setCheckoutError('Could not open checkout. Please try again.'))
-        .finally(() => setCheckoutLoading(false))
+      createPolarCheckout(planParam)
+        .then(res => { window.location.href = res.data.checkout_url })
+        .catch((err: unknown) => {
+          const detail = (err as { response?: { data?: { detail?: string } } })?.response?.data?.detail
+          console.error('[Polar checkout] failed:', (err as { response?: { status?: number; data?: unknown } })?.response?.status, (err as { response?: { data?: unknown } })?.response?.data)
+          setCheckoutError(detail || 'Could not open checkout. Please try again.')
+          setCheckoutLoading(false)
+        })
     }
   }, [plans, planParam, checkoutParam, paymentIdParam])
 
   const openCheckout = async (planKey: string) => {
-    const plan = plans.find(p => p.key === planKey)
-    if (!plan) return
     setCheckoutError(null)
     setCheckoutLoading(true)
     try {
-      const res = await createCheckoutSession(planKey)
-      setCheckoutState({ planKey, paymentId: res.data.payment_id, plan })
-    } catch {
-      setCheckoutError('Could not open checkout. Please try again.')
-    } finally {
+      const res = await createPolarCheckout(planKey)
+      window.location.href = res.data.checkout_url
+    } catch (err: unknown) {
+      const detail = (err as { response?: { data?: { detail?: string } } })?.response?.data?.detail
+      console.error('[Polar checkout] failed:', (err as { response?: { status?: number; data?: unknown } })?.response?.status, (err as { response?: { data?: unknown } })?.response?.data)
+      setCheckoutError(detail || 'Could not open checkout. Please try again.')
       setCheckoutLoading(false)
     }
   }
