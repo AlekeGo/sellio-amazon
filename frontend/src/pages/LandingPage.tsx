@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
+import { createPortal } from 'react-dom'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { Zap, Menu, X } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
@@ -46,6 +47,8 @@ function AuthWorkspacePanel() {
   const { user } = useAuth()
   const [mobileOpen, setMobileOpen] = useState(false)
   const location = useLocation()
+  const menuPanelRef = useRef<HTMLDivElement>(null)
+  const toggleButtonRef = useRef<HTMLButtonElement>(null)
 
   useEffect(() => { setMobileOpen(false) }, [location])
 
@@ -55,6 +58,19 @@ function AuthWorkspacePanel() {
     document.addEventListener('keydown', onKey)
     document.body.style.overflow = 'hidden'
     return () => { document.removeEventListener('keydown', onKey); document.body.style.overflow = '' }
+  }, [mobileOpen])
+
+  useEffect(() => {
+    if (!mobileOpen) return
+    const handler = (e: PointerEvent) => {
+      if (
+        menuPanelRef.current?.contains(e.target as Node) ||
+        toggleButtonRef.current?.contains(e.target as Node)
+      ) return
+      setMobileOpen(false)
+    }
+    document.addEventListener('pointerdown', handler, { capture: true })
+    return () => document.removeEventListener('pointerdown', handler, { capture: true })
   }, [mobileOpen])
 
   const chips: Array<{ label: string; to?: string; action?: () => void }> = [
@@ -127,6 +143,7 @@ function AuthWorkspacePanel() {
             New Audit
           </Link>
           <button
+            ref={toggleButtonRef}
             onClick={() => setMobileOpen(v => !v)}
             style={{
               background: 'rgba(83,58,253,0.06)',
@@ -143,13 +160,17 @@ function AuthWorkspacePanel() {
       </div>
 
       {/* Mobile dropdown */}
+      {mobileOpen && createPortal(
+        <div
+          aria-hidden="true"
+          style={{ position: 'fixed', inset: 0, zIndex: 40, background: 'rgba(13,37,61,0.2)', pointerEvents: 'auto' }}
+        />,
+        document.body
+      )}
       {mobileOpen && (
-        <>
-          <div
-            style={{ position: 'fixed', inset: 0, zIndex: 40, background: 'rgba(13,37,61,0.2)' }}
-            onClick={() => setMobileOpen(false)}
-          />
-          <div style={{
+        <div
+          ref={menuPanelRef}
+          style={{
             position: 'absolute',
             top: 'calc(100% - 0.375rem)',
             left: '1.5rem', right: '1.5rem',
@@ -160,31 +181,31 @@ function AuthWorkspacePanel() {
             boxShadow: '0 8px 32px rgba(83,58,253,0.14)',
             padding: '0.625rem',
             display: 'flex', flexDirection: 'column', gap: '0.125rem',
-          }}>
-            {chips.map(chip =>
-              chip.to ? (
-                <Link
-                  key={chip.label}
-                  to={chip.to}
-                  onClick={() => setMobileOpen(false)}
-                  className="mobile-nav-item"
-                  style={{ padding: '0.75rem 1rem', borderRadius: 10, fontSize: '0.9375rem', fontWeight: 500, textDecoration: 'none' }}
-                >
-                  {chip.label}
-                </Link>
-              ) : (
-                <button
-                  key={chip.label}
-                  onClick={() => { chip.action?.(); setMobileOpen(false) }}
-                  className="mobile-nav-item"
-                  style={{ padding: '0.75rem 1rem', borderRadius: 10, border: 'none', background: 'none', cursor: 'pointer', fontSize: '0.9375rem', fontFamily: 'inherit', textAlign: 'left', fontWeight: 500 }}
-                >
-                  {chip.label}
-                </button>
-              )
-            )}
-          </div>
-        </>
+          }}
+        >
+          {chips.map(chip =>
+            chip.to ? (
+              <Link
+                key={chip.label}
+                to={chip.to}
+                onClick={() => setMobileOpen(false)}
+                className="mobile-nav-item"
+                style={{ padding: '0.75rem 1rem', borderRadius: 10, fontSize: '0.9375rem', fontWeight: 500, textDecoration: 'none' }}
+              >
+                {chip.label}
+              </Link>
+            ) : (
+              <button
+                key={chip.label}
+                onClick={() => { chip.action?.(); setMobileOpen(false) }}
+                className="mobile-nav-item"
+                style={{ padding: '0.75rem 1rem', borderRadius: 10, border: 'none', background: 'none', cursor: 'pointer', fontSize: '0.9375rem', fontFamily: 'inherit', textAlign: 'left', fontWeight: 500 }}
+              >
+                {chip.label}
+              </button>
+            )
+          )}
+        </div>
       )}
     </div>
   )
@@ -193,6 +214,8 @@ function AuthWorkspacePanel() {
 function GuestTopBar() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const location = useLocation()
+  const menuPanelRef = useRef<HTMLDivElement>(null)
+  const toggleButtonRef = useRef<HTMLButtonElement>(null)
 
   useEffect(() => { setMobileOpen(false) }, [location])
 
@@ -202,6 +225,19 @@ function GuestTopBar() {
     document.addEventListener('keydown', onKey)
     document.body.style.overflow = 'hidden'
     return () => { document.removeEventListener('keydown', onKey); document.body.style.overflow = '' }
+  }, [mobileOpen])
+
+  useEffect(() => {
+    if (!mobileOpen) return
+    const handler = (e: PointerEvent) => {
+      if (
+        menuPanelRef.current?.contains(e.target as Node) ||
+        toggleButtonRef.current?.contains(e.target as Node)
+      ) return
+      setMobileOpen(false)
+    }
+    document.addEventListener('pointerdown', handler, { capture: true })
+    return () => document.removeEventListener('pointerdown', handler, { capture: true })
   }, [mobileOpen])
 
   const handleNavItem = (id: string) => {
@@ -249,6 +285,7 @@ function GuestTopBar() {
             Start Free
           </Link>
           <button
+            ref={toggleButtonRef}
             onClick={() => setMobileOpen(v => !v)}
             style={{
               background: 'rgba(83,58,253,0.06)',
@@ -265,13 +302,17 @@ function GuestTopBar() {
       </div>
 
       {/* Mobile dropdown */}
+      {mobileOpen && createPortal(
+        <div
+          aria-hidden="true"
+          style={{ position: 'fixed', inset: 0, zIndex: 40, background: 'rgba(13,37,61,0.2)', pointerEvents: 'auto' }}
+        />,
+        document.body
+      )}
       {mobileOpen && (
-        <>
-          <div
-            style={{ position: 'fixed', inset: 0, zIndex: 40, background: 'rgba(13,37,61,0.2)' }}
-            onClick={() => setMobileOpen(false)}
-          />
-          <div style={{
+        <div
+          ref={menuPanelRef}
+          style={{
             position: 'absolute',
             top: 'calc(100% - 0.375rem)',
             left: '1.5rem', right: '1.5rem',
@@ -282,39 +323,39 @@ function GuestTopBar() {
             boxShadow: '0 8px 32px rgba(83,58,253,0.14)',
             padding: '0.625rem',
             display: 'flex', flexDirection: 'column', gap: '0.125rem',
-          }}>
-            <button
-              onClick={() => handleNavItem('how-it-works')}
-              className="mobile-nav-item"
-              style={{ padding: '0.75rem 1rem', borderRadius: 10, border: 'none', background: 'none', cursor: 'pointer', fontSize: '0.9375rem', fontFamily: 'inherit', textAlign: 'left', fontWeight: 500 }}
-            >
-              How it works
-            </button>
-            <button
-              onClick={() => handleNavItem('features')}
-              className="mobile-nav-item"
-              style={{ padding: '0.75rem 1rem', borderRadius: 10, border: 'none', background: 'none', cursor: 'pointer', fontSize: '0.9375rem', fontFamily: 'inherit', textAlign: 'left', fontWeight: 500 }}
-            >
-              Features
-            </button>
-            <button
-              onClick={() => handleNavItem('pricing')}
-              className="mobile-nav-item"
-              style={{ padding: '0.75rem 1rem', borderRadius: 10, border: 'none', background: 'none', cursor: 'pointer', fontSize: '0.9375rem', fontFamily: 'inherit', textAlign: 'left', fontWeight: 500 }}
-            >
-              Pricing
-            </button>
-            <div style={{ height: 1, background: 'rgba(196,188,255,0.38)', margin: '0.25rem 0.375rem' }} />
-            <Link
-              to="/login"
-              onClick={() => setMobileOpen(false)}
-              className="mobile-nav-item"
-              style={{ padding: '0.75rem 1rem', borderRadius: 10, fontSize: '0.9375rem', fontWeight: 500, textDecoration: 'none' }}
-            >
-              Sign in
-            </Link>
-          </div>
-        </>
+          }}
+        >
+          <button
+            onClick={() => handleNavItem('how-it-works')}
+            className="mobile-nav-item"
+            style={{ padding: '0.75rem 1rem', borderRadius: 10, border: 'none', background: 'none', cursor: 'pointer', fontSize: '0.9375rem', fontFamily: 'inherit', textAlign: 'left', fontWeight: 500 }}
+          >
+            How it works
+          </button>
+          <button
+            onClick={() => handleNavItem('features')}
+            className="mobile-nav-item"
+            style={{ padding: '0.75rem 1rem', borderRadius: 10, border: 'none', background: 'none', cursor: 'pointer', fontSize: '0.9375rem', fontFamily: 'inherit', textAlign: 'left', fontWeight: 500 }}
+          >
+            Features
+          </button>
+          <button
+            onClick={() => handleNavItem('pricing')}
+            className="mobile-nav-item"
+            style={{ padding: '0.75rem 1rem', borderRadius: 10, border: 'none', background: 'none', cursor: 'pointer', fontSize: '0.9375rem', fontFamily: 'inherit', textAlign: 'left', fontWeight: 500 }}
+          >
+            Pricing
+          </button>
+          <div style={{ height: 1, background: 'rgba(196,188,255,0.38)', margin: '0.25rem 0.375rem' }} />
+          <Link
+            to="/login"
+            onClick={() => setMobileOpen(false)}
+            className="mobile-nav-item"
+            style={{ padding: '0.75rem 1rem', borderRadius: 10, fontSize: '0.9375rem', fontWeight: 500, textDecoration: 'none' }}
+          >
+            Sign in
+          </Link>
+        </div>
       )}
     </div>
   )
