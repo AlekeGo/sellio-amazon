@@ -9,6 +9,7 @@ from google.genai import types
 
 REQUIRED_FIELDS_V2 = [
     'score', 'score_label', 'executive_summary',
+    'score_breakdown', 'score_reasoning',
     'top_critical_issues', 'fix_this_first',
     'title_upgrade', 'about_this_item_upgrade',
     'product_details_fixes', 'description_upgrade',
@@ -18,6 +19,41 @@ REQUIRED_FIELDS_V2 = [
     'buyer_objection_radar', 'competitor_analysis_lite',
     'pro_upgrade_pack', 'compact_report',
 ]
+
+_SCORE_WEIGHTS = {
+    'title_quality': 0.20,
+    'bullet_points': 0.20,
+    'description': 0.15,
+    'seo_keywords': 0.20,
+    'images': 0.15,
+    'conversion_trust': 0.10,
+}
+
+
+def _compute_weighted_score(score_breakdown: dict) -> int | None:
+    """
+    Compute backend-authoritative score from AI category scores.
+    Normalizes out-of-range values; scales proportionally for missing categories.
+    Returns None if fewer than 3 valid categories are present (< 50% weight coverage).
+    """
+    if not isinstance(score_breakdown, dict):
+        return None
+    total_weight = 0.0
+    weighted_sum = 0.0
+    for key, weight in _SCORE_WEIGHTS.items():
+        raw = score_breakdown.get(key)
+        if raw is None:
+            continue
+        try:
+            val = max(0.0, min(100.0, float(raw)))
+        except (TypeError, ValueError):
+            continue
+        weighted_sum += val * weight
+        total_weight += weight
+    if total_weight < 0.5:
+        return None
+    return max(0, min(100, round(weighted_sum / total_weight)))
+
 
 _TEMPORARY_SIGNALS = (
     '503', 'unavailable', 'rate limit', 'resource exhausted',
@@ -167,21 +203,38 @@ OUTPUT RULES — follow all of these exactly:
 25. pro_upgrade_pack: required. All copy must reflect the seller persona.
 26. compact_report: required. This is the 30-60 second executive summary. Every field must be short and specific.
 27. compact_report.score_snapshot.overall_score must equal the top-level "score" field exactly.
-28. The top-level "score" and all compact_report sub_scores must be VARIED integers 0-100. Never use multiples of 5 or 10. Good: 47, 62, 71, 83. Bad: 40, 60, 70, 80.
-29. compact_report.score_snapshot.sub_scores: all 5 values must be varied integers 0-100. No rounding.
-30. compact_report.fix_first_table: max 3 items. Each problem, why_it_matters, and fix must be 1 short sentence or phrase.
-31. compact_report.buyer_and_competitor_insights.buyer_objections: max 3 items. Each buyer_concern and fix must be concise.
-32. compact_report.buyer_and_competitor_insights.competitor_actions: max 3 items. Use [] if no competitor data was provided.
-33. compact_report.next_actions: max 5 items in descending priority order. Do not repeat fix_first_table content verbatim.
-34. compact_report.advanced_details: use [] for any array with no relevant data. Do NOT invent content.
-35. Never invent fake certifications, fake test results, fake sourcing, fake materials, or fake credentials in any output field.
+28. score_breakdown: rate each of the 6 categories as an independent honest integer 0-100 reflecting ONLY that aspect of the listing. A weak listing scores roughly 20-50 per category; a strong listing scores 70-92. Never assign the same score to all 6 categories — evaluate each one separately. The top-level "score" must equal the pre-computed weighted sum: round((title_quality*0.20) + (bullet_points*0.20) + (description*0.15) + (seo_keywords*0.20) + (images*0.15) + (conversion_trust*0.10)). If product_images_notes is "Not provided", score images lower (25-45) and note the gap.
+29. score_reasoning: for each of the 6 score_breakdown keys write one concise sentence explaining why that exact score was assigned.
+30. compact_report.score_snapshot.sub_scores: all 5 values (seo, copy, images, trust, competitor_position) must be varied integers 0-100. These are different groupings from score_breakdown and values may differ.
+31. compact_report.fix_first_table: max 3 items. Each problem, why_it_matters, and fix must be 1 short sentence or phrase.
+32. compact_report.buyer_and_competitor_insights.buyer_objections: max 3 items. Each buyer_concern and fix must be concise.
+33. compact_report.buyer_and_competitor_insights.competitor_actions: max 3 items. Use [] if no competitor data was provided.
+34. compact_report.next_actions: max 5 items in descending priority order. Do not repeat fix_first_table content verbatim.
+35. compact_report.advanced_details: use [] for any array with no relevant data. Do NOT invent content.
+36. Never invent fake certifications, fake test results, fake sourcing, fake materials, or fake credentials in any output field.
 
 Return this exact JSON structure:
 
 {{
-  "score": <integer 0-100, varied — not a multiple of 5 or 10, e.g. 47 62 71 83>,
+  "score": <integer 0-100 — must equal round((title_quality*0.20)+(bullet_points*0.20)+(description*0.15)+(seo_keywords*0.20)+(images*0.15)+(conversion_trust*0.10))>,
   "score_label": "<short label max 6 words>",
   "executive_summary": "<1 sentence — the single biggest opportunity for this listing>",
+  "score_breakdown": {{
+    "title_quality": <integer 0-100>,
+    "bullet_points": <integer 0-100>,
+    "description": <integer 0-100>,
+    "seo_keywords": <integer 0-100>,
+    "images": <integer 0-100>,
+    "conversion_trust": <integer 0-100>
+  }},
+  "score_reasoning": {{
+    "title_quality": "<1 sentence explaining this score>",
+    "bullet_points": "<1 sentence explaining this score>",
+    "description": "<1 sentence explaining this score>",
+    "seo_keywords": "<1 sentence explaining this score>",
+    "images": "<1 sentence explaining this score>",
+    "conversion_trust": "<1 sentence explaining this score>"
+  }},
   "top_critical_issues": [
     {{
       "area": "<Amazon section name>",
@@ -412,10 +465,14 @@ def _safe_parse_json(raw: str) -> dict:
 
 
 def _fallback_report() -> dict:
+    _empty_breakdown = {k: 0 for k in _SCORE_WEIGHTS}
+    _empty_reasoning = {k: '' for k in _SCORE_WEIGHTS}
     return {
         'score': 0,
         'score_label': 'Incomplete',
         'executive_summary': 'AI response was incomplete. Please try regenerating this audit.',
+        'score_breakdown': _empty_breakdown,
+        'score_reasoning': _empty_reasoning,
         'top_critical_issues': [],
         'fix_this_first': [],
         'title_upgrade': {'current_issue': '', 'improved_title': ''},
@@ -495,10 +552,18 @@ def run_gemini_audit(audit) -> dict:
             for field in missing:
                 data[field] = fallback[field]
 
-            try:
-                data['score'] = int(data['score'])
-            except (TypeError, ValueError):
-                data['score'] = 0
+            computed = _compute_weighted_score(data.get('score_breakdown', {}))
+            if computed is None:
+                raise GeminiTemporaryError(
+                    'AI analysis returned incomplete category scores. Please try again in a few minutes.'
+                )
+            data['score'] = computed
+            cr = data.get('compact_report')
+            if isinstance(cr, dict):
+                ss = cr.get('score_snapshot')
+                if isinstance(ss, dict):
+                    ss['overall_score'] = computed
+
             data['score_label'] = str(data.get('score_label', ''))
             data['executive_summary'] = str(data.get('executive_summary', ''))
 
