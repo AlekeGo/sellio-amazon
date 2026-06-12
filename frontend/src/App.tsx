@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { GoogleOAuthProvider } from '@react-oauth/google'
+import { Analytics } from '@vercel/analytics/react'
 import { AuthProvider } from './contexts/AuthContext'
 import ProtectedRoute from './components/ProtectedRoute'
 import DashboardLayout from './components/layout/DashboardLayout'
@@ -71,8 +72,14 @@ export default function App() {
     return (
       <GoogleOAuthProvider clientId={googleClientId}>
         <AppRoutes />
+        <Analytics />
       </GoogleOAuthProvider>
     )
   }
-  return <AppRoutes />
+  return (
+    <>
+      <AppRoutes />
+      <Analytics />
+    </>
+  )
 }
