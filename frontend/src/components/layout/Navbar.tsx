@@ -159,14 +159,23 @@ export default function Navbar() {
             <motion.div
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
-              style={{ position: 'fixed', inset: 0, zIndex: 40, background: 'rgba(13,37,61,0.35)', backdropFilter: 'blur(4px)' }}
+              style={{
+                position: 'fixed', top: 0, right: 0, bottom: 0, left: 0,
+                width: '100vw', height: '100vh',
+                zIndex: 95,
+                background: 'rgba(13,37,61,0.35)', backdropFilter: 'blur(4px)',
+                cursor: 'pointer',
+                WebkitTapHighlightColor: 'transparent',
+                touchAction: 'manipulation',
+              }}
               onClick={() => setMobileOpen(false)}
             />
             <motion.div
               initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }}
               transition={{ type: 'tween', duration: 0.28, ease: [0.32, 0.72, 0, 1] }}
+              onClick={(e) => e.stopPropagation()}
               style={{
-                position: 'fixed', top: 0, right: 0, bottom: 0, zIndex: 50, width: 300,
+                position: 'fixed', top: 0, right: 0, bottom: 0, zIndex: 96, width: 300,
                 background: '#ffffff', borderLeft: '1px solid rgba(196,188,255,0.50)',
                 display: 'flex', flexDirection: 'column',
                 boxShadow: '-12px 0 48px rgba(83,58,253,0.12)',
