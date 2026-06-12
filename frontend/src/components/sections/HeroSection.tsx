@@ -1,10 +1,11 @@
 import { Link } from 'react-router-dom'
-import { motion } from 'framer-motion'
+import { motion, useReducedMotion } from 'framer-motion'
 import { ArrowRight, Check } from 'lucide-react'
 
 const EASE = [0.21, 0.47, 0.32, 0.98] as const
 
 export default function HeroSection() {
+  const prefersReduced = useReducedMotion()
   const scrollToDemo = () => {
     document.getElementById('audit-demo')?.scrollIntoView({ behavior: 'smooth' })
   }
@@ -13,7 +14,7 @@ export default function HeroSection() {
     <section className="relative min-h-screen flex items-center overflow-hidden" style={{ paddingTop: '4rem' }}>
       <div className="absolute inset-0 pointer-events-none">
         <div
-          className="absolute rounded-full"
+          className="absolute rounded-full hero-bg-orb"
           style={{
             width: '1200px', height: '1200px',
             top: '-500px', left: '-350px',
@@ -22,7 +23,7 @@ export default function HeroSection() {
           }}
         />
         <div
-          className="absolute rounded-full"
+          className="absolute rounded-full hero-bg-orb"
           style={{
             width: '850px', height: '850px',
             top: '-180px', right: '-220px',
@@ -31,7 +32,7 @@ export default function HeroSection() {
           }}
         />
         <div
-          className="absolute rounded-full"
+          className="absolute rounded-full hero-bg-orb"
           style={{
             width: '600px', height: '600px',
             bottom: '60px', left: '22%',
@@ -40,7 +41,7 @@ export default function HeroSection() {
           }}
         />
         <div
-          className="absolute rounded-full"
+          className="absolute rounded-full hero-bg-orb"
           style={{
             width: '420px', height: '420px',
             top: '18%', right: '4%',
@@ -62,9 +63,9 @@ export default function HeroSection() {
         <div style={{ maxWidth: '840px', margin: '0 auto', textAlign: 'center' }}>
 
           <motion.h1
-            initial={{ opacity: 0, y: 28 }}
+            initial={prefersReduced ? { opacity: 1, y: 0 } : { opacity: 0, y: 28 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.75, delay: 0.12, ease: EASE }}
+            transition={prefersReduced ? { duration: 0 } : { duration: 0.75, delay: 0.12, ease: EASE }}
             style={{
               fontWeight: 900,
               letterSpacing: '-0.042em',
@@ -83,9 +84,9 @@ export default function HeroSection() {
           </motion.h1>
 
           <motion.p
-            initial={{ opacity: 0, y: 20 }}
+            initial={prefersReduced ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.65, delay: 0.24, ease: EASE }}
+            transition={prefersReduced ? { duration: 0 } : { duration: 0.65, delay: 0.24, ease: EASE }}
             style={{
               color: 'var(--dp-ink-muted)',
               fontSize: '1.1875rem',
@@ -98,9 +99,9 @@ export default function HeroSection() {
           </motion.p>
 
           <motion.div
-            initial={{ opacity: 0, y: 16 }}
+            initial={prefersReduced ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.34, ease: EASE }}
+            transition={prefersReduced ? { duration: 0 } : { duration: 0.6, delay: 0.34, ease: EASE }}
             style={{
               display: 'flex', gap: '0.875rem', flexWrap: 'wrap',
               justifyContent: 'center', marginBottom: '2.5rem',
@@ -123,9 +124,9 @@ export default function HeroSection() {
           </motion.div>
 
           <motion.div
-            initial={{ opacity: 0, y: 16 }}
+            initial={prefersReduced ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.44, ease: EASE }}
+            transition={prefersReduced ? { duration: 0 } : { duration: 0.6, delay: 0.44, ease: EASE }}
             style={{ display: 'flex', gap: '0.625rem', flexWrap: 'wrap', justifyContent: 'center' }}
           >
             {['Amazon-ready copy', 'AI image pack', 'Score in 60s'].map(item => (

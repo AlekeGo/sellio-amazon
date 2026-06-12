@@ -49,6 +49,14 @@ function AuthWorkspacePanel() {
 
   useEffect(() => { setMobileOpen(false) }, [location])
 
+  useEffect(() => {
+    if (!mobileOpen) return
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setMobileOpen(false) }
+    document.addEventListener('keydown', onKey)
+    document.body.style.overflow = 'hidden'
+    return () => { document.removeEventListener('keydown', onKey); document.body.style.overflow = '' }
+  }, [mobileOpen])
+
   const chips: Array<{ label: string; to?: string; action?: () => void }> = [
     { label: 'Dashboard', to: '/dashboard' },
     { label: 'New Audit', to: '/dashboard/new-audit' },
@@ -107,8 +115,17 @@ function AuthWorkspacePanel() {
           New Audit
         </Link>
 
-        {/* Mobile: hamburger button */}
+        {/* Mobile: New Audit quick button + hamburger */}
         <div className="dp-mobile-only" style={{ marginLeft: 'auto', alignItems: 'center', gap: '0.5rem' }}>
+          <Link
+            to="/dashboard/new-audit"
+            className="dp-btn-primary"
+            style={{ padding: '0.4375rem 0.875rem', fontSize: '0.8125rem', whiteSpace: 'nowrap', gap: '0.3125rem' }}
+            onClick={() => setMobileOpen(false)}
+          >
+            <Zap size={12} />
+            New Audit
+          </Link>
           <button
             onClick={() => setMobileOpen(v => !v)}
             style={{
@@ -129,7 +146,7 @@ function AuthWorkspacePanel() {
       {mobileOpen && (
         <>
           <div
-            style={{ position: 'fixed', inset: 0, zIndex: 40, background: 'rgba(13,37,61,0.18)', backdropFilter: 'blur(2px)' }}
+            style={{ position: 'fixed', inset: 0, zIndex: 40, background: 'rgba(13,37,61,0.2)' }}
             onClick={() => setMobileOpen(false)}
           />
           <div style={{
@@ -175,6 +192,17 @@ function AuthWorkspacePanel() {
 
 function GuestTopBar() {
   const [mobileOpen, setMobileOpen] = useState(false)
+  const location = useLocation()
+
+  useEffect(() => { setMobileOpen(false) }, [location])
+
+  useEffect(() => {
+    if (!mobileOpen) return
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setMobileOpen(false) }
+    document.addEventListener('keydown', onKey)
+    document.body.style.overflow = 'hidden'
+    return () => { document.removeEventListener('keydown', onKey); document.body.style.overflow = '' }
+  }, [mobileOpen])
 
   const handleNavItem = (id: string) => {
     scrollTo(id)
@@ -240,7 +268,7 @@ function GuestTopBar() {
       {mobileOpen && (
         <>
           <div
-            style={{ position: 'fixed', inset: 0, zIndex: 40, background: 'rgba(13,37,61,0.18)', backdropFilter: 'blur(2px)' }}
+            style={{ position: 'fixed', inset: 0, zIndex: 40, background: 'rgba(13,37,61,0.2)' }}
             onClick={() => setMobileOpen(false)}
           />
           <div style={{
@@ -297,7 +325,7 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen landing-page-root">
-      <header style={{
+      <header className="landing-header" style={{
         position: 'fixed',
         top: 0,
         left: 0,
