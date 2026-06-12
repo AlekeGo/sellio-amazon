@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { Zap, Menu, X } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
@@ -44,6 +44,10 @@ function SellioWordmark() {
 
 function AuthWorkspacePanel() {
   const { user } = useAuth()
+  const [mobileOpen, setMobileOpen] = useState(false)
+  const location = useLocation()
+
+  useEffect(() => { setMobileOpen(false) }, [location])
 
   const chips: Array<{ label: string; to?: string; action?: () => void }> = [
     { label: 'Dashboard', to: '/dashboard' },
@@ -54,7 +58,7 @@ function AuthWorkspacePanel() {
   ]
 
   return (
-    <div style={{ maxWidth: 1160, margin: '0 auto', padding: '0.5rem 1.5rem' }}>
+    <div style={{ maxWidth: 1160, margin: '0 auto', padding: '0.5rem 1.5rem', position: 'relative' }}>
       <div className="landing-navbar-inner" style={{
         borderRadius: '1.75rem',
         background: 'linear-gradient(135deg, rgba(238,234,255,0.92) 0%, rgba(245,243,255,0.96) 50%, rgba(238,240,255,0.88) 100%)',
@@ -93,15 +97,78 @@ function AuthWorkspacePanel() {
           </nav>
         </div>
 
+        {/* Desktop: New Audit CTA */}
         <Link
           to="/dashboard/new-audit"
-          className="dp-btn-primary"
+          className="dp-btn-primary dp-desktop-only"
           style={{ padding: '0.5rem 1.125rem', fontSize: '0.8125rem', flexShrink: 0, gap: '0.375rem', marginLeft: 'auto' }}
         >
           <Zap size={13} />
           New Audit
         </Link>
+
+        {/* Mobile: hamburger button */}
+        <div className="dp-mobile-only" style={{ marginLeft: 'auto', alignItems: 'center', gap: '0.5rem' }}>
+          <button
+            onClick={() => setMobileOpen(v => !v)}
+            style={{
+              background: 'rgba(83,58,253,0.06)',
+              border: '1px solid rgba(196,188,255,0.5)',
+              borderRadius: 10, width: 36, height: 36,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              cursor: 'pointer', color: 'var(--dp-primary)', flexShrink: 0, padding: 0,
+            }}
+            aria-label="Toggle navigation"
+          >
+            {mobileOpen ? <X size={17} /> : <Menu size={17} />}
+          </button>
+        </div>
       </div>
+
+      {/* Mobile dropdown */}
+      {mobileOpen && (
+        <>
+          <div
+            style={{ position: 'fixed', inset: 0, zIndex: 40, background: 'rgba(13,37,61,0.18)', backdropFilter: 'blur(2px)' }}
+            onClick={() => setMobileOpen(false)}
+          />
+          <div style={{
+            position: 'absolute',
+            top: 'calc(100% - 0.375rem)',
+            left: '1.5rem', right: '1.5rem',
+            zIndex: 60,
+            borderRadius: '1.25rem',
+            background: '#ffffff',
+            border: '1px solid rgba(196,188,255,0.5)',
+            boxShadow: '0 8px 32px rgba(83,58,253,0.14)',
+            padding: '0.625rem',
+            display: 'flex', flexDirection: 'column', gap: '0.125rem',
+          }}>
+            {chips.map(chip =>
+              chip.to ? (
+                <Link
+                  key={chip.label}
+                  to={chip.to}
+                  onClick={() => setMobileOpen(false)}
+                  className="mobile-nav-item"
+                  style={{ padding: '0.75rem 1rem', borderRadius: 10, fontSize: '0.9375rem', fontWeight: 500, textDecoration: 'none' }}
+                >
+                  {chip.label}
+                </Link>
+              ) : (
+                <button
+                  key={chip.label}
+                  onClick={() => { chip.action?.(); setMobileOpen(false) }}
+                  className="mobile-nav-item"
+                  style={{ padding: '0.75rem 1rem', borderRadius: 10, border: 'none', background: 'none', cursor: 'pointer', fontSize: '0.9375rem', fontFamily: 'inherit', textAlign: 'left', fontWeight: 500 }}
+                >
+                  {chip.label}
+                </button>
+              )
+            )}
+          </div>
+        </>
+      )}
     </div>
   )
 }
