@@ -31,8 +31,14 @@ class AuditListCreateView(APIView):
         serializer = AuditCreateSerializer(data=request.data, context={'request': request})
         serializer.is_valid(raise_exception=True)
         audit = serializer.save()
-        for f in request.FILES.getlist('images'):
-            AuditImage.objects.create(audit=audit, image=f, original_filename=f.name)
+        try:
+            for f in request.FILES.getlist('images'):
+                AuditImage.objects.create(audit=audit, image=f, original_filename=f.name)
+        except Exception:
+            return Response(
+                {'detail': 'Image upload failed. Please try again.'},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
         return Response(AuditDetailSerializer(audit, context={'request': request}).data, status=status.HTTP_201_CREATED)
 
 
@@ -281,10 +287,16 @@ class AuditImageListView(APIView):
         files = request.FILES.getlist('images')
         if not files:
             return Response({'detail': 'No images provided.'}, status=status.HTTP_400_BAD_REQUEST)
-        created = [
-            AuditImage.objects.create(audit=audit, image=f, original_filename=f.name)
-            for f in files
-        ]
+        try:
+            created = [
+                AuditImage.objects.create(audit=audit, image=f, original_filename=f.name)
+                for f in files
+            ]
+        except Exception:
+            return Response(
+                {'detail': 'Image upload failed. Please try again.'},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
         return Response(
             AuditImageSerializer(created, many=True, context={'request': request}).data,
             status=status.HTTP_201_CREATED,
