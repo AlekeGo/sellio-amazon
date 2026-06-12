@@ -33,6 +33,16 @@
   .dp-mobile-only { display: none !important; }
 }
 
+/* Landing page root: push content below fixed header */
+.landing-page-root {
+  padding-top: 88px; /* .landing-navbar-inner min-height (72px) + wrapper 0.5rem top/bottom (16px) */
+}
+@media (max-width: 767px) {
+  .landing-page-root {
+    padding-top: 76px; /* .landing-navbar-inner mobile min-height (60px) + wrapper 16px */
+  }
+}
+
 /* Landing page navbar pill — responsive padding/gap */
 .landing-navbar-inner {
   display: flex;

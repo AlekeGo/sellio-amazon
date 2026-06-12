@@ -229,10 +229,12 @@ export default function LandingPage() {
   const { isAuthenticated } = useAuth()
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen landing-page-root">
       <header style={{
-        position: 'sticky',
+        position: 'fixed',
         top: 0,
+        left: 0,
+        right: 0,
         zIndex: 50,
         width: '100%',
         background: 'rgba(255,255,255,0.72)',
