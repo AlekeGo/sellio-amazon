@@ -18,6 +18,7 @@ REQUIRED_FIELDS_V2 = [
     'priority_checklist', 'details',
     'buyer_objection_radar', 'competitor_analysis_lite',
     'pro_upgrade_pack', 'compact_report',
+    'title_suggestions', 'quick_wins',
 ]
 
 _SCORE_WEIGHTS = {
@@ -183,11 +184,11 @@ OUTPUT RULES — follow all of these exactly:
 5. All arrays must be valid JSON arrays. Never leave a dangling comma after the last element.
 6. If a field has no data, use an empty array [] or empty string "" — never omit required fields.
 7. Every text value must be a single string on one line. No embedded newlines inside string values.
-8. Keep all text SHORT: 1 sentence per field unless the schema says otherwise.
-9. top_critical_issues: max 5 items.
+8. Keep all text SHORT: 1 sentence per field. EXCEPTION: executive_summary must be exactly 2-3 sentences: (1) the single biggest opportunity, (2) the primary conversion barrier, (3) the most urgent copywriting gap.
+9. top_critical_issues: max 7 items.
 10. fix_this_first: max 3 items.
 11. product_details_fixes: max 5 items.
-12. keyword_opportunities: max 8 items.
+12. keyword_opportunities: max 12 items. Include a mix of exact-match, phrase-match, and long-tail keywords relevant to this specific product and its buyer intent.
 13. buyer_objections: max 5 items.
 14. image_gallery_plan: max 6 items.
 15. a_plus_brand_plan: max 3 items.
@@ -210,15 +211,17 @@ OUTPUT RULES — follow all of these exactly:
 32. compact_report.buyer_and_competitor_insights.buyer_objections: max 3 items. Each buyer_concern and fix must be concise.
 33. compact_report.buyer_and_competitor_insights.competitor_actions: max 3 items. Use [] if no competitor data was provided.
 34. compact_report.next_actions: max 5 items in descending priority order. Do not repeat fix_first_table content verbatim.
-35. compact_report.advanced_details: use [] for any array with no relevant data. Do NOT invent content.
-36. Never invent fake certifications, fake test results, fake sourcing, fake materials, or fake credentials in any output field.
+35. compact_report.advanced_details: populate keywords from your keyword_opportunities list (include every keyword), a_plus_content_plan from a_plus_brand_plan content_idea values, detailed_notes from the details field values. Never leave all three arrays empty if data exists in the corresponding fields.
+36. title_suggestions: exactly 3 complete Amazon title variants for this product. Variant 1 is keyword-led (front-load the top search keyword). Variant 2 is benefit-led (lead with the main buyer benefit). Variant 3 is differentiation-led (lead with what makes this product unique vs alternatives). Every variant must be under 200 characters and persona-aligned.
+37. quick_wins: exactly 3 items — the 3 fastest, highest-impact listing changes implementable in under 30 minutes. Each must be specific to THIS product and listing, never generic.
+38. Never invent fake certifications, fake test results, fake sourcing, fake materials, or fake credentials in any output field.
 
 Return this exact JSON structure:
 
 {{
   "score": <integer 0-100 — must equal round((title_quality*0.20)+(bullet_points*0.20)+(description*0.15)+(seo_keywords*0.20)+(images*0.15)+(conversion_trust*0.10))>,
   "score_label": "<short label max 6 words>",
-  "executive_summary": "<1 sentence — the single biggest opportunity for this listing>",
+  "executive_summary": "<2-3 sentences: biggest opportunity + primary conversion barrier + most urgent copywriting gap>",
   "score_breakdown": {{
     "title_quality": <integer 0-100>,
     "bullet_points": <integer 0-100>,
@@ -296,11 +299,24 @@ Return this exact JSON structure:
       "content_idea": "<1 sentence>"
     }}
   ],
+  "title_suggestions": [
+    "<Amazon title variant 1 — keyword-led, under 200 chars, persona-aligned>",
+    "<Amazon title variant 2 — benefit-led, under 200 chars, persona-aligned>",
+    "<Amazon title variant 3 — differentiation-led, under 200 chars, persona-aligned>"
+  ],
   "priority_checklist": [
     {{
       "priority": "<High|Medium|Low>",
       "task": "<short task>",
       "reason": "<1 sentence>"
+    }}
+  ],
+  "quick_wins": [
+    {{
+      "win": "<specific action, max 7 words>",
+      "effort": "<low|medium>",
+      "impact": "<High|Medium>",
+      "how": "<1 sentence: exactly how to implement this for this product>"
     }}
   ],
   "details": {{
@@ -413,9 +429,9 @@ Return this exact JSON structure:
       }}
     ],
     "advanced_details": {{
-      "keywords": ["<keyword>"],
-      "a_plus_content_plan": ["<short plan item>"],
-      "detailed_notes": ["<short note>"]
+      "keywords": ["<copy every keyword from keyword_opportunities here>"],
+      "a_plus_content_plan": ["<copy content_idea from each a_plus_brand_plan item here>"],
+      "detailed_notes": ["<copy value from details.title>", "<copy value from details.bullets>", "<copy value from details.images>"]
     }}
   }}
 }}"""
@@ -501,6 +517,8 @@ def _fallback_report() -> dict:
             'image_briefs': [],
             'priority_checklist': [],
         },
+        'title_suggestions': [],
+        'quick_wins': [],
         'compact_report': {
             'score_snapshot': {
                 'overall_score': 0,
@@ -539,6 +557,7 @@ def run_gemini_audit(audit) -> dict:
                 config=types.GenerateContentConfig(
                     temperature=0.4,
                     response_mime_type='application/json',
+                    max_output_tokens=8192,
                 ),
             )
 

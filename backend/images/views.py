@@ -54,20 +54,25 @@ def _get_reference_image_path(audit):
         return None
     try:
         img = audit.images.first()
-        if not img or not img.image or not img.image.name:
+        if not img:
             return None
-        try:
-            path = img.image.path
-            if os.path.exists(path):
-                return path
-        except (NotImplementedError, ValueError):
-            pass
-        try:
-            url = img.image.url
-            if url and url.startswith(('http://', 'https://')):
-                return url
-        except Exception:
-            pass
+        # Cloudinary uploads store the HTTPS URL in image_url; check this first.
+        if img.image_url and img.image_url.startswith(('http://', 'https://')):
+            return img.image_url
+        # Fall back to local file (legacy / non-Cloudinary deployments).
+        if img.image and img.image.name:
+            try:
+                path = img.image.path
+                if os.path.exists(path):
+                    return path
+            except (NotImplementedError, ValueError):
+                pass
+            try:
+                url = img.image.url
+                if url and url.startswith(('http://', 'https://')):
+                    return url
+            except Exception:
+                pass
     except Exception:
         pass
     return None

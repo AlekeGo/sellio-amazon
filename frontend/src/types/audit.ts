@@ -114,16 +114,26 @@ export interface CompactNextAction {
   priority: string
 }
 
+export interface CompactAdvancedDetails {
+  keywords: string[]
+  a_plus_content_plan: string[]
+  detailed_notes: string[]
+  score_breakdown_details?: Array<{ category: string; score: number; reasoning: string }>
+  keyword_opportunities?: Array<{ keyword: string; reason: string }>
+  title_suggestions?: string[]
+  bullet_suggestions?: string[]
+  description_suggestion?: string
+  image_recommendations?: string[]
+  buyer_trust_gaps?: string[]
+  quick_wins?: Array<{ win: string; effort: string; impact: string; how: string }>
+}
+
 export interface CompactReport {
   score_snapshot: CompactScoreSnapshot
   fix_first_table: CompactFixFirstRow[]
   buyer_and_competitor_insights: CompactBuyerAndCompetitorInsights
   next_actions: CompactNextAction[]
-  advanced_details: {
-    keywords: string[]
-    a_plus_content_plan: string[]
-    detailed_notes: string[]
-  }
+  advanced_details: CompactAdvancedDetails
 }
 
 export interface ConciseReport {
@@ -151,6 +161,8 @@ export interface ConciseReport {
   competitor_analysis_lite?: CompetitorAnalysisLite
   details?: Record<string, unknown>
   compact_report?: CompactReport
+  title_suggestions?: string[]
+  quick_wins?: Array<{ win: string; effort: string; impact: string; how: string }>
 }
 
 export type AuditStatus = 'draft' | 'ready_for_analysis' | 'pending_analysis' | 'completed' | 'failed'

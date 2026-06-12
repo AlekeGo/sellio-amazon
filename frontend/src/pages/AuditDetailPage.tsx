@@ -8,7 +8,7 @@ import {
 import { getAudit, submitAudit, regenerateAudit } from '../lib/auditsApi'
 import { getMyBilling } from '../lib/billingApi'
 import StatusBadge from '../components/ui/StatusBadge'
-import type { AuditDetail, AuditResult, ConciseReport, ProUpgradePack, BuyerObjectionRadarItem, CompetitorAnalysisLite, CompactReport, CompactFixFirstRow, CompactNextAction } from '../types/audit'
+import type { AuditDetail, AuditResult, ConciseReport, ProUpgradePack, BuyerObjectionRadarItem, CompetitorAnalysisLite, CompactReport, CompactFixFirstRow, CompactNextAction, CompactAdvancedDetails } from '../types/audit'
 import type { BillingMeResponse } from '../types/billing'
 
 function extractError(err: unknown): string {
@@ -1158,6 +1158,203 @@ function ConciseAuditReport({
   )
 }
 
+function AdvDetailSection({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div>
+      <div style={{ fontSize: '0.6875rem', fontWeight: 700, color: 'var(--dp-ink-muted)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.5rem', paddingBottom: '0.5rem', borderBottom: '1px solid rgba(196,188,255,0.25)' }}>
+        {title}
+      </div>
+      {children}
+    </div>
+  )
+}
+
+function AdvancedDetailsPanel({ details }: { details: CompactAdvancedDetails }) {
+  const hasContent = (
+    (details.score_breakdown_details?.length ?? 0) > 0 ||
+    (details.title_suggestions?.length ?? 0) > 0 ||
+    (details.bullet_suggestions?.length ?? 0) > 0 ||
+    (details.description_suggestion?.trim().length ?? 0) > 0 ||
+    (details.keyword_opportunities?.length ?? 0) > 0 ||
+    (details.keywords?.length ?? 0) > 0 ||
+    (details.image_recommendations?.length ?? 0) > 0 ||
+    (details.buyer_trust_gaps?.length ?? 0) > 0 ||
+    (details.quick_wins?.length ?? 0) > 0 ||
+    (details.a_plus_content_plan?.length ?? 0) > 0 ||
+    (details.detailed_notes?.length ?? 0) > 0
+  )
+
+  if (!hasContent) {
+    return (
+      <div style={{ marginTop: '1.25rem', padding: '1rem', borderRadius: '0.5rem', background: 'rgba(238,240,255,0.4)', border: '1px solid rgba(196,188,255,0.3)', fontSize: '0.8125rem', color: 'var(--dp-ink-muted)' }}>
+        No additional details available for this section. Regenerate the audit to populate advanced details.
+      </div>
+    )
+  }
+
+  return (
+    <div style={{ marginTop: '1.25rem', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+
+      {Array.isArray(details.score_breakdown_details) && details.score_breakdown_details.length > 0 && (
+        <AdvDetailSection title="Score Breakdown">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
+            {details.score_breakdown_details.map((item, i) => (
+              <div key={i} style={{ padding: '0.75rem', borderRadius: '0.5rem', background: '#f8fafc', border: '1px solid rgba(196,188,255,0.3)' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.3125rem' }}>
+                  <span style={{ fontSize: '0.8125rem', fontWeight: 700, color: 'var(--dp-ink)' }}>{item.category}</span>
+                  <span style={{ fontSize: '0.875rem', fontWeight: 800, color: sc(item.score) }}>{item.score}/100</span>
+                </div>
+                <div style={{ height: 4, borderRadius: 2, background: '#E5E7EB', overflow: 'hidden', marginBottom: '0.375rem' }}>
+                  <div style={{ height: '100%', width: `${Math.max(0, Math.min(100, item.score))}%`, borderRadius: 2, background: sc(item.score) }} />
+                </div>
+                {item.reasoning && (
+                  <p style={{ fontSize: '0.75rem', color: 'var(--dp-ink-muted)', margin: 0, lineHeight: 1.5 }}>{item.reasoning}</p>
+                )}
+              </div>
+            ))}
+          </div>
+        </AdvDetailSection>
+      )}
+
+      {Array.isArray(details.quick_wins) && details.quick_wins.length > 0 && (
+        <AdvDetailSection title="Quick Wins">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+            {details.quick_wins.map((item, i) => (
+              <div key={i} style={{ padding: '0.75rem', borderRadius: '0.5rem', background: 'rgba(47,158,111,0.04)', border: '1px solid rgba(47,158,111,0.18)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.375rem', flexWrap: 'wrap' }}>
+                  <span style={{ fontSize: '0.875rem', fontWeight: 700, color: 'var(--dp-ink)', flex: 1 }}>{item.win}</span>
+                  <span style={{ padding: '0.125rem 0.5rem', borderRadius: '99px', fontSize: '0.5625rem', fontWeight: 700, background: item.impact === 'High' ? 'rgba(47,158,111,0.1)' : 'rgba(183,121,31,0.08)', color: item.impact === 'High' ? '#2F9E6F' : '#B7791F', border: `1px solid ${item.impact === 'High' ? 'rgba(47,158,111,0.25)' : 'rgba(183,121,31,0.2)'}`, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                    {item.impact} impact
+                  </span>
+                  <span style={{ padding: '0.125rem 0.5rem', borderRadius: '99px', fontSize: '0.5625rem', fontWeight: 700, background: 'rgba(83,58,253,0.06)', color: 'var(--dp-primary)', border: '1px solid rgba(83,58,253,0.16)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                    {item.effort} effort
+                  </span>
+                </div>
+                {item.how && <p style={{ fontSize: '0.8125rem', color: 'var(--dp-ink-muted)', margin: 0, lineHeight: 1.5 }}>{item.how}</p>}
+              </div>
+            ))}
+          </div>
+        </AdvDetailSection>
+      )}
+
+      {Array.isArray(details.title_suggestions) && details.title_suggestions.length > 0 && (
+        <AdvDetailSection title="Title Suggestions">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+            {details.title_suggestions.map((title, i) => (
+              <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem', padding: '0.625rem 0.875rem', borderRadius: '0.5rem', background: 'rgba(238,240,255,0.5)', border: '1px solid rgba(196,188,255,0.4)' }}>
+                <span style={{ width: 20, height: 20, borderRadius: '50%', background: 'rgba(83,58,253,0.1)', border: '1px solid rgba(83,58,253,0.22)', color: 'var(--dp-primary)', fontSize: '0.625rem', fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 1 }}>{i + 1}</span>
+                <p style={{ fontSize: '0.875rem', color: 'var(--dp-ink)', fontWeight: 500, margin: 0, lineHeight: 1.45, flex: 1 }}>{title}</p>
+                <CopyButton text={title} label="Copy" />
+              </div>
+            ))}
+          </div>
+        </AdvDetailSection>
+      )}
+
+      {Array.isArray(details.bullet_suggestions) && details.bullet_suggestions.length > 0 && (
+        <AdvDetailSection title="Bullet Point Suggestions">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.375rem' }}>
+            {details.bullet_suggestions.map((bullet, i) => (
+              <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
+                <span style={{ color: 'var(--dp-primary)', fontSize: '0.75rem', fontWeight: 700, flexShrink: 0, marginTop: 3 }}>&#8594;</span>
+                <p style={{ fontSize: '0.8125rem', color: 'var(--dp-ink)', margin: 0, lineHeight: 1.55, flex: 1 }}>{bullet}</p>
+              </div>
+            ))}
+          </div>
+          <div style={{ marginTop: '0.5rem' }}>
+            <CopyButton text={details.bullet_suggestions.join('\n')} label="Copy all bullets" />
+          </div>
+        </AdvDetailSection>
+      )}
+
+      {details.description_suggestion && details.description_suggestion.trim() && (
+        <AdvDetailSection title="Description Suggestion">
+          <div style={{ padding: '0.75rem 1rem', borderRadius: '0.5rem', background: 'rgba(238,240,255,0.4)', border: '1px solid rgba(196,188,255,0.35)' }}>
+            <p style={{ fontSize: '0.875rem', color: 'var(--dp-ink)', margin: 0, lineHeight: 1.65 }}>{details.description_suggestion}</p>
+          </div>
+          <div style={{ marginTop: '0.5rem' }}>
+            <CopyButton text={details.description_suggestion} label="Copy description" />
+          </div>
+        </AdvDetailSection>
+      )}
+
+      {Array.isArray(details.keyword_opportunities) && details.keyword_opportunities.length > 0 ? (
+        <AdvDetailSection title="Keyword Opportunities">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.375rem' }}>
+            {details.keyword_opportunities.map((kw, i) => (
+              <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem', padding: '0.5rem 0', borderBottom: i < details.keyword_opportunities!.length - 1 ? '1px solid rgba(196,188,255,0.2)' : 'none' }}>
+                <span style={{ padding: '0.1875rem 0.5625rem', borderRadius: '99px', background: 'rgba(83,58,253,0.08)', border: '1px solid rgba(83,58,253,0.18)', color: 'var(--dp-primary)', fontSize: '0.75rem', fontWeight: 700, flexShrink: 0 }}>{kw.keyword}</span>
+                {kw.reason && <p style={{ fontSize: '0.8125rem', color: 'var(--dp-ink-muted)', margin: 0, lineHeight: 1.5 }}>{kw.reason}</p>}
+              </div>
+            ))}
+          </div>
+        </AdvDetailSection>
+      ) : Array.isArray(details.keywords) && details.keywords.length > 0 && (
+        <AdvDetailSection title="Keywords">
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.375rem' }}>
+            {details.keywords.map((kw, i) => (
+              <span key={i} style={{ padding: '0.25rem 0.625rem', borderRadius: '99px', background: 'rgba(83,58,253,0.08)', border: '1px solid rgba(83,58,253,0.18)', color: 'var(--dp-primary)', fontSize: '0.8125rem', fontWeight: 600 }}>
+                {kw}
+              </span>
+            ))}
+          </div>
+        </AdvDetailSection>
+      )}
+
+      {Array.isArray(details.image_recommendations) && details.image_recommendations.length > 0 && (
+        <AdvDetailSection title="Image Recommendations">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+            {details.image_recommendations.map((rec, i) => (
+              <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
+                <span style={{ color: 'var(--dp-primary)', fontSize: '0.75rem', fontWeight: 700, flexShrink: 0, marginTop: 3 }}>&#8594;</span>
+                <p style={{ fontSize: '0.8125rem', color: 'var(--dp-ink-muted)', margin: 0, lineHeight: 1.5 }}>{rec}</p>
+              </div>
+            ))}
+          </div>
+        </AdvDetailSection>
+      )}
+
+      {Array.isArray(details.buyer_trust_gaps) && details.buyer_trust_gaps.length > 0 && (
+        <AdvDetailSection title="Buyer Objections & Trust Gaps">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.375rem' }}>
+            {details.buyer_trust_gaps.map((gap, i) => (
+              <div key={i} style={{ padding: '0.5rem 0.75rem', borderRadius: '0.4375rem', background: 'rgba(254,243,199,0.4)', border: '1px solid rgba(183,121,31,0.18)', fontSize: '0.8125rem', color: '#92400E', lineHeight: 1.5 }}>
+                {gap}
+              </div>
+            ))}
+          </div>
+        </AdvDetailSection>
+      )}
+
+      {Array.isArray(details.a_plus_content_plan) && details.a_plus_content_plan.length > 0 && (
+        <AdvDetailSection title="A+ Content Plan">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+            {details.a_plus_content_plan.map((item, i) => (
+              <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
+                <span style={{ color: 'var(--dp-primary)', fontSize: '0.75rem', fontWeight: 700, flexShrink: 0, marginTop: 3 }}>&#8594;</span>
+                <p style={{ fontSize: '0.8125rem', color: 'var(--dp-ink-muted)', margin: 0, lineHeight: 1.5 }}>{item}</p>
+              </div>
+            ))}
+          </div>
+        </AdvDetailSection>
+      )}
+
+      {Array.isArray(details.detailed_notes) && details.detailed_notes.length > 0 && (
+        <AdvDetailSection title="Detailed Notes">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.375rem' }}>
+            {details.detailed_notes.map((note, i) => (
+              <p key={i} style={{ fontSize: '0.8125rem', color: 'var(--dp-ink-muted)', margin: 0, lineHeight: 1.55, paddingBottom: '0.375rem', borderBottom: i < details.detailed_notes.length - 1 ? '1px solid rgba(196,188,255,0.2)' : 'none' }}>
+                {note}
+              </p>
+            ))}
+          </div>
+        </AdvDetailSection>
+      )}
+
+    </div>
+  )
+}
+
 function SubScoreBar({ label, score }: { label: string; score: number }) {
   const color = sc(score)
   return (
@@ -1498,63 +1695,7 @@ function CompactAuditReport({
           </button>
 
           {advancedOpen && (
-            <div style={{ marginTop: '1.25rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-
-              {Array.isArray(advanced_details.keywords) && advanced_details.keywords.length > 0 && (
-                <div>
-                  <div style={{ fontSize: '0.6875rem', fontWeight: 700, color: 'var(--dp-ink-muted)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.5rem', paddingBottom: '0.5rem', borderBottom: '1px solid rgba(196,188,255,0.25)' }}>
-                    Keywords
-                  </div>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.375rem' }}>
-                    {advanced_details.keywords.map((kw, i) => (
-                      <span key={i} style={{
-                        padding: '0.25rem 0.625rem', borderRadius: '99px',
-                        background: 'rgba(83,58,253,0.08)', border: '1px solid rgba(83,58,253,0.18)',
-                        color: 'var(--dp-primary)', fontSize: '0.8125rem', fontWeight: 600,
-                      }}>
-                        {kw}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {Array.isArray(advanced_details.a_plus_content_plan) && advanced_details.a_plus_content_plan.length > 0 && (
-                <div>
-                  <div style={{ fontSize: '0.6875rem', fontWeight: 700, color: 'var(--dp-ink-muted)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.5rem', paddingBottom: '0.5rem', borderBottom: '1px solid rgba(196,188,255,0.25)' }}>
-                    A+ Content Plan
-                  </div>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                    {advanced_details.a_plus_content_plan.map((item, i) => (
-                      <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
-                        <span style={{ color: 'var(--dp-primary)', fontSize: '0.75rem', fontWeight: 700, flexShrink: 0, marginTop: 2 }}>в†’</span>
-                        <p style={{ fontSize: '0.8125rem', color: 'var(--dp-ink-muted)', margin: 0, lineHeight: 1.5 }}>{item}</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {Array.isArray(advanced_details.detailed_notes) && advanced_details.detailed_notes.length > 0 && (
-                <div>
-                  <div style={{ fontSize: '0.6875rem', fontWeight: 700, color: 'var(--dp-ink-muted)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.5rem', paddingBottom: '0.5rem', borderBottom: '1px solid rgba(196,188,255,0.25)' }}>
-                    Detailed Notes
-                  </div>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                    {advanced_details.detailed_notes.map((note, i) => (
-                      <p key={i} style={{
-                        fontSize: '0.8125rem', color: 'var(--dp-ink-muted)', margin: 0, lineHeight: 1.55,
-                        paddingBottom: '0.375rem',
-                        borderBottom: i < advanced_details.detailed_notes.length - 1 ? '1px solid rgba(196,188,255,0.25)' : 'none',
-                      }}>
-                        {note}
-                      </p>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-            </div>
+            <AdvancedDetailsPanel details={advanced_details as CompactAdvancedDetails} />
           )}
         </Card>
       )}

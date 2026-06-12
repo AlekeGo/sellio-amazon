@@ -28,6 +28,125 @@ logger = logging.getLogger('audits')
 _ALLOWED_IMAGE_EXTENSIONS = {'.jpg', '.jpeg', '.png', '.webp'}
 _MAX_IMAGE_SIZE = 10 * 1024 * 1024  # 10 MB
 
+_SCORE_CATEGORY_LABELS = [
+    ('title_quality', 'Title Quality'),
+    ('bullet_points', 'Bullet Points'),
+    ('description', 'Description'),
+    ('seo_keywords', 'SEO / Keywords'),
+    ('images', 'Images'),
+    ('conversion_trust', 'Conversion / Trust'),
+]
+
+
+def _build_advanced_details(result_data: dict) -> dict:
+    breakdown = result_data.get('score_breakdown', {})
+    reasoning = result_data.get('score_reasoning', {})
+    score_breakdown_details = []
+    for key, label in _SCORE_CATEGORY_LABELS:
+        val = breakdown.get(key)
+        if val is not None:
+            try:
+                score_val = max(0, min(100, int(float(val))))
+            except (TypeError, ValueError):
+                score_val = 0
+            score_breakdown_details.append({
+                'category': label,
+                'score': score_val,
+                'reasoning': str(reasoning.get(key, '')),
+            })
+
+    kw_list = result_data.get('keyword_opportunities', [])
+    if not isinstance(kw_list, list):
+        kw_list = []
+    keywords = [k.get('keyword', '') for k in kw_list if isinstance(k, dict) and k.get('keyword')]
+
+    title_suggestions = list(result_data.get('title_suggestions', []))
+    if not isinstance(title_suggestions, list):
+        title_suggestions = []
+    title_suggestions = [str(t) for t in title_suggestions if t]
+    title_upgrade = result_data.get('title_upgrade', {})
+    if isinstance(title_upgrade, dict):
+        t = title_upgrade.get('improved_title', '')
+        if t and t not in title_suggestions:
+            title_suggestions.insert(0, str(t))
+    pro = result_data.get('pro_upgrade_pack', {})
+    if isinstance(pro, dict):
+        pt = pro.get('copy_ready_title', '')
+        if pt and pt not in title_suggestions:
+            title_suggestions.append(str(pt))
+
+    bullet_suggestions = []
+    about_upgrade = result_data.get('about_this_item_upgrade', {})
+    if isinstance(about_upgrade, dict):
+        bullets = about_upgrade.get('improved_bullets', [])
+        if isinstance(bullets, list):
+            bullet_suggestions = [str(b) for b in bullets if b]
+    if not bullet_suggestions and isinstance(pro, dict):
+        bullets = pro.get('copy_ready_bullets', [])
+        if isinstance(bullets, list):
+            bullet_suggestions = [str(b) for b in bullets if b]
+
+    description_suggestion = ''
+    desc_upgrade = result_data.get('description_upgrade', {})
+    if isinstance(desc_upgrade, dict):
+        description_suggestion = str(desc_upgrade.get('improved_description', ''))
+    if not description_suggestion and isinstance(pro, dict):
+        description_suggestion = str(pro.get('copy_ready_description', ''))
+
+    image_gallery = result_data.get('image_gallery_plan', [])
+    image_recommendations = []
+    for img in (image_gallery if isinstance(image_gallery, list) else []):
+        if isinstance(img, dict):
+            img_type = img.get('image_type', '')
+            goal = img.get('goal', '')
+            if img_type:
+                image_recommendations.append(f'{img_type}: {goal}' if goal else img_type)
+
+    buyer_trust_gaps = []
+    objections = result_data.get('buyer_objections', [])
+    for obj in (objections if isinstance(objections, list) else []):
+        if isinstance(obj, dict):
+            o = obj.get('objection', '')
+            h = obj.get('how_to_address', '')
+            if o:
+                buyer_trust_gaps.append(f'{o} — {h}' if h else o)
+
+    aplus = result_data.get('a_plus_brand_plan', [])
+    a_plus_content_plan = []
+    for item in (aplus if isinstance(aplus, list) else []):
+        if isinstance(item, dict):
+            section = item.get('section', '')
+            idea = item.get('content_idea', '')
+            if section and idea:
+                a_plus_content_plan.append(f'{section}: {idea}')
+            elif section or idea:
+                a_plus_content_plan.append(section or idea)
+
+    details = result_data.get('details', {})
+    detailed_notes = [
+        str(v).strip()
+        for v in (details.values() if isinstance(details, dict) else [])
+        if v and isinstance(v, str) and str(v).strip()
+    ]
+
+    quick_wins = result_data.get('quick_wins', [])
+    if not isinstance(quick_wins, list):
+        quick_wins = []
+
+    return {
+        'score_breakdown_details': score_breakdown_details,
+        'keyword_opportunities': kw_list,
+        'keywords': keywords,
+        'title_suggestions': title_suggestions,
+        'bullet_suggestions': bullet_suggestions,
+        'description_suggestion': description_suggestion,
+        'image_recommendations': image_recommendations,
+        'buyer_trust_gaps': buyer_trust_gaps,
+        'a_plus_content_plan': a_plus_content_plan,
+        'detailed_notes': detailed_notes,
+        'quick_wins': quick_wins,
+    }
+
 
 def _upload_to_cloudinary(f, audit_id):
     """Upload a file-like object to Cloudinary. Returns (secure_url, public_id)."""
@@ -103,6 +222,12 @@ def _run_ai_and_save(audit):
     audit.save(update_fields=['status', 'updated_at'])
 
     result_data = run_audit(audit)
+
+    # Build rich advanced_details from full response data (overrides AI-produced version)
+    advanced_details = _build_advanced_details(result_data)
+    cr = result_data.get('compact_report')
+    if isinstance(cr, dict):
+        cr['advanced_details'] = advanced_details
 
     title_upgrade = result_data.get('title_upgrade', {})
     about_upgrade = result_data.get('about_this_item_upgrade', {})

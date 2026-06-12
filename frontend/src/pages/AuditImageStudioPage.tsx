@@ -19,48 +19,69 @@ import PaywallBlock from '../components/ui/PaywallBlock'
 
 const DEFAULT_ITEMS: ImagePackPlanItem[] = [
   {
-    image_type: 'Hero Image',
-    goal: 'Drive click-through with a clean, conversion-optimized hero image',
-    headline: 'Stand Out on Page 1',
-    visual_direction: 'White background, product centered, angles optimized for Amazon main image guidelines',
-    text_elements: ['Product name', 'Key benefit callout', 'Size or quantity'],
+    image_type: 'Hero Shot',
+    goal: 'Drive click-through with a compelling main image that wins the first impression',
+    headline: 'The Product, Front and Center',
+    visual_direction: 'Pure white background, product centered and angled for maximum impact, studio-quality lighting that highlights shape and finish',
+    text_elements: ['Product name', 'Key differentiator', 'Size or quantity badge'],
   },
   {
-    image_type: 'Benefit Infographic',
+    image_type: 'Lifestyle Image',
+    goal: 'Build emotional connection and show real-world product value in context',
+    headline: 'Made for Real Life',
+    visual_direction: 'Natural setting showing product in use by target customer, warm authentic tones, relatable environment',
+    text_elements: ['Lifestyle moment', 'Who it\'s for', 'Emotional hook'],
+  },
+  {
+    image_type: 'Infographic / Key Benefits',
     goal: 'Communicate top benefits visually — no reading required',
     headline: 'Why Shoppers Choose This',
-    visual_direction: 'Dark gradient background, icons and text callouts, product anchored in center',
-    text_elements: ['Benefit 1', 'Benefit 2', 'Benefit 3', 'Benefit 4'],
+    visual_direction: 'Clean gradient background, product anchored in center, 4–5 benefit callouts with icons, bold typography',
+    text_elements: ['Benefit 1', 'Benefit 2', 'Benefit 3', 'Benefit 4', 'Benefit 5'],
   },
   {
-    image_type: 'Lifestyle',
-    goal: 'Build emotional connection and show real-world product value',
-    headline: 'Made for Your Life',
-    visual_direction: 'Natural setting, product in use by target customer, warm brand tones',
-    text_elements: ['Lifestyle context', 'Emotional hook'],
+    image_type: 'Size & Dimensions',
+    goal: 'Remove size uncertainty and prevent returns with precise visual measurements',
+    headline: 'Exactly the Right Fit',
+    visual_direction: 'Clean background with dimension lines and measurements, product shown next to familiar scale reference object',
+    text_elements: ['Width', 'Height', 'Depth / Weight', 'Scale comparison'],
   },
   {
-    image_type: 'Comparison',
+    image_type: 'Feature Breakdown',
+    goal: 'Highlight product features with close-up callouts and precise detail shots',
+    headline: 'Built Better. Every Detail.',
+    visual_direction: 'Dark or neutral background, feature callout arrows or zoom circles, technical yet approachable layout',
+    text_elements: ['Feature 1', 'Feature 2', 'Feature 3', 'Material / Quality note'],
+  },
+  {
+    image_type: 'Comparison Image',
     goal: 'Disqualify alternatives and position your product as the obvious choice',
     headline: 'The Clear Difference',
-    visual_direction: 'Side-by-side layout, green and red indicators, clean table format',
-    text_elements: ['Your product', 'Competitor', 'Feature checklist'],
+    visual_direction: 'Side-by-side layout with checkmarks and X marks, clean table-style format, your product column highlighted',
+    text_elements: ['Your product', 'Generic alternative', 'Comparison point 1', 'Comparison point 2'],
   },
   {
-    image_type: 'How-to',
-    goal: 'Remove confusion and show ease of use in 3–4 steps',
-    headline: 'Simple. Fast. Effective.',
-    visual_direction: 'Step-by-step numbered cards, product shown in use, progress flow',
-    text_elements: ['Step 1', 'Step 2', 'Step 3', 'Result'],
+    image_type: 'Problem → Solution',
+    goal: 'Show the pain point this product solves and the transformation it delivers',
+    headline: 'From Frustration to Fixed',
+    visual_direction: 'Split layout: problem state on left in muted tones, solution state on right bright and positive',
+    text_elements: ['The problem', 'The solution', 'The result', 'Call to action phrase'],
   },
   {
-    image_type: 'A+ Brand Visual',
-    goal: 'Premium A+ module to elevate brand trust and cross-sell',
-    headline: 'Premium Quality, Trusted Brand',
-    visual_direction: 'Full-width banner, brand colors, lifestyle imagery with feature callouts',
-    text_elements: ['Brand tagline', 'Feature highlights', 'Trust signals'],
+    image_type: 'Gift & Use Case',
+    goal: 'Position product as an ideal gift and showcase gifting occasions and recipients',
+    headline: 'The Gift They\'ll Actually Love',
+    visual_direction: 'Warm inviting setting with gifting context, occasion tags, happy recipient if applicable',
+    text_elements: ['Who it\'s for', 'Gifting occasion', 'Recipient benefit', 'Occasion tags'],
   },
 ]
+
+const DEFAULT_QUALITY: { productVisualDetails: string; styleDirection: string; backgroundPreference: string; textIntensity: string } = {
+  productVisualDetails: '',
+  styleDirection: '',
+  backgroundPreference: '',
+  textIntensity: '',
+}
 
 function SL({ children }: { children: React.ReactNode }) {
   return (
@@ -111,6 +132,7 @@ export default function AuditImageStudioPage() {
     return t.toLowerCase().replace(/\s+/g, ' ').trim()
   }
 
+  // Keep newest generation per type (generations are prepended on creation, so newest is first)
   const genByNormalizedType = new Map<string, ImageGeneration>()
   for (const g of generations) {
     const key = normalizeType(g.image_type)
@@ -119,6 +141,15 @@ export default function AuditImageStudioPage() {
 
   function getGenForItem(itemType: string) {
     return genByNormalizedType.get(normalizeType(itemType))
+  }
+
+  function mergeWithDefaults(defaults: ImagePackPlanItem[], aiItems: ImagePackPlanItem[]): ImagePackPlanItem[] {
+    if (!aiItems.length) return defaults
+    const aiByType = new Map(aiItems.map(item => [normalizeType(item.image_type), item]))
+    return defaults.map(def => {
+      const ai = aiByType.get(normalizeType(def.image_type))
+      return ai ? { ...def, ...ai, image_type: def.image_type } : def
+    })
   }
 
   async function handleGenerate(item: ImagePackPlanItem, quality: QualityOptions) {
@@ -236,10 +267,11 @@ export default function AuditImageStudioPage() {
     )
   }
 
-  const items: ImagePackPlanItem[] =
-    Array.isArray(audit.result?.image_pack_plan) && audit.result.image_pack_plan.length > 0
-      ? audit.result.image_pack_plan
-      : DEFAULT_ITEMS
+  // Always show all 8 default types; merge in AI-generated brief details where type names match
+  const items: ImagePackPlanItem[] = mergeWithDefaults(
+    DEFAULT_ITEMS,
+    Array.isArray(audit.result?.image_pack_plan) ? audit.result.image_pack_plan : [],
+  )
 
   const productName = audit.product_name || 'Your Product'
   const category = audit.category || 'Amazon Product'
@@ -259,12 +291,12 @@ export default function AuditImageStudioPage() {
     <div style={{ maxWidth: 1100 }}>
       <ImageStudioHeader audit={audit} result={audit.result} />
 
-      {imagePaywall && (
+      {(imagePaywall || (billing && !billing.can_generate_image)) && (
         <div style={{ marginBottom: '1.5rem' }}>
           <PaywallBlock
             title="You need image generation credits to create more visuals."
-            subtitle="Choose a plan to continue generating premium Amazon-ready images."
-            creditsLine="Current credits: 0 images left"
+            subtitle="Each generation uses 1 credit. Choose a plan to get more image credits."
+            creditsLine="Current credits: 0 image generations remaining"
             primaryCta={{ label: 'Manage Billing', to: '/dashboard/billing' }}
             secondaryCta={{ label: 'View Plans', to: '/dashboard/billing#billing-plans' }}
           />
@@ -294,18 +326,7 @@ export default function AuditImageStudioPage() {
           </div>
         </div>
         <div style={{ display: 'flex', gap: '0.375rem', flexWrap: 'wrap', alignItems: 'center' }}>
-          {billing && billing.balance.image_generation_credits > 0 && (
-            <span style={{
-              display: 'inline-flex', alignItems: 'center', gap: '0.3125rem',
-              padding: '0.25rem 0.625rem', borderRadius: '99px',
-              background: 'rgba(83,58,253,0.07)', border: '1px solid rgba(83,58,253,0.18)',
-              fontSize: '0.6875rem', fontWeight: 700, color: 'var(--dp-primary)',
-            }}>
-              <Package size={11} />
-              {billing.balance.image_generation_credits} image{billing.balance.image_generation_credits !== 1 ? 's' : ''} left
-            </span>
-          )}
-          {billing && billing.balance.image_generation_credits === 0 && billing.balance.full_upgrade_credits > 0 && (
+          {billing && billing.balance.full_upgrade_credits > 0 && (
             <span style={{
               display: 'inline-flex', alignItems: 'center', gap: '0.3125rem',
               padding: '0.25rem 0.625rem', borderRadius: '99px',
@@ -313,7 +334,27 @@ export default function AuditImageStudioPage() {
               fontSize: '0.6875rem', fontWeight: 700, color: '#2F9E6F',
             }}>
               <Package size={11} />
-              Full Upgrade active
+              Full Upgrade active — unlimited generations
+            </span>
+          )}
+          {billing && billing.balance.full_upgrade_credits === 0 && (
+            <span style={{
+              display: 'inline-flex', alignItems: 'center', gap: '0.3125rem',
+              padding: '0.25rem 0.625rem', borderRadius: '99px',
+              background: billing.balance.image_generation_credits > 0
+                ? 'rgba(83,58,253,0.07)'
+                : 'rgba(239,68,68,0.07)',
+              border: billing.balance.image_generation_credits > 0
+                ? '1px solid rgba(83,58,253,0.18)'
+                : '1px solid rgba(239,68,68,0.22)',
+              fontSize: '0.6875rem', fontWeight: 700,
+              color: billing.balance.image_generation_credits > 0 ? 'var(--dp-primary)' : '#ef4444',
+            }}>
+              <Package size={11} />
+              {billing.balance.image_generation_credits > 0
+                ? `${billing.balance.image_generation_credits} image credit${billing.balance.image_generation_credits !== 1 ? 's' : ''} remaining`
+                : '0 image credits — upgrade to generate'
+              }
             </span>
           )}
           {[
@@ -370,7 +411,11 @@ export default function AuditImageStudioPage() {
                 generation={getGenForItem(item.image_type)}
                 isGenerating={generatingTypes.has(item.image_type)}
                 onGenerate={() => {
-                  if (selectedIndex === i) return
+                  if (billing && !billing.can_generate_image) {
+                    setImagePaywall(true)
+                    return
+                  }
+                  handleGenerate(item, DEFAULT_QUALITY)
                   setSelectedIndex(i)
                 }}
               />
