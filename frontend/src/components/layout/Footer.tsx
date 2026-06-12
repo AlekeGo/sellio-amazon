@@ -7,8 +7,10 @@ const footerLinks = [
   { label: 'How It Works', href: '/#how-it-works' },
   { label: 'Pricing', href: '/pricing' },
   { label: 'Login', href: '/login' },
-  { label: 'Privacy', href: '#' },
-  { label: 'Terms', href: '#' },
+  { label: 'Privacy Policy', href: '/privacy-policy' },
+  { label: 'Terms of Service', href: '/terms-of-service' },
+  { label: 'Refund Policy', href: '/refund-policy' },
+  { label: 'Contact', href: '/contact' },
 ]
 
 // Inline SVG icons — no react-icons dependency needed
