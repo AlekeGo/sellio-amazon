@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { Menu, X } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -46,6 +46,8 @@ export default function Navbar() {
   const navLinks = isAuthenticated ? authLinks : guestLinks
   const ctaLabel = isAuthenticated ? 'New Audit' : 'Start Free'
   const ctaHref = '/dashboard/new-audit'
+  const panelRef = useRef<HTMLDivElement>(null)
+  const menuButtonRef = useRef<HTMLButtonElement>(null)
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12)
@@ -57,7 +59,28 @@ export default function Navbar() {
 
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? 'hidden' : ''
-    return () => { document.body.style.overflow = '' }
+    document.body.style.overflowX = mobileOpen ? 'hidden' : ''
+    return () => {
+      document.body.style.overflow = ''
+      document.body.style.overflowX = ''
+    }
+  }, [mobileOpen])
+
+  useEffect(() => {
+    if (!mobileOpen) return
+    const handleOutside = (e: Event) => {
+      const target = e.target as Node | null
+      if (!target) return
+      if (panelRef.current?.contains(target)) return
+      if (menuButtonRef.current?.contains(target)) return
+      setMobileOpen(false)
+    }
+    document.addEventListener('pointerdown', handleOutside)
+    document.addEventListener('touchstart', handleOutside, { passive: true })
+    return () => {
+      document.removeEventListener('pointerdown', handleOutside)
+      document.removeEventListener('touchstart', handleOutside)
+    }
   }, [mobileOpen])
 
   const handleAnchorClick = (href: string) => {
@@ -76,7 +99,7 @@ export default function Navbar() {
           top: 0,
           left: 0,
           right: 0,
-          zIndex: 100,
+          zIndex: 60,
           background: scrolled ? 'rgba(255,255,255,0.97)' : 'rgba(255,255,255,0.92)',
           borderBottom: scrolled ? '1px solid rgba(196,188,255,0.60)' : '1px solid rgba(196,188,255,0.40)',
           boxShadow: scrolled ? '0 4px 28px rgba(83,58,253,0.08), 0 1px 0 rgba(196,188,255,0.2)' : 'none',
@@ -136,6 +159,7 @@ export default function Navbar() {
         </div>
 
         <button
+          ref={menuButtonRef}
           className="dp-mobile-only"
           onClick={() => setMobileOpen(!mobileOpen)}
           style={{
@@ -162,20 +186,23 @@ export default function Navbar() {
               style={{
                 position: 'fixed', top: 0, right: 0, bottom: 0, left: 0,
                 width: '100vw', height: '100vh',
-                zIndex: 95,
+                zIndex: 40,
                 background: 'rgba(13,37,61,0.35)', backdropFilter: 'blur(4px)',
                 cursor: 'pointer',
                 WebkitTapHighlightColor: 'transparent',
                 touchAction: 'manipulation',
+                pointerEvents: 'auto',
               }}
               onClick={() => setMobileOpen(false)}
+              onPointerDown={() => setMobileOpen(false)}
             />
             <motion.div
+              ref={panelRef}
               initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }}
               transition={{ type: 'tween', duration: 0.28, ease: [0.32, 0.72, 0, 1] }}
-              onClick={(e) => e.stopPropagation()}
               style={{
-                position: 'fixed', top: 0, right: 0, bottom: 0, zIndex: 96, width: 300,
+                position: 'fixed', top: 0, right: 0, bottom: 0, zIndex: 50,
+                width: 'min(82vw, 320px)',
                 background: '#ffffff', borderLeft: '1px solid rgba(196,188,255,0.50)',
                 display: 'flex', flexDirection: 'column',
                 boxShadow: '-12px 0 48px rgba(83,58,253,0.12)',
