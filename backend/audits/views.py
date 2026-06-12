@@ -1,5 +1,9 @@
 import json
+import logging
+import os
 
+import cloudinary
+import cloudinary.uploader
 from django.utils import timezone
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
@@ -18,6 +22,23 @@ from .serializers import (
 )
 from .services.ai_provider import AITemporaryError, is_ai_configured, run_audit
 
+logger = logging.getLogger('audits')
+
+_ALLOWED_IMAGE_EXTENSIONS = {'.jpg', '.jpeg', '.png', '.webp'}
+_MAX_IMAGE_SIZE = 10 * 1024 * 1024  # 10 MB
+
+
+def _upload_to_cloudinary(f, audit_id):
+    """Upload a file-like object to Cloudinary. Returns (secure_url, public_id)."""
+    if hasattr(f, 'seek'):
+        f.seek(0)
+    result = cloudinary.uploader.upload(
+        f,
+        folder='sellio/audit-images',
+        resource_type='image',
+    )
+    return result['secure_url'], result['public_id']
+
 
 class AuditListCreateView(APIView):
     permission_classes = [IsAuthenticated]
@@ -31,14 +52,22 @@ class AuditListCreateView(APIView):
         serializer = AuditCreateSerializer(data=request.data, context={'request': request})
         serializer.is_valid(raise_exception=True)
         audit = serializer.save()
-        try:
-            for f in request.FILES.getlist('images'):
-                AuditImage.objects.create(audit=audit, image=f, original_filename=f.name)
-        except Exception:
-            return Response(
-                {'detail': 'Image upload failed. Please try again.'},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            )
+        for f in request.FILES.getlist('images'):
+            try:
+                secure_url, _ = _upload_to_cloudinary(f, audit.id)
+            except Exception as exc:
+                logger.error(
+                    "Cloudinary upload failed on audit create | audit_id=%s | filename=%s | "
+                    "size=%s | cloudinary_url_set=%s | exc_type=%s | exc=%s",
+                    audit.id, f.name, getattr(f, 'size', 'unknown'),
+                    bool(os.environ.get('CLOUDINARY_URL')),
+                    type(exc).__name__, exc,
+                )
+                return Response(
+                    {'detail': 'Image upload failed. Please try again.', 'code': 'image_upload_failed'},
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                )
+            AuditImage.objects.create(audit=audit, image_url=secure_url, original_filename=f.name)
         return Response(AuditDetailSerializer(audit, context={'request': request}).data, status=status.HTTP_201_CREATED)
 
 
@@ -284,19 +313,43 @@ class AuditImageListView(APIView):
             audit = Audit.objects.get(pk=pk, user=request.user)
         except Audit.DoesNotExist:
             return Response({'detail': 'Not found.'}, status=status.HTTP_404_NOT_FOUND)
+
         files = request.FILES.getlist('images')
         if not files:
             return Response({'detail': 'No images provided.'}, status=status.HTTP_400_BAD_REQUEST)
-        try:
-            created = [
-                AuditImage.objects.create(audit=audit, image=f, original_filename=f.name)
-                for f in files
-            ]
-        except Exception:
-            return Response(
-                {'detail': 'Image upload failed. Please try again.'},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            )
+
+        for f in files:
+            ext = os.path.splitext(f.name)[1].lower()
+            if ext not in _ALLOWED_IMAGE_EXTENSIONS:
+                return Response(
+                    {'detail': f'"{f.name}" is not a supported image type. Allowed: jpg, jpeg, png, webp.'},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+            if f.size > _MAX_IMAGE_SIZE:
+                return Response(
+                    {'detail': f'"{f.name}" exceeds the 10 MB size limit.'},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
+        created = []
+        for f in files:
+            try:
+                secure_url, _ = _upload_to_cloudinary(f, pk)
+            except Exception as exc:
+                logger.error(
+                    "Cloudinary upload failed | audit_id=%s | filename=%s | size=%s | "
+                    "cloudinary_url_set=%s | exc_type=%s | exc=%s",
+                    pk, f.name, getattr(f, 'size', 'unknown'),
+                    bool(os.environ.get('CLOUDINARY_URL')),
+                    type(exc).__name__, exc,
+                )
+                return Response(
+                    {'detail': 'Image upload failed. Please try again.', 'code': 'image_upload_failed'},
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                )
+            img = AuditImage.objects.create(audit=audit, image_url=secure_url, original_filename=f.name)
+            created.append(img)
+
         return Response(
             AuditImageSerializer(created, many=True, context={'request': request}).data,
             status=status.HTTP_201_CREATED,
@@ -315,6 +368,7 @@ class AuditImageDeleteView(APIView):
             image = AuditImage.objects.get(pk=image_id, audit=audit)
         except AuditImage.DoesNotExist:
             return Response({'detail': 'Image not found.'}, status=status.HTTP_404_NOT_FOUND)
-        image.image.delete(save=False)
+        if image.image:
+            image.image.delete(save=False)
         image.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)

@@ -4,10 +4,26 @@ from .models import Audit, AuditImage, AuditResult
 
 
 class AuditImageSerializer(serializers.ModelSerializer):
+    image = serializers.SerializerMethodField()
+
     class Meta:
         model = AuditImage
-        fields = ('id', 'image', 'original_filename', 'uploaded_at')
+        fields = ('id', 'image', 'image_url', 'original_filename', 'uploaded_at')
         read_only_fields = ('id', 'uploaded_at')
+
+    def get_image(self, obj):
+        if obj.image_url:
+            return obj.image_url
+        if obj.image:
+            request = self.context.get('request')
+            try:
+                url = obj.image.url
+                if request:
+                    return request.build_absolute_uri(url)
+                return url
+            except Exception:
+                return None
+        return None
 
 
 class AuditResultSerializer(serializers.ModelSerializer):
@@ -41,10 +57,18 @@ class AuditListSerializer(serializers.ModelSerializer):
         first_image = obj.images.first()
         if not first_image:
             return None
-        request = self.context.get('request')
-        if request:
-            return request.build_absolute_uri(first_image.image.url)
-        return first_image.image.url
+        if first_image.image_url:
+            return first_image.image_url
+        if first_image.image:
+            request = self.context.get('request')
+            try:
+                url = first_image.image.url
+                if request:
+                    return request.build_absolute_uri(url)
+                return url
+            except Exception:
+                return None
+        return None
 
     def get_result_score(self, obj):
         if obj.status == 'completed' and hasattr(obj, 'result'):

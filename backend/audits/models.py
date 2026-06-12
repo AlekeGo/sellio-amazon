@@ -97,7 +97,8 @@ class Audit(models.Model):
 
 class AuditImage(models.Model):
     audit = models.ForeignKey(Audit, on_delete=models.CASCADE, related_name='images')
-    image = models.ImageField(upload_to='audit_images/')
+    image = models.ImageField(upload_to='audit_images/', blank=True)
+    image_url = models.URLField(blank=True, max_length=500)
     original_filename = models.CharField(max_length=255, blank=True)
     uploaded_at = models.DateTimeField(auto_now_add=True)
 
